@@ -50,5 +50,32 @@
                 }
               ]
             }
-        ]
+        ],
+  "reservations": [
+                  {
+                    "lineName": "Line1",
+                    "departureName": "Stop1",
+                    "arrivalName": "Stop3",
+                    "date": "2019/04/15",
+                    "passengers": [
+                      {
+                        "firstname": "jeanpiero",
+                        "lastname": "francois",
+                        "registrationNumber": "jpf"
+                      },
+                      {
+                        "firstname": "luca",
+                        "lastname": "mazzucco",
+                        "registrationNumber": "lmz"
+                      },
+                      {
+                        "firstname": "alberto",
+                        "lastname": "benincasa",
+                        "registrationNumber": "lrt"
+                      }
+                    ]
+                  }
+                  ]
 }
+
+
