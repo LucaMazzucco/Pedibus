@@ -11,20 +11,21 @@ import java.util.List;
 public class Line implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long lineId;
+    @Getter @Setter
+    private long id;
 
     @Getter @Setter
     private String lineName;
 
     @Getter @Setter
-    @ElementCollection
-    private List<String> stopListA;
+    @OneToMany
+    private List<Stop> stopListA;
 
     @Getter @Setter
-    @ElementCollection
-    private List<String> stopListR;
+    @OneToMany
+    private List<Stop> stopListR;
 
-    public Line(String lineName, List<String> stopListA, List<String> stopListR) {
+    public Line(String lineName, List<Stop> stopListA, List<Stop> stopListR) {
         this.lineName = lineName;
         this.stopListA = stopListA;
         this.stopListR = stopListR;
