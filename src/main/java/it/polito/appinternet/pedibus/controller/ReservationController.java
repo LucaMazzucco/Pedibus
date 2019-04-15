@@ -38,7 +38,6 @@ public class ReservationController {
     @PostConstruct
     public void init(){
         try {
-
             List<Reservation> newReservations = new LinkedList<>();
             List<Person> newPeople = new LinkedList<>();
             String tmp_arrival, tmp_departure, tmp_date, tmp_line_name;
@@ -72,10 +71,11 @@ public class ReservationController {
                     Reservation tmp_res = new Reservation(tmp_line, arrival, departure, tmp_person, date);
                     newReservations.add(tmp_res);
                 }
-            }/*
-            for(Line a : newLines){
+            }
+
+            for(Reservation a : newReservations){
                 insertLine(a);
-            }*/
+            }
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -86,10 +86,23 @@ public class ReservationController {
         }
     }
 
+    @GetMapping("/insertReservation")
+    public String insertLine(Reservation reservation){
+        reservationRepo.save(reservation);
+        return "Line inserted correctly";
+    }
+
     @GetMapping("/reservations/{line_name}/{date}")
-    public String findByDateAndLine(@PathVariable String line_name, @PathVariable Date date){
-        List<Reservation> f = reservationRepo.findByLine_LineNameAndReservationDate(line_name, date);
-        return f.toString();
+    public String findByDateAndLine(@PathVariable String line_name, @PathVariable String date){
+        try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+            Date tmp_date = format.parse(date);
+            List<Reservation> f = reservationRepo.findByLine_LineNameAndReservationDate(line_name, tmp_date);
+            return f.toString();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        return "niente";
     }
 
 }
