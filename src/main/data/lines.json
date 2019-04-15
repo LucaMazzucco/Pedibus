@@ -1,0 +1,12 @@
+[
+  {
+    "lineName": "Line1",
+    "stopListA": [123, 234, 456],
+    "stopListR": [123, 234, 456]
+  },
+  {
+    "lineName": "Line2",
+    "stopListA": [123, 234, 456],
+    "stopListR": [123, 234, 456]
+  }
+]

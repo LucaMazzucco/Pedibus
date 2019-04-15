@@ -1,13 +1,17 @@
 package it.polito.appinternet.pedibus.controller;
 
+import com.google.gson.Gson;
 import it.polito.appinternet.pedibus.repository.LineRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import it.polito.appinternet.pedibus.model.Line;
-import java.util.HashSet;
+
+import javax.annotation.PostConstruct;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 @RestController
 public class LineController {
@@ -15,18 +19,31 @@ public class LineController {
     @Autowired
     LineRepository lineRepo;
 
+    @PostConstruct
+    public void init() {
+        try {
+            FileReader reader = new FileReader("src/main/data/lines.json");
+            Gson gsonLines = new Gson();
+            Line[] newLines = gsonLines.fromJson(reader, Line[].class);
+            for(Line a : newLines){
+                insertLine(a);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     @GetMapping("/insertLine")
-    public String insertLine(){
-        Set<String> stops = new HashSet<String>();
-        stops.add("Stop1");
-        stops.add("Stop2");
-        lineRepo.save(new Line("Linea1"));
+    public String insertLine(Line l){
+        lineRepo.save(l);
         return "Line inserted correctly";
     }
 
-    @GetMapping("/findAllLines")
+    @GetMapping("/lines")
     public List<Line> findAllLines(){
         List<Line> allLines = lineRepo.findAll();
         return allLines;
     }
+
+
 }
