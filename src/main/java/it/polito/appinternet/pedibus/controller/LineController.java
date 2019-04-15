@@ -3,14 +3,20 @@ package it.polito.appinternet.pedibus.controller;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import it.polito.appinternet.pedibus.model.Stop;
 import it.polito.appinternet.pedibus.repository.LineRepository;
+import org.apache.commons.io.IOUtils;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import it.polito.appinternet.pedibus.model.Line;
+
 import javax.annotation.PostConstruct;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -24,13 +30,46 @@ public class LineController {
     @PostConstruct
     public void init() {
         try {
-            FileReader reader = new FileReader("src/main/data/lines.json");
+            //FileReader reader = new FileReader("src/main/data/lines.json");
+            /*
             Gson gsonLines = new Gson();
             Line[] newLines = gsonLines.fromJson(reader, Line[].class);
             for(Line a : newLines){
                 insertLine(a);
+            }*/
+
+            List<Line> newLines = new LinkedList<>();
+            String tmp_name, tmp_stop_name;
+            InputStream is = new FileInputStream("src/main/data/lines.json");
+            String jsonTxt = IOUtils.toString(is, "UTF-8");
+            JSONObject root_obj = new JSONObject(jsonTxt);
+            JSONArray lines_array = root_obj.getJSONArray("lines");
+            for(int i = 0; i < lines_array.length(); i++){
+                List<Stop> stopA_tmp = new LinkedList<>();
+                List<Stop> stopB_tmp = new LinkedList<>();
+                JSONObject lineObj = lines_array.getJSONObject(i);
+                tmp_name = lineObj.getString("lineName");
+                JSONArray stopA_array = lineObj.getJSONArray("stopListA");
+                for(int iA = 0; iA < stopA_array.length(); iA++){
+                    JSONObject stopAObj = stopA_array.getJSONObject(iA);
+                    tmp_stop_name = stopAObj.getString("stopName");
+                    stopA_tmp.add(new Stop(tmp_stop_name));
+                }
+                JSONArray stopB_array = lineObj.getJSONArray("stopListR");
+                for(int iB = 0; iB < stopB_array.length(); iB++){
+                    JSONObject stopBObj = stopB_array.getJSONObject(iB);
+                    tmp_stop_name = stopBObj.getString("stopName");
+                    stopB_tmp.add(new Stop(tmp_stop_name));
+                }
+                newLines.add(new Line(tmp_name, stopA_tmp, stopB_tmp));
             }
+            for(Line a : newLines){
+                insertLine(a);
+            }
+
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -51,5 +90,21 @@ public class LineController {
         return lineNames.toString();
     }
 
+    @GetMapping("/lines/{line_name}")
+    public String findLineByName(@PathVariable String line_name){
+        Line found = lineRepo.findByLineName(line_name);
+        JSONArray stopA = new JSONArray();
+        JSONArray stopR = new JSONArray();
+        for(Stop s : found.getStopListA()){
+            stopA.put(s.getStopName());
+        }
+        for(Stop s : found.getStopListR()){
+            stopR.put(s.getStopName());
+        }
+        JSONObject mainObj = new JSONObject();
+        mainObj.put("stopListA", stopA);
+        mainObj.put("stopListR", stopR);
+        return mainObj.toString();
+    }
 
 }

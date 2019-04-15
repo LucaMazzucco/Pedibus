@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface LineRepository extends JpaRepository<Line, Long> {
     List<Line> findAll();
+    Line findByLineName (String line_name);
+
 }

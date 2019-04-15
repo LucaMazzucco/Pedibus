@@ -10,8 +10,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class Stop {
     @Id
-    @ManyToOne
-    @JoinColumn(name = "line_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter @Setter
     private long id;

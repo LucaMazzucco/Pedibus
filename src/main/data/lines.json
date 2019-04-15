@@ -1,12 +1,54 @@
-[
-  {
-    "lineName": "Line1",
-    "stopListA": [123, 234, 456],
-    "stopListR": [123, 234, 456]
-  },
-  {
-    "lineName": "Line2",
-    "stopListA": [123, 234, 456],
-    "stopListR": [123, 234, 456]
-  }
-]
+{
+"lines": [
+            {
+              "lineName": "Line1",
+              "stopListA": [
+                {
+                  "stopName": "Stop1"
+                },
+                {
+                  "stopName": "Stop2"
+                },
+                {
+                  "stopName": "Stop3"
+                }
+              ],
+              "stopListR": [
+                {
+                  "stopName": "Stop3"
+                },
+                {
+                  "stopName": "Stop2"
+                },
+                {
+                  "stopName": "Stop1"
+                }
+              ]
+            },
+            {
+              "lineName": "Line2",
+              "stopListA": [
+                {
+                  "stopName": "Stop1"
+                },
+                {
+                  "stopName": "Stop2"
+                },
+                {
+                  "stopName": "Stop3"
+                }
+              ],
+              "stopListR": [
+                {
+                  "stopName": "Stop3"
+                },
+                {
+                  "stopName": "Stop2"
+                },
+                {
+                  "stopName": "Stop1"
+                }
+              ]
+            }
+        ]
+}

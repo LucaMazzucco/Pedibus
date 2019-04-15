@@ -18,11 +18,11 @@ public class Line implements Serializable {
     private String lineName;
 
     @Getter @Setter
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Stop> stopListA;
 
     @Getter @Setter
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Stop> stopListR;
 
     public Line(String lineName, List<Stop> stopListA, List<Stop> stopListR) {
