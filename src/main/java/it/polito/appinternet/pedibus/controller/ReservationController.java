@@ -218,5 +218,28 @@ public class ReservationController {
 
         return new Long(-1);
     }
+
+    @DeleteMapping("/reservations/{line_name}/{date}/{reservation_id}")
+    public void deleteReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable Long reservation_id){
+        Optional<Reservation> oR = reservationRepo.findById(reservation_id);
+        if (!oR.isPresent()) {
+            return;
+        }
+
+        Reservation r = oR.get();
+        reservationRepo.delete(r);
+    }
+
+    @GetMapping("/reservations/{line_name}/{date}/{reservation_id}")
+    public Reservation getReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable Long reservation_id){
+        Optional<Reservation> oR = reservationRepo.findById(reservation_id);
+        if (!oR.isPresent()) {
+            return null;
+        }
+
+        Reservation r = oR.get();
+        return r;
+    }
+
 }
 
