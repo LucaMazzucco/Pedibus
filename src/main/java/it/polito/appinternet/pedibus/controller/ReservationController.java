@@ -7,6 +7,7 @@ import it.polito.appinternet.pedibus.model.Person;
 import it.polito.appinternet.pedibus.model.Reservation;
 import it.polito.appinternet.pedibus.model.Stop;
 import it.polito.appinternet.pedibus.repository.LineRepository;
+import it.polito.appinternet.pedibus.repository.PersonRepository;
 import it.polito.appinternet.pedibus.repository.ReservationRepository;
 import it.polito.appinternet.pedibus.repository.StopRepository;
 import org.apache.commons.io.IOUtils;
@@ -35,6 +36,9 @@ public class ReservationController {
     ReservationRepository reservationRepo;
 
     @Autowired
+    PersonRepository personRepo;
+
+    @Autowired
     LineRepository lineRepo;
 
     @Autowired
@@ -48,6 +52,7 @@ public class ReservationController {
             Stop stopA = null, stopR = null;
             String tmp_arrival, tmp_departure, tmp_date, tmp_line_name;
             Boolean tmp_back;
+            Person tmp_person;
             InputStream is = new FileInputStream("src/main/data/lines.json");
             String jsonTxt = IOUtils.toString(is, "UTF-8");
             JSONObject root_obj = new JSONObject(jsonTxt);
@@ -76,8 +81,11 @@ public class ReservationController {
                     String tmp_name = personObj.getString("firstname");
                     String tmp_last = personObj.getString("lastname");
                     String tmp_number = personObj.getString("registrationNumber");
-                    Person tmp_person = new Person(tmp_name, tmp_last, tmp_number);
-                    newPeople.add(tmp_person);
+                    tmp_person = personRepo.findByRegistrationNumber(tmp_number);
+                    if(tmp_person == null){
+                        tmp_person = new Person(tmp_name, tmp_last, tmp_number);
+                        personRepo.save(tmp_person);
+                    }
                     Reservation tmp_res = new Reservation(tmp_line, stopA , stopR, tmp_person, date, tmp_back);
                     newReservations.add(tmp_res);
                 }

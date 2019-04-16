@@ -1,6 +1,7 @@
 package it.polito.appinternet.pedibus.model;
 
 import lombok.*;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -18,11 +19,11 @@ public class Line implements Serializable {
     private String lineName;
 
     @Getter @Setter
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.MERGE)
     private List<Stop> stopListA;
 
     @Getter @Setter
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.MERGE)
     private List<Stop> stopListR;
 
     public Line(String lineName, List<Stop> stopListA, List<Stop> stopListR) {

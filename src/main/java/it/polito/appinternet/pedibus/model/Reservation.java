@@ -3,10 +3,9 @@ package it.polito.appinternet.pedibus.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.lang.Nullable;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -15,21 +14,24 @@ import java.util.Date;
 public class Reservation implements Serializable {
     @Getter @Setter
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @ManyToOne
+    @OneToOne
     @Getter @Setter
     private Line line;
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     @Getter @Setter
+    @Nullable
     private Stop departure;
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     @Getter @Setter
+    @Nullable
     private Stop arrival;
 
-    @ManyToOne
+    @OneToOne(cascade = CascadeType.MERGE)
     @Getter @Setter
     private Person passenger;
 
