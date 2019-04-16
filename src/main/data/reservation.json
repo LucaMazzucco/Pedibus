@@ -1,8 +1,6 @@
 {
-  "registrationNumber": "VZQFRN94TC7",
-  "reserverName": "Fernando",
-  "reserverSurname": "Vazquez",
+  "registrationNumber": "jpf",
   "stop" : "Stop1",
-  "stopType": "d",
+  "stopType": "a",
   "back": "false"
 }

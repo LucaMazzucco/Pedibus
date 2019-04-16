@@ -31,4 +31,9 @@ public class Person implements Serializable {
         this.surname = surname;
         this.registrationNumber = ssn;
     }
+
+    @Override
+    public String toString() {
+        return registrationNumber + " " +  name +  " " + surname;
+    }
 }

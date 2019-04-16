@@ -15,19 +15,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import it.polito.appinternet.pedibus.model.Line;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @RestController
 public class ReservationController {
@@ -59,6 +54,8 @@ public class ReservationController {
             JSONArray reservations_array = root_obj.getJSONArray("reservations");
             tmp_arrival=tmp_departure=null;
             for(int i = 0; i < reservations_array.length(); i++){
+                stopA = null;
+                stopR = null;
                 JSONObject lineObj = reservations_array.getJSONObject(i);
                 tmp_line_name = lineObj.getString("lineName");
                 if(lineObj.getString("stopType").equals("a")){
@@ -118,27 +115,72 @@ public class ReservationController {
             List<Reservation> f = reservationRepo.findByLine_LineNameAndReservationDate(line_name, tmp_date);
             List<Person> arr = new LinkedList<>();
             List<Person> dep = new LinkedList<>();
+            Map<String, List<String>> personPerStopA= new HashMap<>();
+            Map<String, List<String>> personPerStopR= new HashMap<>();
+            List<Stop> stopsA = f.get(0).getLine().getStopListA();
+            List<Stop> stopsR = f.get(0).getLine().getStopListR();
+            for(Stop s : stopsA){
+                personPerStopA.put(s.getStopName(), new LinkedList<>());
+            }
+            for(Stop s : stopsR){
+                personPerStopR.put(s.getStopName(), new LinkedList<>());
+            }
             for(Reservation r : f){
                 if(r.getArrival() != null){
-                    arr.add(r.getPassenger());
+                    personPerStopA.get(r.getArrival().getStopName()).add(r.getPassenger().toString());
+                    //arr.add(r.getPassenger());
                 }
                 else if(r.getDeparture() != null){
-                    dep.add(r.getPassenger());
+                    personPerStopR.get(r.getDeparture().getStopName()).add(r.getPassenger().toString());
+                    //dep.add(r.getPassenger());
                 }
             }
-            Gson gson = new Gson();
-            gson.toJson(arr);
-            gson.toJson(dep);
-            return gson.toString();
+
+            JSONObject mainObj = new JSONObject();
+            JSONObject jsonDataA = new JSONObject();
+            JSONObject jsonDataR = new JSONObject();
+            for(String key : personPerStopA.keySet()){
+                jsonDataA.put(key, personPerStopA.get(key).toString());
+            }
+            mainObj.put("stopsA", jsonDataA);
+            for(String key : personPerStopR.keySet()){
+                jsonDataR.put(key, personPerStopR.get(key).toString());
+            }
+            mainObj.put("stopsR", jsonDataR);
+
+            //mainObj.put("stops", arr);
+            //mainObj.put("outgoing", dep);
+            return mainObj.toString();
+
         } catch (Exception e){
             e.printStackTrace();
         }
         return "niente";
     }
-    /*
-    @PostMapping("/reservations/{line_name}/{data}")
-    public Long addReservation(@PathVariable String line_name, @PathVariable String date){
 
-    }*/
+    @PostMapping("/reservations/{line_name}/{date}")
+    public Long addReservation(@PathVariable String line_name, @PathVariable String date, @RequestBody String payload){
+        Line line = lineRepo.findByLineName(line_name);
+        JSONObject json = new JSONObject(payload);
+        Stop aStop = null, rStop = null;
+        Person p = personRepo.findByRegistrationNumber(json.getString("registrationNumber"));
+        if(json.getString("stopType").equals("a")){
+            aStop = stopRepo.findByStopName(json.getString("stop"));
+        }
+        else{
+            rStop = stopRepo.findByStopName(json.getString("stop"));
+        }
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        try {
+            Date tmp_date = format.parse(date);
+            Reservation r = new Reservation(line, aStop, rStop, p, tmp_date, json.getBoolean("back"));
+            Reservation inserted = reservationRepo.save(r);
+            return inserted.getId();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return new Long(-1);
+    }
 
 }
