@@ -8,4 +8,5 @@ import java.util.List;
 @Repository
 public interface StopRepository extends JpaRepository<Stop, Long> {
     List<Stop> findAll();
+    Stop findByStopName(String name);
 }

@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import it.polito.appinternet.pedibus.model.Stop;
 import it.polito.appinternet.pedibus.repository.LineRepository;
+import it.polito.appinternet.pedibus.repository.StopRepository;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -27,6 +28,9 @@ public class LineController {
     @Autowired
     LineRepository lineRepo;
 
+    @Autowired
+    StopRepository stopRepo;
+
     @PostConstruct
     public void init() {
         try {
@@ -44,6 +48,7 @@ public class LineController {
             String jsonTxt = IOUtils.toString(is, "UTF-8");
             JSONObject root_obj = new JSONObject(jsonTxt);
             JSONArray lines_array = root_obj.getJSONArray("lines");
+            Stop stop_tmp;
             for(int i = 0; i < lines_array.length(); i++){
                 List<Stop> stopA_tmp = new LinkedList<>();
                 List<Stop> stopB_tmp = new LinkedList<>();
@@ -53,13 +58,29 @@ public class LineController {
                 for(int iA = 0; iA < stopA_array.length(); iA++){
                     JSONObject stopAObj = stopA_array.getJSONObject(iA);
                     tmp_stop_name = stopAObj.getString("stopName");
-                    stopA_tmp.add(new Stop(tmp_stop_name));
+                    stop_tmp = stopRepo.findByStopName(tmp_stop_name);
+                    if(stop_tmp == null){
+                        stop_tmp = new Stop(tmp_stop_name);
+                        stopRepo.save(stop_tmp);
+                    }
+                    stopA_tmp.add(stop_tmp);
                 }
                 JSONArray stopB_array = lineObj.getJSONArray("stopListR");
                 for(int iB = 0; iB < stopB_array.length(); iB++){
                     JSONObject stopBObj = stopB_array.getJSONObject(iB);
                     tmp_stop_name = stopBObj.getString("stopName");
-                    stopB_tmp.add(new Stop(tmp_stop_name));
+                    stop_tmp = stopRepo.findByStopName(tmp_stop_name);
+                    if(stop_tmp == null){
+                        //Stop tmp_s = stopA_tmp.stream().filter(x->x.getStopName().equals(tmp_stop_name)).findAny().orElse(null);
+                        //if(tmp_s ==null){
+                        stop_tmp = new Stop(tmp_stop_name);
+                        stopRepo.save(stop_tmp);
+                        //}
+                        //else{
+                        //    stop_tmp = tmp_s;
+                        //}
+                    }
+                    stopB_tmp.add(stop_tmp);
                 }
                 newLines.add(new Line(tmp_name, stopA_tmp, stopB_tmp));
             }

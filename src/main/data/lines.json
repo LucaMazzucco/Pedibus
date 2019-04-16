@@ -54,8 +54,9 @@
   "reservations": [
                   {
                     "lineName": "Line1",
-                    "departureName": "Stop1",
-                    "arrivalName": "Stop3",
+                    "stopName": "Stop1",
+                    "stopType": "d",
+                    "back": "false",
                     "date": "2019/04/15",
                     "passengers": [
                       {

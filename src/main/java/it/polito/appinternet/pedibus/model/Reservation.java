@@ -36,10 +36,16 @@ public class Reservation implements Serializable {
     @Getter @Setter
     private Date reservationDate;
 
-    public Reservation(Line line, Stop departure, Stop arrival, Person passenger, Date reservationDate){
-        this.arrival = arrival;
+    @Getter @Setter
+    private boolean back;
+
+    public Reservation(Line line, Stop departure, Stop arrival, Person passenger, Date reservationDate, boolean back) {
+        this.line = line;
         this.departure = departure;
+        this.arrival = arrival;
         this.passenger = passenger;
         this.reservationDate = reservationDate;
+        this.back = back;
     }
+
 }
