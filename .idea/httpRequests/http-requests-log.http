@@ -1,0 +1,72 @@
+PUT http://localhost:9090/reservations/Line1/20190415/13
+Content-Type: application/json
+
+{  "registrationNumber": "jpf",   "stop" : "Stop1",   "stopType": "a",   "back": "true" }
+
+<> 2019-04-16T065202.200.json
+
+###
+
+POST http://localhost:9090/reservations/Line1/20190415
+Content-Type: application/json
+
+{   "registrationNumber": "jpf",   "stop" : "Stop1",   "stopType": "a",   "back": "false" }
+
+<> 2019-04-16T065158.200.json
+
+###
+
+PUT http://localhost:9090/reservations/Line1/20190415/13
+Content-Type: application/json
+
+{  "back": "true" }
+
+<> 2019-04-16T065028.500.json
+
+###
+
+POST http://localhost:9090/reservations/Line1/20190415
+Content-Type: application/json
+
+{   "registrationNumber": "jpf",   "stop" : "Stop1",   "stopType": "a",   "back": "false" }
+
+<> 2019-04-16T065021.200.json
+
+###
+
+PUT http://localhost:9090/reservations/Line1/20190415/13
+Content-Type: application/json
+
+{  "back": "true" }
+
+<> 2019-04-16T064943.200.json
+
+###
+
+POST http://localhost:9090/reservations/Line1/20190415
+Content-Type: application/json
+
+{   "registrationNumber": "jpf",   "stop" : "Stop1",   "stopType": "a",   "back": "false" }
+
+<> 2019-04-16T062310.200.json
+
+###
+
+POST http://localhost:9090/reservations/Line1/20190415
+Content-Type: application/json
+
+{   "registrationNumber": "jpf",   "stop" : "Stop1",   "stopType": "a",   "back": "false" }
+
+<> 2019-04-16T062032.500.json
+
+###
+
+POST http://localhost:9090/reservations/Line1/20190415
+Content-Type: application/json
+
+{   "registrationNumber": "jpf",   "stop" : "Stop1",   "stopType": "a",   "back": "false" }
+
+<> 2019-04-16T061949.500.json
+
+###
+

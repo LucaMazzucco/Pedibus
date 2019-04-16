@@ -16,4 +16,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     //List<Reservation> findByLineAndReservationDate(long a, Date b);
     List<Reservation> findByLine_LineNameAndReservationDate(String name,Date date);
+
 }

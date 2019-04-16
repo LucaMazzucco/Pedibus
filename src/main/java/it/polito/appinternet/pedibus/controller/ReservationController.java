@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import it.polito.appinternet.pedibus.model.Line;
 
 import javax.annotation.PostConstruct;
+import javax.swing.text.html.Option;
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -183,4 +184,39 @@ public class ReservationController {
         return new Long(-1);
     }
 
+    @PutMapping("/reservations/{line_name}/{date}/{reservation_id}")
+    public Long updateReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable Long reservation_id, @RequestBody String payload){
+        Optional<Reservation> oR = reservationRepo.findById(reservation_id);
+        if (!oR.isPresent()) {
+            return new Long(-1);
+        }
+        Reservation r = oR.get();
+        Line line = lineRepo.findByLineName(line_name);
+        JSONObject json = new JSONObject(payload);
+        Stop aStop = null, rStop = null;
+        Person p = personRepo.findByRegistrationNumber(json.getString("registrationNumber"));
+        if (json.getString("stopType").equals("a")) {
+            aStop = stopRepo.findByStopName(json.getString("stop"));
+        } else {
+            rStop = stopRepo.findByStopName(json.getString("stop"));
+        }
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        try {
+            Date tmp_date = format.parse(date);
+            r.setLine(line);
+            r.setArrival(aStop);
+            r.setDeparture(rStop);
+            r.setBack(json.getBoolean("back"));
+            r.setPassenger(p);
+            r.setReservationDate(tmp_date);
+            Reservation inserted = reservationRepo.save(r);
+            return inserted.getId();
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return new Long(-1);
+    }
 }
+
