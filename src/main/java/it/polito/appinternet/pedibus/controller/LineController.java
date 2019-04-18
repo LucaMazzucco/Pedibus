@@ -47,42 +47,65 @@ public class LineController {
             InputStream is = new FileInputStream("src/main/data/lines.json");
             String jsonTxt = IOUtils.toString(is, "UTF-8");
             JSONObject root_obj = new JSONObject(jsonTxt);
+            if(!root_obj.has("lines")){
+                throw new Exception("No lines found");
+            }
             JSONArray lines_array = root_obj.getJSONArray("lines");
+            List<Stop> savedStops = new LinkedList<>();
             Stop stop_tmp;
             for(int i = 0; i < lines_array.length(); i++){
                 List<Stop> stopA_tmp = new LinkedList<>();
                 List<Stop> stopB_tmp = new LinkedList<>();
                 JSONObject lineObj = lines_array.getJSONObject(i);
-                tmp_name = lineObj.getString("lineName");
-                JSONArray stopA_array = lineObj.getJSONArray("stopListA");
-                for(int iA = 0; iA < stopA_array.length(); iA++){
-                    JSONObject stopAObj = stopA_array.getJSONObject(iA);
-                    tmp_stop_name = stopAObj.getString("stopName");
-                    stop_tmp = stopRepo.findByStopName(tmp_stop_name);
-                    if(stop_tmp == null){
-                        stop_tmp = new Stop(tmp_stop_name);
-                        stopRepo.save(stop_tmp);
-                    }
-                    stopA_tmp.add(stop_tmp);
+                if(!lineObj.has("lineName")){
+                    continue;
                 }
-                JSONArray stopB_array = lineObj.getJSONArray("stopListR");
-                for(int iB = 0; iB < stopB_array.length(); iB++){
-                    JSONObject stopBObj = stopB_array.getJSONObject(iB);
-                    tmp_stop_name = stopBObj.getString("stopName");
-                    stop_tmp = stopRepo.findByStopName(tmp_stop_name);
-                    if(stop_tmp == null){
-                        //Stop tmp_s = stopA_tmp.stream().filter(x->x.getStopName().equals(tmp_stop_name)).findAny().orElse(null);
-                        //if(tmp_s ==null){
-                        stop_tmp = new Stop(tmp_stop_name);
-                        stopRepo.save(stop_tmp);
-                        //}
-                        //else{
-                        //    stop_tmp = tmp_s;
-                        //}
+                tmp_name = lineObj.getString("lineName");
+                if(lineObj.has("stopListA")){
+                    JSONArray stopA_array = lineObj.getJSONArray("stopListA");
+                    for(int iA = 0; iA < stopA_array.length(); iA++){
+                        JSONObject stopAObj = stopA_array.getJSONObject(iA);
+                        tmp_stop_name = stopAObj.getString("stopName");
+                        stop_tmp = stopRepo.findByStopName(tmp_stop_name);
+                        if(stop_tmp == null){
+                            String finalTmp_stop_name = tmp_stop_name;
+                            stop_tmp = savedStops.stream()
+                                    .filter(x->x.getStopName().equals(finalTmp_stop_name))
+                                    .findAny()
+                                    .orElse(null);
+                            if(stop_tmp == null){
+                                stop_tmp = new Stop(tmp_stop_name);
+                                savedStops.add(stop_tmp);
+                            }
+                            //stopRepo.save(stop_tmp);
+                        }
+                        stopA_tmp.add(stop_tmp);
                     }
-                    stopB_tmp.add(stop_tmp);
+                }
+                if(lineObj.has("stopListR")){
+                    JSONArray stopB_array = lineObj.getJSONArray("stopListR");
+                    for(int iB = 0; iB < stopB_array.length(); iB++){
+                        JSONObject stopBObj = stopB_array.getJSONObject(iB);
+                        tmp_stop_name = stopBObj.getString("stopName");
+                        stop_tmp = stopRepo.findByStopName(tmp_stop_name);
+                        if(stop_tmp == null){
+                            String finalTmp_stop_name = tmp_stop_name;
+                            stop_tmp = savedStops.stream()
+                                    .filter(x->x.getStopName().equals(finalTmp_stop_name))
+                                    .findAny()
+                                    .orElse(null);
+                            if(stop_tmp == null){
+                                stop_tmp = new Stop(tmp_stop_name);
+                                savedStops.add(stop_tmp);
+                            }
+                        }
+                        stopB_tmp.add(stop_tmp);
+                    }
                 }
                 newLines.add(new Line(tmp_name, stopA_tmp, stopB_tmp));
+            }
+            for(Stop s : savedStops){
+                stopRepo.save(s);
             }
             for(Line a : newLines){
                 insertLine(a);
@@ -91,6 +114,8 @@ public class LineController {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

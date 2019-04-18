@@ -52,12 +52,23 @@ public class ReservationController {
             InputStream is = new FileInputStream("src/main/data/lines.json");
             String jsonTxt = IOUtils.toString(is, "UTF-8");
             JSONObject root_obj = new JSONObject(jsonTxt);
+            if(!root_obj.has("reservations")){
+                throw new Exception("No reservations found");
+            }
             JSONArray reservations_array = root_obj.getJSONArray("reservations");
             tmp_arrival=tmp_departure=null;
             for(int i = 0; i < reservations_array.length(); i++){
                 stopA = null;
                 stopR = null;
                 JSONObject lineObj = reservations_array.getJSONObject(i);
+                if(!lineObj.has("lineName") ||
+                !lineObj.has("stopType") ||
+                !lineObj.has("stopName") ||
+                !lineObj.has("back") ||
+                !lineObj.has("date") ||
+                !lineObj.has("passengers")){
+                    continue;
+                }
                 tmp_line_name = lineObj.getString("lineName");
                 if(lineObj.getString("stopType").equals("a")){
                     tmp_departure = lineObj.getString("stopName");
@@ -74,8 +85,12 @@ public class ReservationController {
                 JSONArray people_array = lineObj.getJSONArray("passengers");
                 Line tmp_line = lineRepo.findByLineName(tmp_line_name);
                 for(int j = 0; j < people_array.length(); j++){
-
                     JSONObject personObj = people_array.getJSONObject(j);
+                    if(!personObj.has("firstName") ||
+                    !personObj.has("lastName")||
+                    !personObj.has("registrationNumber")){
+                        continue;
+                    }
                     String tmp_name = personObj.getString("firstname");
                     String tmp_last = personObj.getString("lastname");
                     String tmp_number = personObj.getString("registrationNumber");
@@ -163,13 +178,22 @@ public class ReservationController {
     public Long addReservation(@PathVariable String line_name, @PathVariable String date, @RequestBody String payload){
         Line line = lineRepo.findByLineName(line_name);
         JSONObject json = new JSONObject(payload);
+        if(!json.has("stopType") ||
+        !json.has("stop") ||
+        !json.has("registrationNumber") ||
+        !json.has("back")){
+            return new Long(-1);
+        }
         Stop aStop = null, rStop = null;
         Person p = personRepo.findByRegistrationNumber(json.getString("registrationNumber"));
         if(json.getString("stopType").equals("a")){
             aStop = stopRepo.findByStopName(json.getString("stop"));
         }
-        else{
+        else if(json.getString("stopType").equals("r")){
             rStop = stopRepo.findByStopName(json.getString("stop"));
+        }
+        else{
+            return new Long(-2);
         }
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         try {
@@ -181,24 +205,34 @@ public class ReservationController {
             e.printStackTrace();
         }
 
-        return new Long(-1);
+        return new Long(-3);
     }
 
     @PutMapping("/reservations/{line_name}/{date}/{reservation_id}")
     public Long updateReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable Long reservation_id, @RequestBody String payload){
         Optional<Reservation> oR = reservationRepo.findById(reservation_id);
-        if (!oR.isPresent()) {
+        Line line = lineRepo.findByLineName(line_name);
+        if (!oR.isPresent() || line == null) {
             return new Long(-1);
         }
         Reservation r = oR.get();
-        Line line = lineRepo.findByLineName(line_name);
         JSONObject json = new JSONObject(payload);
+        if(!json.has("stopType") ||
+                !json.has("stop") ||
+                !json.has("registrationNumber") ||
+                !json.has("back")){
+            return new Long(-2);
+        }
         Stop aStop = null, rStop = null;
         Person p = personRepo.findByRegistrationNumber(json.getString("registrationNumber"));
         if (json.getString("stopType").equals("a")) {
             aStop = stopRepo.findByStopName(json.getString("stop"));
-        } else {
+        }
+        else if(json.get("stopType").equals("r")){
             rStop = stopRepo.findByStopName(json.getString("stop"));
+        }
+        else{
+            return new Long(-3);
         }
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         try {
@@ -216,7 +250,7 @@ public class ReservationController {
             e.printStackTrace();
         }
 
-        return new Long(-1);
+        return new Long(-4);
     }
 
     @DeleteMapping("/reservations/{line_name}/{date}/{reservation_id}")
