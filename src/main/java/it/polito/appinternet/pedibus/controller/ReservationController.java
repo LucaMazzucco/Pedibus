@@ -186,14 +186,20 @@ public class ReservationController {
         }
         Stop aStop = null, rStop = null;
         Person p = personRepo.findByRegistrationNumber(json.getString("registrationNumber"));
+        String stopName = json.getString("stop");
         if(json.getString("stopType").equals("a")){
-            aStop = stopRepo.findByStopName(json.getString("stop"));
+            aStop = line.getStopListA().stream().filter(s->s.getStopName().equals(stopName)).findAny().orElse(null);
+            //aStop = stopRepo.findByStopName(json.getString("stop"));
         }
         else if(json.getString("stopType").equals("r")){
-            rStop = stopRepo.findByStopName(json.getString("stop"));
+            rStop = line.getStopListR().stream().filter(s->s.getStopName().equals(stopName)).findAny().orElse(null);
+            //rStop = stopRepo.findByStopName(json.getString("stop"));
         }
         else{
             return new Long(-2);
+        }
+        if(aStop == rStop){ //both equals null but stopType is correct--> Stop not found inside the given line
+            return new Long(-3);
         }
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         try {
@@ -205,7 +211,7 @@ public class ReservationController {
             e.printStackTrace();
         }
 
-        return new Long(-3);
+        return new Long(-4);
     }
 
     @PutMapping("/reservations/{line_name}/{date}/{reservation_id}")
@@ -225,14 +231,29 @@ public class ReservationController {
         }
         Stop aStop = null, rStop = null;
         Person p = personRepo.findByRegistrationNumber(json.getString("registrationNumber"));
-        if (json.getString("stopType").equals("a")) {
-            aStop = stopRepo.findByStopName(json.getString("stop"));
+//        if (json.getString("stopType").equals("a")) {
+//            aStop = stopRepo.findByStopName(json.getString("stop"));
+//        }
+//        else if(json.get("stopType").equals("r")){
+//            rStop = stopRepo.findByStopName(json.getString("stop"));
+//        }
+//        else{
+//            return new Long(-3);
+//        }
+        String stopName = json.getString("stop");
+        if(json.getString("stopType").equals("a")){
+            aStop = line.getStopListA().stream().filter(s->s.getStopName().equals(stopName)).findAny().orElse(null);
+            //aStop = stopRepo.findByStopName(json.getString("stop"));
         }
-        else if(json.get("stopType").equals("r")){
-            rStop = stopRepo.findByStopName(json.getString("stop"));
+        else if(json.getString("stopType").equals("r")){
+            rStop = line.getStopListR().stream().filter(s->s.getStopName().equals(stopName)).findAny().orElse(null);
+            //rStop = stopRepo.findByStopName(json.getString("stop"));
         }
         else{
             return new Long(-3);
+        }
+        if(aStop == rStop){ //both equals null but stopType is correct--> Stop not found inside the given line
+            return new Long(-4);
         }
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         try {
@@ -250,7 +271,7 @@ public class ReservationController {
             e.printStackTrace();
         }
 
-        return new Long(-4);
+        return new Long(-5);
     }
 
     @DeleteMapping("/reservations/{line_name}/{date}/{reservation_id}")
