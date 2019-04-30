@@ -282,6 +282,11 @@ public class ReservationController {
         }
 
         Reservation r = oR.get();
+
+        if(!r.getLine().getLineName().equals(line_name) || !r.getReservationDate().toString().equals(date)){
+            return;
+        }
+
         reservationRepo.delete(r);
     }
 
@@ -293,6 +298,11 @@ public class ReservationController {
         }
 
         Reservation r = oR.get();
+
+        if(!r.getLine().getLineName().equals(line_name) || !r.getReservationDate().toString().equals(date)){
+            return null;
+        }
+
         return r;
     }
 
