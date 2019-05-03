@@ -1,21 +1,19 @@
 package it.polito.appinternet.pedibus.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.*;
-
-@Entity
+@Document(collection = "stops")
 @NoArgsConstructor
 public class Stop {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Getter @Setter
-    private long id;
 
     @Getter @Setter
     private String stopName;
 
-
+    @JsonCreator
     public Stop(String stopName) {
         this.stopName = stopName;
     }

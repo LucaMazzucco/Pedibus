@@ -1,18 +1,14 @@
 package it.polito.appinternet.pedibus.model;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
-@Entity
-@NoArgsConstructor
 public class Person implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Getter @Setter
     private long id;
 
@@ -23,7 +19,6 @@ public class Person implements Serializable {
     private String surname;
 
     @Getter @Setter
-    @Column(unique = true)
     private String registrationNumber;
 
     public Person(String name, String surname, String ssn){

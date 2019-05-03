@@ -1,6 +1,4 @@
 package it.polito.appinternet.pedibus.controller;
-
-import com.google.gson.Gson;
 import it.polito.appinternet.pedibus.model.Person;
 import it.polito.appinternet.pedibus.model.Stop;
 import it.polito.appinternet.pedibus.repository.PersonRepository;

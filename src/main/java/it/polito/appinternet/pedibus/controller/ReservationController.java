@@ -1,8 +1,5 @@
 package it.polito.appinternet.pedibus.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import it.polito.appinternet.pedibus.model.Person;
 import it.polito.appinternet.pedibus.model.Reservation;
 import it.polito.appinternet.pedibus.model.Stop;
@@ -29,94 +26,8 @@ import java.util.*;
 public class ReservationController {
 
     @Autowired
-    ReservationRepository reservationRepo;
-
-    @Autowired
-    PersonRepository personRepo;
-
-    @Autowired
-    LineRepository lineRepo;
-
-    @Autowired
     StopRepository stopRepo;
-
-    @PostConstruct
-    public void init(){
-        try {
-            List<Reservation> newReservations = new LinkedList<>();
-            List<Person> newPeople = new LinkedList<>();
-            Stop stopA = null, stopR = null;
-            String tmp_arrival, tmp_departure, tmp_date, tmp_line_name;
-            Boolean tmp_back;
-            Person tmp_person;
-            InputStream is = new FileInputStream("src/main/data/lines.json");
-            String jsonTxt = IOUtils.toString(is, "UTF-8");
-            JSONObject root_obj = new JSONObject(jsonTxt);
-            if(!root_obj.has("reservations")){
-                throw new Exception("No reservations found");
-            }
-            JSONArray reservations_array = root_obj.getJSONArray("reservations");
-            tmp_arrival=tmp_departure=null;
-            for(int i = 0; i < reservations_array.length(); i++){
-                stopA = null;
-                stopR = null;
-                JSONObject lineObj = reservations_array.getJSONObject(i);
-                if(!lineObj.has("lineName") ||
-                !lineObj.has("stopType") ||
-                !lineObj.has("stopName") ||
-                !lineObj.has("back") ||
-                !lineObj.has("date") ||
-                !lineObj.has("passengers")){
-                    continue;
-                }
-                tmp_line_name = lineObj.getString("lineName");
-                if(lineObj.getString("stopType").equals("a")){
-                    tmp_departure = lineObj.getString("stopName");
-                    stopA = stopRepo.findByStopName(tmp_departure);
-                }
-                else{
-                    tmp_arrival = lineObj.getString("stopName");
-                    stopR = stopRepo.findByStopName(tmp_arrival);
-                }
-                tmp_back = lineObj.getBoolean("back");
-                tmp_date = lineObj.getString("date");
-                SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-                Date date = format.parse(tmp_date);
-                JSONArray people_array = lineObj.getJSONArray("passengers");
-                Line tmp_line = lineRepo.findByLineName(tmp_line_name);
-                for(int j = 0; j < people_array.length(); j++){
-                    JSONObject personObj = people_array.getJSONObject(j);
-                    if(!personObj.has("firstName") ||
-                    !personObj.has("lastName")||
-                    !personObj.has("registrationNumber")){
-                        continue;
-                    }
-                    String tmp_name = personObj.getString("firstname");
-                    String tmp_last = personObj.getString("lastname");
-                    String tmp_number = personObj.getString("registrationNumber");
-                    tmp_person = personRepo.findByRegistrationNumber(tmp_number);
-                    if(tmp_person == null){
-                        tmp_person = new Person(tmp_name, tmp_last, tmp_number);
-                        personRepo.save(tmp_person);
-                    }
-                    Reservation tmp_res = new Reservation(tmp_line, stopA , stopR, tmp_person, date, tmp_back);
-                    newReservations.add(tmp_res);
-                }
-            }
-
-            for(Reservation a : newReservations){
-                insertLine(a);
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    }
-
+    /*
     @GetMapping("/insertReservation")
     public String insertLine(Reservation reservation){
         reservationRepo.save(reservation);
@@ -305,6 +216,6 @@ public class ReservationController {
 
         return r;
     }
-
+    */
 }
 
