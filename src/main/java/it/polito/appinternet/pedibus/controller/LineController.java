@@ -1,5 +1,6 @@
 package it.polito.appinternet.pedibus.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polito.appinternet.pedibus.model.Stop;
 import it.polito.appinternet.pedibus.repository.LineRepository;
 import it.polito.appinternet.pedibus.repository.StopRepository;
@@ -7,6 +8,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,24 +27,26 @@ public class LineController {
     @Autowired
     StopRepository stopRepo;
 
-    /*
+    @Autowired
+    LineRepository lineRepo;
+
     @GetMapping("/insertLine")
-    public String insertLine(Line l){
+    public String insertLine(Line l) {
         lineRepo.save(l);
         return "Line inserted correctly";
-    }*/
+    }
 
-    /*
+
     @GetMapping("/lines")
     public String findAllLines(){
         List<Line> allLines = lineRepo.findAll();
-        JsonArray lineNames = new JsonArray();
+        JSONArray lineNames = new JSONArray();
         for(Line line : allLines){
-            lineNames.add(line.getLineName());
+            lineNames.put(line.getLineName());
         }
         return lineNames.toString();
     }
-
+    /*
     @GetMapping("/lines/{line_name}")
     public String findLineByName(@PathVariable String line_name){
         Line found = lineRepo.findByLineName(line_name);
@@ -60,4 +64,16 @@ public class LineController {
         return mainObj.toString();
     }*/
 
+    @PostConstruct
+    public void init() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            Line[] newLines = mapper.readValue(new FileReader("src/main/data/lines.json"), Line[].class);
+            for(Line l : newLines){
+                lineRepo.save(l);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }

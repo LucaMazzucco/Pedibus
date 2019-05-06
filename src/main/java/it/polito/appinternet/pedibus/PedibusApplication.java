@@ -39,9 +39,7 @@ public class PedibusApplication {
     Logger logger = LoggerFactory.getLogger(PedibusApplication.class);
     @PostConstruct
     public void init() {
-        JSONParser jsonParser = new JSONParser();
         ObjectMapper mapper = new ObjectMapper();
-
         try {
             Stop[] newStops = mapper.readValue(new FileReader("src/main/data/stops.json"), Stop[].class);
             for(Stop a : newStops){
