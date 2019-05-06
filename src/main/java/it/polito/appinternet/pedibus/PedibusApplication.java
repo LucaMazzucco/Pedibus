@@ -31,6 +31,9 @@ public class PedibusApplication {
     StopRepository stopRepo;
 
     @Autowired
+    org.springframework.data.mongodb.core.MongoTemplate mongoTemplate;
+
+    @Autowired
     private LineRepository lines;
     public static void main(String[] args) {
         SpringApplication.run(PedibusApplication.class, args);
@@ -39,6 +42,7 @@ public class PedibusApplication {
     Logger logger = LoggerFactory.getLogger(PedibusApplication.class);
     @PostConstruct
     public void init() {
+        mongoTemplate.getDb().drop();
         ObjectMapper mapper = new ObjectMapper();
         try {
             Stop[] newStops = mapper.readValue(new FileReader("src/main/data/stops.json"), Stop[].class);

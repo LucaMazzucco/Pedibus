@@ -2,6 +2,7 @@ package it.polito.appinternet.pedibus.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,7 +15,7 @@ public class Stop {
     private String stopName;
 
     @JsonCreator
-    public Stop(String stopName) {
+    public Stop(@JsonProperty("stopName") String stopName) {
         this.stopName = stopName;
     }
 }

@@ -46,7 +46,7 @@ public class LineController {
         }
         return lineNames.toString();
     }
-    /*
+
     @GetMapping("/lines/{line_name}")
     public String findLineByName(@PathVariable String line_name){
         Line found = lineRepo.findByLineName(line_name);
@@ -62,7 +62,7 @@ public class LineController {
         mainObj.put("stopListA", stopA);
         mainObj.put("stopListR", stopR);
         return mainObj.toString();
-    }*/
+    }
 
     @PostConstruct
     public void init() {

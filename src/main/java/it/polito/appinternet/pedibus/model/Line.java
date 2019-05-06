@@ -1,6 +1,8 @@
 package it.polito.appinternet.pedibus.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,12 +18,13 @@ public class Line{
     private String lineName;
 
     @Getter @Setter
-    private List<String> stopListA;
+    private List<Stop> stopListA;
 
     @Getter @Setter
-    private List<String> stopListR;
+    private List<Stop> stopListR;
 
-    public Line(String lineName, List<String> stopListA, List<String> stopListR) {
+    @JsonCreator
+    public Line(@JsonProperty("lineName") String lineName, @JsonProperty("stopListA") List<Stop> stopListA, @JsonProperty("stopListR") List<Stop> stopListR) {
         this.lineName = lineName;
         this.stopListA = stopListA;
         this.stopListR = stopListR;

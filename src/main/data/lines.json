@@ -2,19 +2,51 @@
   {
     "lineName":"Line1",
     "stopListA":[
-      "Stop1", "Stop2", "Stop3"
+      {
+        "stopName":"Stop1"
+      },
+      {
+        "stopName":"Stop2"
+      },
+      {
+        "stopName":"Stop3"
+      }
     ],
     "stopListR":[
-      "Stop3", "Stop2", "Stop1"
+      {
+        "stopName":"Stop3"
+      },
+      {
+        "stopName":"Stop2"
+      },
+      {
+        "stopName":"Stop1"
+      }
     ]
   },
   {
     "lineName":"Line2",
     "stopListA":[
-      "Stop1", "Stop2", "Stop3"
+      {
+        "stopName":"Stop1"
+      },
+      {
+        "stopName":"Stop2"
+      },
+      {
+        "stopName":"Stop3"
+      }
     ],
     "stopListR":[
-      "Stop3", "Stop2", "Stop1"
+      {
+        "stopName":"Stop3"
+      },
+      {
+        "stopName":"Stop2"
+      },
+      {
+        "stopName":"Stop1"
+      }
     ]
   }
 ]
