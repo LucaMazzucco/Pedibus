@@ -1,16 +1,13 @@
 package it.polito.appinternet.pedibus.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.io.Serializable;
-
-public class Person implements Serializable {
-
-    @Id
-    @Getter @Setter
-    private long id;
+@Document(collection = "people")
+@NoArgsConstructor
+public class Person {
 
     @Getter @Setter
     private String name;

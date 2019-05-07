@@ -1,45 +1,39 @@
 package it.polito.appinternet.pedibus.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.lang.Nullable;
-import java.io.Serializable;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import java.util.Date;
 
-public class Reservation implements Serializable {
-    @Getter @Setter
-    @Id
-    private long id;
+@Document(collection = "reservations")
+@NoArgsConstructor
+public class Reservation {
 
     @Getter @Setter
-    private Line line;
+    private String lineName;
 
     @Getter @Setter
-    @Nullable
-    private Stop departure;
-
-    @Getter @Setter
-    @Nullable
-    private Stop arrival;
+    private String stopName;
 
     @Getter @Setter
     private Person passenger;
 
     @Getter @Setter
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
     private Date reservationDate;
 
     @Getter @Setter
-    private boolean back;
+    private boolean isA;
 
-    public Reservation(Line line, Stop departure, Stop arrival, Person passenger, Date reservationDate, boolean back) {
-        this.line = line;
-        this.departure = departure;
-        this.arrival = arrival;
+    public Reservation(@JsonProperty("lineName") String lineName, @JsonProperty("stopName") String stopName, @JsonProperty("passenger") Person passenger, @JsonProperty("reservationDate") Date reservationDate, @JsonProperty("isA") boolean isA) {
+        this.lineName = lineName;
+        this.stopName = stopName;
         this.passenger = passenger;
         this.reservationDate = reservationDate;
-        this.back = back;
+        this.isA = isA;
     }
-
 }

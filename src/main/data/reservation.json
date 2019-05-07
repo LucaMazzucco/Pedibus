@@ -1,6 +1,35 @@
-{
-  "registrationNumber": "jpf",
-  "stop" : "Stop1",
-  "stopType": "a",
-  "back": "false"
-}
+[
+  {
+    "lineName": "Line1",
+    "stopName": "Stop1",
+    "isA": "true",
+    "reservationDate": "2019/04/15",
+    "passenger": {
+      "name": "jeanpiero",
+      "surname": "francois",
+      "registrationNumber": "jpf"
+    }
+  },
+  {
+    "lineName": "Line1",
+    "stopName": "Stop2",
+    "isA": "true",
+    "reservationDate": "2019/04/15",
+    "passenger": {
+      "name": "luca",
+      "surname": "mazzucco",
+      "registrationNumber": "lmz"
+    }
+  },
+  {
+    "lineName": "Line1",
+    "stopName": "Stop3",
+    "isA": "false",
+    "reservationDate": "2019/04/15",
+    "passenger": {
+      "name": "alberto",
+      "surname": "benincasa",
+      "registrationNumber": "lrt"
+    }
+  }
+]

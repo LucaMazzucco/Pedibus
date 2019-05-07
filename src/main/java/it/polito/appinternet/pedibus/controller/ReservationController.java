@@ -1,5 +1,6 @@
 package it.polito.appinternet.pedibus.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polito.appinternet.pedibus.model.Person;
 import it.polito.appinternet.pedibus.model.Reservation;
 import it.polito.appinternet.pedibus.model.Stop;
@@ -26,7 +27,20 @@ import java.util.*;
 public class ReservationController {
 
     @Autowired
-    StopRepository stopRepo;
+    ReservationRepository reservationRepo;
+
+    @PostConstruct
+    public void init() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            Reservation[] newRes = mapper.readValue(new FileReader("src/main/data/reservation.json"), Reservation[].class);
+            for(Reservation r : newRes){
+                reservationRepo.save(r);
+            }
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
     /*
     @GetMapping("/insertReservation")
     public String insertLine(Reservation reservation){
@@ -44,8 +58,8 @@ public class ReservationController {
             List<Person> dep = new LinkedList<>();
             Map<String, List<String>> personPerStopA= new HashMap<>();
             Map<String, List<String>> personPerStopR= new HashMap<>();
-            List<Stop> stopsA = f.get(0).getLine().getStopListA();
-            List<Stop> stopsR = f.get(0).getLine().getStopListR();
+            List<Stop> stopsA = f.get(0).getLineName().getStopListA();
+            List<Stop> stopsR = f.get(0).getLineName().getStopListR();
             for(Stop s : stopsA){
                 personPerStopA.put(s.getStopName(), new LinkedList<>());
             }
@@ -87,7 +101,7 @@ public class ReservationController {
 
     @PostMapping("/reservations/{line_name}/{date}")
     public Long addReservation(@PathVariable String line_name, @PathVariable String date, @RequestBody String payload){
-        Line line = lineRepo.findByLineName(line_name);
+        Line lineName = lineRepo.findByLineName(line_name);
         JSONObject json = new JSONObject(payload);
         if(!json.has("stopType") ||
         !json.has("stop") ||
@@ -99,23 +113,23 @@ public class ReservationController {
         Person p = personRepo.findByRegistrationNumber(json.getString("registrationNumber"));
         String stopName = json.getString("stop");
         if(json.getString("stopType").equals("a")){
-            aStop = line.getStopListA().stream().filter(s->s.getStopName().equals(stopName)).findAny().orElse(null);
+            aStop = lineName.getStopListA().stream().filter(s->s.getStopName().equals(stopName)).findAny().orElse(null);
             //aStop = stopRepo.findByStopName(json.getString("stop"));
         }
         else if(json.getString("stopType").equals("r")){
-            rStop = line.getStopListR().stream().filter(s->s.getStopName().equals(stopName)).findAny().orElse(null);
+            rStop = lineName.getStopListR().stream().filter(s->s.getStopName().equals(stopName)).findAny().orElse(null);
             //rStop = stopRepo.findByStopName(json.getString("stop"));
         }
         else{
             return new Long(-2);
         }
-        if(aStop == rStop){ //both equals null but stopType is correct--> Stop not found inside the given line
+        if(aStop == rStop){ //both equals null but stopType is correct--> Stop not found inside the given lineName
             return new Long(-3);
         }
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         try {
             Date tmp_date = format.parse(date);
-            Reservation r = new Reservation(line, aStop, rStop, p, tmp_date, json.getBoolean("back"));
+            Reservation r = new Reservation(lineName, aStop, rStop, p, tmp_date, json.getBoolean("back"));
             Reservation inserted = reservationRepo.save(r);
             return inserted.getId();
         } catch (ParseException e) {
@@ -128,8 +142,8 @@ public class ReservationController {
     @PutMapping("/reservations/{line_name}/{date}/{reservation_id}")
     public Long updateReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable Long reservation_id, @RequestBody String payload){
         Optional<Reservation> oR = reservationRepo.findById(reservation_id);
-        Line line = lineRepo.findByLineName(line_name);
-        if (!oR.isPresent() || line == null) {
+        Line lineName = lineRepo.findByLineName(line_name);
+        if (!oR.isPresent() || lineName == null) {
             return new Long(-1);
         }
         Reservation r = oR.get();
@@ -153,23 +167,23 @@ public class ReservationController {
 //        }
         String stopName = json.getString("stop");
         if(json.getString("stopType").equals("a")){
-            aStop = line.getStopListA().stream().filter(s->s.getStopName().equals(stopName)).findAny().orElse(null);
+            aStop = lineName.getStopListA().stream().filter(s->s.getStopName().equals(stopName)).findAny().orElse(null);
             //aStop = stopRepo.findByStopName(json.getString("stop"));
         }
         else if(json.getString("stopType").equals("r")){
-            rStop = line.getStopListR().stream().filter(s->s.getStopName().equals(stopName)).findAny().orElse(null);
+            rStop = lineName.getStopListR().stream().filter(s->s.getStopName().equals(stopName)).findAny().orElse(null);
             //rStop = stopRepo.findByStopName(json.getString("stop"));
         }
         else{
             return new Long(-3);
         }
-        if(aStop == rStop){ //both equals null but stopType is correct--> Stop not found inside the given line
+        if(aStop == rStop){ //both equals null but stopType is correct--> Stop not found inside the given lineName
             return new Long(-4);
         }
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         try {
             Date tmp_date = format.parse(date);
-            r.setLine(line);
+            r.setLineName(lineName);
             r.setArrival(aStop);
             r.setDeparture(rStop);
             r.setBack(json.getBoolean("back"));
@@ -194,7 +208,7 @@ public class ReservationController {
 
         Reservation r = oR.get();
 
-        if(!r.getLine().getLineName().equals(line_name) || !r.getReservationDate().toString().equals(date)){
+        if(!r.getLineName().getLineName().equals(line_name) || !r.getReservationDate().toString().equals(date)){
             return;
         }
 
@@ -210,7 +224,7 @@ public class ReservationController {
 
         Reservation r = oR.get();
 
-        if(!r.getLine().getLineName().equals(line_name) || !r.getReservationDate().toString().equals(date)){
+        if(!r.getLineName().getLineName().equals(line_name) || !r.getReservationDate().toString().equals(date)){
             return null;
         }
 
