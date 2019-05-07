@@ -27,13 +27,13 @@ public class Reservation {
     private Date reservationDate;
 
     @Getter @Setter
-    private boolean isA;
+    private boolean flagAndata;
 
-    public Reservation(@JsonProperty("lineName") String lineName, @JsonProperty("stopName") String stopName, @JsonProperty("passenger") Person passenger, @JsonProperty("reservationDate") Date reservationDate, @JsonProperty("isA") boolean isA) {
+    public Reservation(@JsonProperty("lineName") String lineName, @JsonProperty("stopName") String stopName, @JsonProperty("passenger") Person passenger, @JsonProperty("reservationDate") Date reservationDate, @JsonProperty("isA") boolean flagAndata) {
         this.lineName = lineName;
         this.stopName = stopName;
         this.passenger = passenger;
         this.reservationDate = reservationDate;
-        this.isA = isA;
+        this.flagAndata = flagAndata;
     }
 }

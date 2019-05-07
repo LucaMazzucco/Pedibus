@@ -41,19 +41,22 @@ public class ReservationController {
             e.printStackTrace();
         }
     }
-    /*
+
     @GetMapping("/insertReservation")
     public String insertLine(Reservation reservation){
         reservationRepo.save(reservation);
         return "Line inserted correctly";
     }
 
+        /*
     @GetMapping("/reservations/{line_name}/{date}")
     public String findByDateAndLine(@PathVariable String line_name, @PathVariable String date){
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
             Date tmp_date = format.parse(date);
-            List<Reservation> f = reservationRepo.findByLine_LineNameAndReservationDate(line_name, tmp_date);
+            List<Reservation> res_andata = reservationRepo.findByFlagAndataTrueAndLineNameAndAndReservationDate(line_name, tmp_date);
+            List<Reservation> res_ritorno = reservationRepo.findByFlagAndataFalseAndLineNameAndAndReservationDate(line_name, tmp_date);
+
             List<Person> arr = new LinkedList<>();
             List<Person> dep = new LinkedList<>();
             Map<String, List<String>> personPerStopA= new HashMap<>();
@@ -98,7 +101,7 @@ public class ReservationController {
         }
         return "niente";
     }
-
+    /*
     @PostMapping("/reservations/{line_name}/{date}")
     public Long addReservation(@PathVariable String line_name, @PathVariable String date, @RequestBody String payload){
         Line lineName = lineRepo.findByLineName(line_name);
