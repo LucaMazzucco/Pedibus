@@ -29,6 +29,12 @@ public class ReservationController {
     @Autowired
     ReservationRepository reservationRepo;
 
+    @Autowired
+    LineRepository lineRepo;
+
+    @Autowired
+    PersonRepository personRepo;
+
     @PostConstruct
     public void init() {
         ObjectMapper mapper = new ObjectMapper();
@@ -48,7 +54,7 @@ public class ReservationController {
         return "Line inserted correctly";
     }
 
-        /*
+    @SuppressWarnings("Duplicates")
     @GetMapping("/reservations/{line_name}/{date}")
     public String findByDateAndLine(@PathVariable String line_name, @PathVariable String date){
         try {
@@ -56,27 +62,26 @@ public class ReservationController {
             Date tmp_date = format.parse(date);
             List<Reservation> res_andata = reservationRepo.findByFlagAndataTrueAndLineNameAndAndReservationDate(line_name, tmp_date);
             List<Reservation> res_ritorno = reservationRepo.findByFlagAndataFalseAndLineNameAndAndReservationDate(line_name, tmp_date);
-
-            List<Person> arr = new LinkedList<>();
-            List<Person> dep = new LinkedList<>();
-            Map<String, List<String>> personPerStopA= new HashMap<>();
-            Map<String, List<String>> personPerStopR= new HashMap<>();
-            List<Stop> stopsA = f.get(0).getLineName().getStopListA();
-            List<Stop> stopsR = f.get(0).getLineName().getStopListR();
-            for(Stop s : stopsA){
-                personPerStopA.put(s.getStopName(), new LinkedList<>());
-            }
-            for(Stop s : stopsR){
-                personPerStopR.put(s.getStopName(), new LinkedList<>());
-            }
-            for(Reservation r : f){
-                if(r.getArrival() != null){
-                    personPerStopA.get(r.getArrival().getStopName()).add(r.getPassenger().toString());
-                    //arr.add(r.getPassenger());
+            Map<String, List<Person>> personPerStopA= new HashMap<>();
+            Map<String, List<Person>> personPerStopR= new HashMap<>();
+            for(Reservation r : res_andata){
+                if(personPerStopA.containsKey(r.getStopName())){
+                    personPerStopA.get(r.getStopName()).add(r.getPassenger());
                 }
-                else if(r.getDeparture() != null){
-                    personPerStopR.get(r.getDeparture().getStopName()).add(r.getPassenger().toString());
-                    //dep.add(r.getPassenger());
+                else {
+                    List<Person> l = new LinkedList<>();
+                    l.add(r.getPassenger());
+                    personPerStopA.put(r.getStopName(), l);
+                }
+            }
+            for(Reservation r : res_ritorno){
+                if(personPerStopR.containsKey(r.getStopName())){
+                    personPerStopR.get(r.getStopName()).add(r.getPassenger());
+                }
+                else {
+                    List<Person> l = new LinkedList<>();
+                    l.add(r.getPassenger());
+                    personPerStopR.put(r.getStopName(), l);
                 }
             }
 
@@ -91,9 +96,6 @@ public class ReservationController {
                 jsonDataR.put(key, personPerStopR.get(key).toString());
             }
             mainObj.put("stopsR", jsonDataR);
-
-            //mainObj.put("stops", arr);
-            //mainObj.put("outgoing", dep);
             return mainObj.toString();
 
         } catch (Exception e){
@@ -101,7 +103,7 @@ public class ReservationController {
         }
         return "niente";
     }
-    /*
+/*
     @PostMapping("/reservations/{line_name}/{date}")
     public Long addReservation(@PathVariable String line_name, @PathVariable String date, @RequestBody String payload){
         Line lineName = lineRepo.findByLineName(line_name);
@@ -109,7 +111,8 @@ public class ReservationController {
         if(!json.has("stopType") ||
         !json.has("stop") ||
         !json.has("registrationNumber") ||
-        !json.has("back")){
+        !json.has("back") ||
+        lineName==null){
             return new Long(-1);
         }
         Stop aStop = null, rStop = null;
@@ -141,7 +144,8 @@ public class ReservationController {
 
         return new Long(-4);
     }
-
+ */
+/*
     @PutMapping("/reservations/{line_name}/{date}/{reservation_id}")
     public Long updateReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable Long reservation_id, @RequestBody String payload){
         Optional<Reservation> oR = reservationRepo.findById(reservation_id);
