@@ -22,6 +22,7 @@ import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
 
 @RestController
 public class ReservationController {
@@ -59,9 +60,10 @@ public class ReservationController {
     public String findByDateAndLine(@PathVariable String line_name, @PathVariable String date){
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+            format.setTimeZone(TimeZone.getTimeZone("UTC"));
             Date tmp_date = format.parse(date);
-            List<Reservation> res_andata = reservationRepo.findByFlagAndataTrueAndLineNameAndAndReservationDate(line_name, tmp_date);
-            List<Reservation> res_ritorno = reservationRepo.findByFlagAndataFalseAndLineNameAndAndReservationDate(line_name, tmp_date);
+            List<Reservation> res_andata = reservationRepo.findByLineNameAndReservationDateAndFlagAndataIsTrue(line_name, tmp_date);
+            List<Reservation> res_ritorno = reservationRepo.findByLineNameAndReservationDateAndFlagAndataIsFalse(line_name, tmp_date);
             Map<String, List<Person>> personPerStopA= new HashMap<>();
             Map<String, List<Person>> personPerStopR= new HashMap<>();
             for(Reservation r : res_andata){
