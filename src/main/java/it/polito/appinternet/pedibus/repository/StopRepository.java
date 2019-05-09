@@ -10,4 +10,5 @@ import java.util.List;
 public interface StopRepository extends MongoRepository<Stop, Long> {
     List<Stop> findAll();
     Stop findByStopName(String name);
+    Stop findById(String id);
 }

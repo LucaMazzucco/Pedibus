@@ -43,17 +43,5 @@ public class PedibusApplication {
     @PostConstruct
     public void init() {
         mongoTemplate.getDb().drop();
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            Stop[] newStops = mapper.readValue(new FileReader("src/main/data/stops.json"), Stop[].class);
-            for(Stop a : newStops){
-                logger.info(a.toString());
-                stopRepo.save(a);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (Exception e){
-            e.printStackTrace();
-        }
     }
 }

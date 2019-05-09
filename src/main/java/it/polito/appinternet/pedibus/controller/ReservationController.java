@@ -180,7 +180,7 @@ public class ReservationController {
         }
         newRes.setId(r.getId());
         reservationRepo.save(newRes); //Save sovrascrive sull'id selezionato
-        //TO DO: CONTROLLI AGGIUNTIVI QUI SOTTO DA COMPLETARE
+        //TODO: CONTROLLI AGGIUNTIVI QUI SOTTO DA COMPLETARE
         /*JSONObject mainJson = new JSONObject(payload);
         if(!mainJson.has("lineName") ||
                 !mainJson.has("stopName") ||
@@ -226,42 +226,7 @@ public class ReservationController {
         if(!reservation.getLineName().equals(line_name) || !reservation.getReservationDate().equals(d)){
             return ;
         }
-
         reservationRepo.delete(reservation);
     }
-
-/*
-    @DeleteMapping("/reservations/{line_name}/{date}/{reservation_id}")
-    public void deleteReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable Long reservation_id){
-        Optional<Reservation> oR = reservationRepo.findById(reservation_id);
-        if (!oR.isPresent()) {
-            return;
-        }
-
-        Reservation r = oR.get();
-
-        if(!r.getLineName().getLineName().equals(line_name) || !r.getReservationDate().toString().equals(date)){
-            return;
-        }
-
-        reservationRepo.delete(r);
-    }
-
-    @GetMapping("/reservations/{line_name}/{date}/{reservation_id}")
-    public Reservation getReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable Long reservation_id){
-        Optional<Reservation> oR = reservationRepo.findById(reservation_id);
-        if (!oR.isPresent()) {
-            return null;
-        }
-
-        Reservation r = oR.get();
-
-        if(!r.getLineName().getLineName().equals(line_name) || !r.getReservationDate().toString().equals(date)){
-            return null;
-        }
-
-        return r;
-    }
-    */
 }
 
