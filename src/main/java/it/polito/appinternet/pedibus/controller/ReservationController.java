@@ -207,13 +207,11 @@ public class ReservationController {
 
     @SuppressWarnings("Duplicates")
     @DeleteMapping("/reservations/{line_name}/{date}/{reservation_id}")
-    public void deleteReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable Long reservation_id){
-        Optional<Reservation> optionalReservation = reservationRepo.findById(reservation_id);
-        if (!optionalReservation.isPresent()){
+    public void deleteReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable String reservation_id){
+        Reservation reservation = reservationRepo.findById(reservation_id);
+        if (reservation == null){
             return;
         }
-
-        Reservation reservation = optionalReservation.get();
 
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
