@@ -6,6 +6,7 @@ import it.polito.appinternet.pedibus.repository.StopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
 import java.io.FileNotFoundException;
@@ -13,6 +14,7 @@ import java.io.FileReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RestController
 public class StopController {
 
     @Autowired
