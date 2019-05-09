@@ -32,7 +32,7 @@ public class LineController {
 
     @GetMapping("/insertLine")
     public String insertLine(Line l) {
-        lineRepo.save(l);
+        lineRepo.insert(l);
         return "Line inserted correctly";
     }
 
@@ -70,7 +70,7 @@ public class LineController {
         try {
             Line[] newLines = mapper.readValue(new FileReader("src/main/data/lines.json"), Line[].class);
             for(Line l : newLines){
-                lineRepo.save(l);
+                lineRepo.insert(l);
             }
         } catch (Exception e){
             e.printStackTrace();

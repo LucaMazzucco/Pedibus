@@ -14,6 +14,10 @@ import java.util.List;
 @NoArgsConstructor
 public class Line{
 
+    @Id
+    @Getter @Setter
+    private String id;
+
     @Getter @Setter
     private String lineName;
 

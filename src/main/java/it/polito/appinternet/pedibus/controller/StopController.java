@@ -15,7 +15,7 @@ public class StopController {
     /*
     @GetMapping("/insertStop")
     public String insertStop(Stop s){
-        stopRepo.save(s);
+        stopRepo.insert(s);
         return "Stop inserted correctly";
     }*/
 

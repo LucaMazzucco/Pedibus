@@ -11,6 +11,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 public class Stop {
 
+    @Id
+    @Getter @Setter
+    private String id;
+
     @Getter @Setter
     private String stopName;
 
