@@ -2,7 +2,7 @@
   {
     "lineName": "Line1",
     "stopName": "Stop1",
-    "isA": "true",
+    "flagAndata": "true",
     "reservationDate": "2019/04/15",
     "passenger": {
       "name": "jeanpiero",
@@ -13,7 +13,7 @@
   {
     "lineName": "Line1",
     "stopName": "Stop2",
-    "isA": "true",
+    "flagAndata": "true",
     "reservationDate": "2019/04/15",
     "passenger": {
       "name": "luca",
@@ -24,7 +24,7 @@
   {
     "lineName": "Line1",
     "stopName": "Stop3",
-    "isA": "false",
+    "flagAndata": "false",
     "reservationDate": "2019/04/15",
     "passenger": {
       "name": "alberto",

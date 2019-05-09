@@ -21,6 +21,7 @@ import javax.swing.text.html.Option;
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 import java.util.Date;
 
@@ -36,13 +37,16 @@ public class ReservationController {
     @Autowired
     PersonRepository personRepo;
 
+    @Autowired
+    StopRepository stopRepo;
+
     @PostConstruct
     public void init() {
         ObjectMapper mapper = new ObjectMapper();
         try {
             Reservation[] newRes = mapper.readValue(new FileReader("src/main/data/reservation.json"), Reservation[].class);
             for(Reservation r : newRes){
-                reservationRepo.save(r);
+                reservationRepo.insert(r);
             }
         } catch (Exception e){
             e.printStackTrace();
@@ -51,8 +55,8 @@ public class ReservationController {
 
     @GetMapping("/insertReservation")
     public String insertLine(Reservation reservation){
-        reservationRepo.save(reservation);
-        return "Line inserted correctly";
+        reservationRepo.insert(reservation);
+        return "Reservation inserted correctly";
     }
 
     @SuppressWarnings("Duplicates")
@@ -105,109 +109,102 @@ public class ReservationController {
         }
         return "niente";
     }
-/*
+
+    @SuppressWarnings("Duplicates")
     @PostMapping("/reservations/{line_name}/{date}")
     public Long addReservation(@PathVariable String line_name, @PathVariable String date, @RequestBody String payload){
-        Line lineName = lineRepo.findByLineName(line_name);
-        JSONObject json = new JSONObject(payload);
-        if(!json.has("stopType") ||
-        !json.has("stop") ||
-        !json.has("registrationNumber") ||
-        !json.has("back") ||
-        lineName==null){
-            return new Long(-1);
-        }
-        Stop aStop = null, rStop = null;
-        Person p = personRepo.findByRegistrationNumber(json.getString("registrationNumber"));
-        String stopName = json.getString("stop");
-        if(json.getString("stopType").equals("a")){
-            aStop = lineName.getStopListA().stream().filter(s->s.getStopName().equals(stopName)).findAny().orElse(null);
-            //aStop = stopRepo.findByStopName(json.getString("stop"));
-        }
-        else if(json.getString("stopType").equals("r")){
-            rStop = lineName.getStopListR().stream().filter(s->s.getStopName().equals(stopName)).findAny().orElse(null);
-            //rStop = stopRepo.findByStopName(json.getString("stop"));
-        }
-        else{
-            return new Long(-2);
-        }
-        if(aStop == rStop){ //both equals null but stopType is correct--> Stop not found inside the given lineName
-            return new Long(-3);
-        }
+        // To Test use addReservation.json
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        try {
-            Date tmp_date = format.parse(date);
-            Reservation r = new Reservation(lineName, aStop, rStop, p, tmp_date, json.getBoolean("back"));
-            Reservation inserted = reservationRepo.save(r);
-            return inserted.getId();
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date tmp_date;
+        try{
+            tmp_date = format.parse(date);
         } catch (ParseException e) {
             e.printStackTrace();
-        }
-
-        return new Long(-4);
-    }
- */
-/*
-    @PutMapping("/reservations/{line_name}/{date}/{reservation_id}")
-    public Long updateReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable Long reservation_id, @RequestBody String payload){
-        Optional<Reservation> oR = reservationRepo.findById(reservation_id);
-        Line lineName = lineRepo.findByLineName(line_name);
-        if (!oR.isPresent() || lineName == null) {
             return new Long(-1);
         }
-        Reservation r = oR.get();
-        JSONObject json = new JSONObject(payload);
-        if(!json.has("stopType") ||
-                !json.has("stop") ||
-                !json.has("registrationNumber") ||
-                !json.has("back")){
+        JSONObject main_json = new JSONObject(payload);
+        if(!main_json.has("flagAndata") ||
+            !main_json.has("stopName") ||
+            !main_json.has("passenger")
+            ){
             return new Long(-2);
         }
-        Stop aStop = null, rStop = null;
-        Person p = personRepo.findByRegistrationNumber(json.getString("registrationNumber"));
-//        if (json.getString("stopType").equals("a")) {
-//            aStop = stopRepo.findByStopName(json.getString("stop"));
-//        }
-//        else if(json.get("stopType").equals("r")){
-//            rStop = stopRepo.findByStopName(json.getString("stop"));
-//        }
-//        else{
-//            return new Long(-3);
-//        }
-        String stopName = json.getString("stop");
-        if(json.getString("stopType").equals("a")){
-            aStop = lineName.getStopListA().stream().filter(s->s.getStopName().equals(stopName)).findAny().orElse(null);
-            //aStop = stopRepo.findByStopName(json.getString("stop"));
-        }
-        else if(json.getString("stopType").equals("r")){
-            rStop = lineName.getStopListR().stream().filter(s->s.getStopName().equals(stopName)).findAny().orElse(null);
-            //rStop = stopRepo.findByStopName(json.getString("stop"));
-        }
-        else{
+        Line l = lineRepo.findByLineName(line_name);
+        JSONObject p_json = main_json.getJSONObject("passenger");
+        if(!p_json.has("registrationNumber") ||
+            !p_json.has("name") ||
+            !p_json.has("surname")
+            ){
             return new Long(-3);
         }
-        if(aStop == rStop){ //both equals null but stopType is correct--> Stop not found inside the given lineName
+        Person p = personRepo.findByRegistrationNumber(p_json.getString("registrationNumber"));
+        String stopName = main_json.getString("stopName");
+        Stop s = stopRepo.findByStopName(stopName);
+        Boolean flagAndata = main_json.getBoolean("flagAndata");
+        if(s==null || p==null || flagAndata==null || l==null){
             return new Long(-4);
         }
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        try {
-            Date tmp_date = format.parse(date);
-            r.setLineName(lineName);
-            r.setArrival(aStop);
-            r.setDeparture(rStop);
-            r.setBack(json.getBoolean("back"));
-            r.setPassenger(p);
-            r.setReservationDate(tmp_date);
-            Reservation inserted = reservationRepo.save(r);
-            return inserted.getId();
+        Reservation r = new Reservation(line_name,stopName,p,tmp_date,flagAndata);
+        r = reservationRepo.insert(r);
+        return Long.getLong(r.getId());
+    }
 
+    @SuppressWarnings("Duplicates")
+    @PutMapping("/reservations/{line_name}/{date}/{reservation_id}")
+    public Long updateReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable Long reservation_id, @RequestBody String payload){
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date d;
+        try{
+            d = format.parse(date);
         } catch (ParseException e) {
             e.printStackTrace();
+            return new Long(-1);
         }
+        Optional<Reservation> optionalR = reservationRepo.findById(reservation_id);
+        Line lineName = lineRepo.findByLineName(line_name);
+        if (!optionalR.isPresent() || lineName == null) {
+            return new Long(-1);
+        }
+        Reservation r = optionalR.get();
+        Reservation newRes = null;
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            newRes = mapper.readValue(new FileReader("src/main/data/putReservation.json"), Reservation.class);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+        if(newRes==null){
+            return new Long(-2);
+        }
+        newRes.setId(r.getId());
+        reservationRepo.save(newRes); //Save sovrascrive sull'id selezionato
+        //TO DO: CONTROLLI AGGIUNTIVI QUI SOTTO DA COMPLETARE
+        /*JSONObject mainJson = new JSONObject(payload);
+        if(!mainJson.has("lineName") ||
+                !mainJson.has("stopName") ||
+                !mainJson.has("flagAndata") ||
+                !mainJson.has("reservationDate") ||
+                !mainJson.has("passenger")){
+            return new Long(-2);
+        }
+        JSONObject pJson = mainJson.getJSONObject("passenger");
+        if(!pJson.has("registrationNumber") ||
+                !pJson.has("name") ||
+                !pJson.has("surname")
+        ){
+            return new Long(-3);
+        }
+        Person p = personRepo.findByRegistrationNumber(pJson.getString("registrationNumber"));
+        String stopName = pJson.getString("stopName");
+        String name = pJson.getString("name");
+        String surname = pJson.getString("surname");
+        */
 
         return new Long(-5);
     }
-
+/*
     @DeleteMapping("/reservations/{line_name}/{date}/{reservation_id}")
     public void deleteReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable Long reservation_id){
         Optional<Reservation> oR = reservationRepo.findById(reservation_id);

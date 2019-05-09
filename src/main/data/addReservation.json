@@ -1,0 +1,9 @@
+{
+  "stopName":"Stop1",
+  "flagAndata":"false",
+  "passenger": {
+    "name": "jeanpiero",
+    "surname": "francois",
+    "registrationNumber": "jpf"
+  }
+}

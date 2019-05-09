@@ -5,6 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.IndexDirection;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -12,6 +15,10 @@ import java.util.Date;
 @Document(collection = "reservations")
 @NoArgsConstructor
 public class Reservation {
+
+    @Id
+    @Getter @Setter
+    private String id;
 
     @Getter @Setter
     private String lineName;

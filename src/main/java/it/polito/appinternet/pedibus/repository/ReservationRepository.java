@@ -14,6 +14,7 @@ public interface ReservationRepository extends MongoRepository<Reservation, Long
     //List<Reservation> findByLineAndReservationDate(String a, Date b);
     List<Reservation> findByLineNameAndReservationDateAndFlagAndataIsTrue(String a, Date b);
     List<Reservation> findByLineNameAndReservationDateAndFlagAndataIsFalse(String a, Date b);
-
+    Reservation findById(String id);
+    //Reservation findAllBy_Id
     //List<Reservation> findByLine_LineNameAndReservationDate(String name,Date date);
 }

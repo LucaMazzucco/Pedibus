@@ -1,0 +1,11 @@
+{
+  "lineName": "Line1",
+  "stopName": "Stop2",
+  "flagAndata": "true",
+  "reservationDate": "2019/04/15",
+  "passenger": {
+    "name": "jeanpiero",
+    "surname": "francois",
+    "registrationNumber": "jpf"
+  }
+}
