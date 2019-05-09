@@ -152,7 +152,7 @@ public class ReservationController {
 
     @SuppressWarnings("Duplicates")
     @PutMapping("/reservations/{line_name}/{date}/{reservation_id}")
-    public Long updateReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable Long reservation_id, @RequestBody String payload){
+    public Long updateReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable String reservation_id, @RequestBody String payload){
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date d;
@@ -162,12 +162,12 @@ public class ReservationController {
             e.printStackTrace();
             return new Long(-1);
         }
-        Optional<Reservation> optionalR = reservationRepo.findById(reservation_id);
+        Reservation r = reservationRepo.findById(reservation_id);
         Line lineName = lineRepo.findByLineName(line_name);
-        if (!optionalR.isPresent() || lineName == null) {
+        if (r == null || lineName == null) {
             return new Long(-1);
         }
-        Reservation r = optionalR.get();
+
         Reservation newRes = null;
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -199,7 +199,7 @@ public class ReservationController {
 
         reservationRepo.save(newRes); //Save sovrascrive sull'id selezionato
 
-        return new Long(-5);
+        return Long.valueOf(1);
     }
 
     @SuppressWarnings("Duplicates")

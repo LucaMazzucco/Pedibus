@@ -1,6 +1,16 @@
-PUT http://localhost:9090/reservations/Line1/20190415/13
+PUT http://localhost:8080/reservations/Line1/20190415/5cd4411b18c0271b94c0dca5
 Content-Type: application/json
 
-{  "registrationNumber": "jpf",   "stop" : "Stop1",   "stopType": "a",   "back": "true" }
+{
+  "lineName": "Line1",
+  "stopName": "Stop2",
+  "flagAndata": "true",
+  "reservationDate": "2019/04/15",
+  "passenger": {
+    "name": "jeanpiero",
+    "surname": "francois",
+    "registrationNumber": "jpf"
+  }
+}
 
 ###
