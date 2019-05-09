@@ -204,6 +204,34 @@ public class ReservationController {
 
         return new Long(-5);
     }
+
+    @SuppressWarnings("Duplicates")
+    @DeleteMapping("/reservations/{line_name}/{date}/{reservation_id}")
+    public void deleteReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable Long reservation_id){
+        Optional<Reservation> optionalReservation = reservationRepo.findById(reservation_id);
+        if (!optionalReservation.isPresent()){
+            return;
+        }
+
+        Reservation reservation = optionalReservation.get();
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+        format.setTimeZone(TimeZone.getTimeZone("UTC"));
+        Date d;
+        try{
+            d = format.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        if(!reservation.getLineName().equals(line_name) || !reservation.getReservationDate().equals(d)){
+            return ;
+        }
+
+        reservationRepo.delete(reservation);
+    }
+
 /*
     @DeleteMapping("/reservations/{line_name}/{date}/{reservation_id}")
     public void deleteReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable Long reservation_id){
