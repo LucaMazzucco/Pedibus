@@ -33,6 +33,7 @@ public class Reservation {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
     private Date reservationDate;
 
+    //true = da stopName a scuola; false = da scuola a stopName
     @Getter @Setter
     private boolean flagAndata;
 

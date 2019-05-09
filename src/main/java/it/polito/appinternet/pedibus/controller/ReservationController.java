@@ -146,7 +146,7 @@ public class ReservationController {
             return new Long(-4);
         }
         Reservation r = new Reservation(line_name,stopName,p,tmp_date,flagAndata);
-        r = reservationRepo.insert(r);
+        r = reservationRepo.insert(r);//crea un nuovo id
         return Long.getLong(r.getId());
     }
 
@@ -171,7 +171,7 @@ public class ReservationController {
         Reservation newRes = null;
         ObjectMapper mapper = new ObjectMapper();
         try {
-            newRes = mapper.readValue(new FileReader("src/main/data/putReservation.json"), Reservation.class);
+            newRes = mapper.readValue(payload, Reservation.class);
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -179,9 +179,9 @@ public class ReservationController {
             return new Long(-2);
         }
         newRes.setId(r.getId());
-        reservationRepo.save(newRes); //Save sovrascrive sull'id selezionato
-        //TODO: CONTROLLI AGGIUNTIVI QUI SOTTO DA COMPLETARE
-        /*JSONObject mainJson = new JSONObject(payload);
+
+
+        JSONObject mainJson = new JSONObject(payload);
         if(!mainJson.has("lineName") ||
                 !mainJson.has("stopName") ||
                 !mainJson.has("flagAndata") ||
@@ -196,11 +196,8 @@ public class ReservationController {
         ){
             return new Long(-3);
         }
-        Person p = personRepo.findByRegistrationNumber(pJson.getString("registrationNumber"));
-        String stopName = pJson.getString("stopName");
-        String name = pJson.getString("name");
-        String surname = pJson.getString("surname");
-        */
+
+        reservationRepo.save(newRes); //Save sovrascrive sull'id selezionato
 
         return new Long(-5);
     }
