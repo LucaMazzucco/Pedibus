@@ -28,7 +28,7 @@ public class PersonController {
         }
     }
 
-    @GetMapping("/intertPerson")
+    @GetMapping("/insertPerson")
     public String insertStop(Person person){
         personRepo.insert(person);
         return "Stop inserted correctly";

@@ -21,6 +21,12 @@ public class User {
     private String email;
     private String password;
     private String name;
-    private boolean enabled;
+    private boolean isEnabled;
     private Set<Role> roles;
+
+    public User(String email, String password, boolean isEnabled) {
+        this.email = email;
+        this.password = password;
+        this.isEnabled = isEnabled;
+    }
 }

@@ -1,0 +1,6 @@
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
+
+###

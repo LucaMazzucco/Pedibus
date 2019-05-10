@@ -1,3 +1,132 @@
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
+
+<> 2019-05-10T033749.200.txt
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
+
+<> 2019-05-10T033628.200.txt
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
+
+<> 2019-05-10T033458.500.json
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
+
+<> 2019-05-10T033224.500.json
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "andrea.fiandro@gmail.com",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
+
+<> 2019-05-10T032759.500.json
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "andrea.fiandro@gmail.com",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
+
+<> 2019-05-10T032310.500.json
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "andrea.fiandro@gmail.com",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
+
+<> 2019-05-10T032151.500.json
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "andrea.fiandro@gmail.com",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
+
+<> 2019-05-10T031906.500.json
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "andrea.fiandro@gmail.com",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
+
+<> 2019-05-10T031501.403.json
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{   "email": "andrea.fiandro@gmail.com",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
+
+<> 2019-05-10T031336.403.json
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{   "email": "andrea.fiandro@gmail.com",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
+
+<> 2019-05-10T031033.403.json
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{   "email": "andrea.fiandro@gmail.com",   "password" : "aaaa1234",   "passwordConfirm": "a"}
+
+<> 2019-05-10T030739.403.json
+
+###
+
+POST http://localhost:27017/register
+Content-Type: application/json
+
+{   "email": "andrea.fiandro@gmail.com",   "password" : "aaaa1234",   "passwordConfirm": "a"}
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{   "email": "andrea.fiandro@gmail.com",   "password" : "aaaa1234",   "passwordConfirm": "a"}
+
+###
+
+POST http://localhost:27017/reservations/Line1/20190415
+Content-Type: application/json
+
+{   "email": "andrea.fiandro@gmail.com",   "password" : "aaaa1234",   "passwordConfirm": "a"}
+
+###
+
 PUT http://localhost:8080/reservations/Line1/20190415/5cd4411b18c0271b94c0dca5
 Content-Type: application/json
 

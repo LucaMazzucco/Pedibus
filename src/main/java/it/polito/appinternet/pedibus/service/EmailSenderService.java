@@ -1,4 +1,4 @@
-package it.polito.appinternet.pedibus.model;
+package it.polito.appinternet.pedibus.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -10,10 +10,10 @@ import org.springframework.stereotype.Service;
 public class EmailSenderService {
     private JavaMailSender javaMailSender;
 
-    /*@Autowired
+    @Autowired
     public EmailSenderService(JavaMailSender javaMailSender){
         this.javaMailSender = javaMailSender;
-    }*/
+    }
 
     @Async
     public void sendEmail(SimpleMailMessage email) {
