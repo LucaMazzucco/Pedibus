@@ -1,3 +1,40 @@
+PUT http://localhost:8080/reservations/Line1/20190415/5cd4411b18c0271b94c0dca5
+Content-Type: application/json
+
+{
+  "lineName": "Line1",
+  "stopName": "Stop2",
+  "flagAndata": "true",
+  "reservationDate": "2019/04/15",
+  "passenger": {
+    "name": "jeanpiero",
+    "surname": "francois",
+    "registrationNumber": "jpf"
+  }
+}
+
+<> 2019-05-09T052316.200.json
+
+###
+
+PUT http://localhost:8080/reservations/Line1/20190415/5cd4411b18c0271b94c0dca5
+Content-Type: application/json
+
+{  "registrationNumber": "jpf",   "stop" : "Stop1",   "stopType": "a",   "flagAndata": "false" }
+
+<> 2019-05-09T052217.200.json
+
+###
+
+PUT http://localhost:8080/reservations/Line1/20190415/5cd4411b18c0271b94c0dca5
+Content-Type: application/json
+
+{  "registrationNumber": "jpf",   "stop" : "Stop1",   "stopType": "a",   "back": "true" }
+
+<> 2019-05-09T052046.200.json
+
+###
+
 DELETE http://localhost:8080/reservations/Line1/20190415/5cd426662d229c16b74c62d1
 
 ###

@@ -32,7 +32,7 @@ public class LineController {
 
     @GetMapping("/insertLine")
     public String insertLine(Line l) {
-        //TODO: Controlli sulle stop della line da inserire e persone se presenti
+        //TO DO: Controlli sulle stop della line da inserire e persone se presenti
         lineRepo.insert(l);
         return "Line inserted correctly";
     }

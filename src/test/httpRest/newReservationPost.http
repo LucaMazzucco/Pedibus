@@ -1,4 +1,4 @@
-POST http://localhost:9090/reservations/Line1/20190415
+POST http://localhost:27017/reservations/Line1/20190415
 Content-Type: application/json
 
 {   "registrationNumber": "jpf",   "stop" : "Stop1",   "stopType": "a",   "back": "false" }
