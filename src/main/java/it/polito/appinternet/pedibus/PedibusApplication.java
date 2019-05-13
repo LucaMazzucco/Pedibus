@@ -1,6 +1,7 @@
 package it.polito.appinternet.pedibus;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.ozimov.springboot.mail.configuration.EnableEmailTools;
 import org.json.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 @SpringBootApplication
+@EnableEmailTools
 public class PedibusApplication {
 
 
