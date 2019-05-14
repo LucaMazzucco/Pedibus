@@ -1,6 +1,9 @@
 package it.polito.appinternet.pedibus.controller;
 
 import it.polito.appinternet.pedibus.model.ConfirmationToken;
+import it.polito.appinternet.pedibus.model.PwdChangePost;
+import it.polito.appinternet.pedibus.model.PwdChangeRequest;
+import it.polito.appinternet.pedibus.repository.PwdChangeRequestRepository;
 import it.polito.appinternet.pedibus.security.JwtTokenProvider;
 import it.polito.appinternet.pedibus.service.EmailSenderService;
 import it.polito.appinternet.pedibus.model.User;
@@ -16,12 +19,15 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
+import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 public class UserController {
@@ -43,6 +49,9 @@ public class UserController {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private PwdChangeRequestRepository pwdChangeRequestRepo;
+
     @PostMapping("/login")
     public ResponseEntity loginUser(@RequestBody String payload){
         try {
@@ -62,6 +71,32 @@ public class UserController {
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username/password supplied");
         }
+    }
+
+    @PostMapping("/recover")
+    public ResponseEntity recoverPassword(@RequestBody String payload){
+        JSONObject jsonInput = new JSONObject(payload);
+        if(!jsonInput.has("email")){
+            return ResponseEntity.badRequest().body("Wrong JSON format");
+        }
+        String email = jsonInput.getString("email");
+        Optional<User> existingUser = userRepository.findByEmail(email);
+        if(!existingUser.isPresent()){
+            return ResponseEntity.badRequest().body("No user associated with the given mail");
+        }
+        User u = existingUser.get();
+        PwdChangeRequest pcr = new PwdChangeRequest(u);
+        pwdChangeRequestRepo.insert(pcr);
+
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(email);
+        mailMessage.setSubject("You have requested to change your password");
+        mailMessage.setFrom("pedibus.polito1819@gmail.com");
+        mailMessage.setText("To change your password click here : "
+                +"http://localhost:8080/recover/"+pcr.getToken());
+
+        emailSenderService.sendEmail(mailMessage);
+        return ok().body("Mail sent");
     }
 
     @PostMapping("/register")
@@ -104,6 +139,7 @@ public class UserController {
         }
     }
 
+    //TODO: cambiare la url per la consegna finale /confirm/{randomUUID}
     @GetMapping("/confirm-account")
     public String confirmUserAccount(@RequestParam("token")String confirmationToken)
     {
@@ -128,4 +164,6 @@ public class UserController {
 
         return message;
     }
+
+
 }

@@ -11,20 +11,23 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 @NoArgsConstructor
-@Getter @Setter
-public class ConfirmationToken {
+@Getter
+@Setter
+public class PwdChangeRequest {
     @Id
     private String id;
-    private String confirmationToken;
-    private Date createdDate;
+    private String token;
+    private Date expirationDate;
     private User user;
+    private int tokenDuration = 1;
 
-    public ConfirmationToken(User user) {
-        this.user = user;
+    public PwdChangeRequest(User u){
+        this.user = u;
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
+        cal.add(Calendar.HOUR_OF_DAY, tokenDuration);
         cal.setTimeZone(TimeZone.getTimeZone("UTC"));
-        createdDate = cal.getTime();
-        confirmationToken = UUID.randomUUID().toString();
+        expirationDate = cal.getTime();
+        token = UUID.randomUUID().toString();
     }
 }
