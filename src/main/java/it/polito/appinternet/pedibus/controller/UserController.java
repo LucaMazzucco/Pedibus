@@ -1,17 +1,26 @@
 package it.polito.appinternet.pedibus.controller;
 
 import it.polito.appinternet.pedibus.model.ConfirmationToken;
+import it.polito.appinternet.pedibus.security.JwtTokenProvider;
 import it.polito.appinternet.pedibus.service.EmailSenderService;
 import it.polito.appinternet.pedibus.model.User;
 import it.polito.appinternet.pedibus.repository.ConfirmationTokenRepository;
 import it.polito.appinternet.pedibus.repository.UserRepository;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.scheduling.support.SimpleTriggerContext;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
+import static org.springframework.http.ResponseEntity.ok;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 public class UserController {
@@ -24,6 +33,32 @@ public class UserController {
     @Autowired
     private EmailSenderService emailSenderService;
 
+    @Autowired
+    AuthenticationManager authenticationManager;
+
+    @Autowired
+    JwtTokenProvider jwtTokenProvider;
+
+    @PostMapping("/login")
+    public ResponseEntity loginUser(@RequestBody String payload){
+        try {
+            JSONObject json_input = new JSONObject(payload);
+            if(!json_input.has("username") || !json_input.has("password")){
+                return ResponseEntity.badRequest().body("Wrong JSON format");
+            }
+            String username = json_input.getString("username");
+            String password = json_input.getString("password");
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+            String token = jwtTokenProvider.createToken(username, userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Username " + username + "not found")).getRoles());
+
+            Map<Object, Object> model = new HashMap<>();
+            model.put("username", username);
+            model.put("token", token);
+            return ok(model);
+        } catch (AuthenticationException e) {
+            throw new BadCredentialsException("Invalid username/password supplied");
+        }
+    }
 
     @PostMapping("/register")
     public String registerUser(@RequestBody String payload)
@@ -37,8 +72,8 @@ public class UserController {
         String email = jsonInput.getString("email");
         String password = jsonInput.getString("password");
         String passwordConfirm = jsonInput.getString("passwordConfirm");
-        User existingUser = userRepository.findByEmail(email);
-        if(existingUser != null){
+        Optional<User> existingUser = userRepository.findByEmail(email);
+        if(existingUser.isPresent()){
             return "User already exists!";
         }
         else{
@@ -72,10 +107,15 @@ public class UserController {
         String message;
         if(token != null)
         {
-            User user = userRepository.findByEmail(token.getUser().getEmail());
-            user.setEnabled(true);
-            userRepository.save(user);
-            message = "Your account has been successfully confirmed";
+            Optional<User> user = userRepository.findByEmail(token.getUser().getEmail());
+            if(user.isPresent()){
+                user.get().setEnabled(true);
+                userRepository.save(user.get());
+                message = "Your account has been successfully confirmed";
+            }
+            else{
+                message = "Your account doesn't exists";
+            }
         }
         else
         {
