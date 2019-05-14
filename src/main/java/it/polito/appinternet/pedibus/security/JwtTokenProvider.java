@@ -1,14 +1,15 @@
 package it.polito.appinternet.pedibus.security;
 
-import lombok.Value;
 import io.jsonwebtoken.*;
 
+import it.polito.appinternet.pedibus.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -18,14 +19,14 @@ import java.util.List;
 
 @Component
 public class JwtTokenProvider {
-    //@Value("${security.jwt.token.secret-key:secret}")
+    @Value("${security.jwt.token.secret-key}")
     private String secretKey = "secret";
 
-    //@Value("${security.jwt.token.expire-length:3600000}")
+    @Value("${security.jwt.token.timeout}")
     private long validityInMilliseconds = 3600000; // 1h
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    private CustomUserDetailsService userDetailsService;
 
     @PostConstruct
     protected void init() {
@@ -40,11 +41,11 @@ public class JwtTokenProvider {
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
-        return Jwts.builder()//
-                .setClaims(claims)//
-                .setIssuedAt(now)//
-                .setExpiration(validity)//
-                .signWith(SignatureAlgorithm.HS256, secretKey)//
+        return Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(SignatureAlgorithm.HS256, secretKey)
                 .compact();
     }
 

@@ -15,6 +15,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -38,6 +39,9 @@ public class UserController {
 
     @Autowired
     JwtTokenProvider jwtTokenProvider;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
     public ResponseEntity loginUser(@RequestBody String payload){
@@ -81,7 +85,7 @@ public class UserController {
             if(!password.equals(passwordConfirm)){
                 return "The two password must be the same!";
             }
-            User u = new User(email,password,false);
+            User u = new User(email,passwordEncoder.encode(password),false);
             userRepository.insert(u);
 
             ConfirmationToken confirmationToken = new ConfirmationToken(u);
