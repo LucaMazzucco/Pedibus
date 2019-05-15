@@ -132,18 +132,17 @@ public class UserController {
             mailMessage.setSubject("Complete Registration!");
             mailMessage.setFrom("pedibus.polito1819@gmail.com");
             mailMessage.setText("To confirm your account, please click here : "
-                    +"http://localhost:8080/confirm-account?token="+confirmationToken.getConfirmationToken());
+                    +"http://localhost:8080/confirm/" +confirmationToken.getConfirmationToken());
 
             emailSenderService.sendEmail(mailMessage);
             return "You have been correctly registered! Check your email";
         }
     }
 
-    //TODO: cambiare la url per la consegna finale /confirm/{randomUUID}
-    @GetMapping("/confirm-account")
-    public String confirmUserAccount(@RequestParam("token")String confirmationToken)
+    @GetMapping("/confirm/{randomUUID}")
+    public String confirmUserAccount(@PathVariable String randomUUID)
     {
-        ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(confirmationToken);
+        ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(randomUUID);
         String message;
         if(token != null)
         {
