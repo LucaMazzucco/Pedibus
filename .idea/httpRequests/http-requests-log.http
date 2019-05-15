@@ -1,3 +1,102 @@
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
+
+<> 2019-05-15T025830.200.txt
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
+
+<> 2019-05-15T025702.200.txt
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
+
+<> 2019-05-15T025527.200.txt
+
+###
+
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{"username": "s246360@studenti.polito.it",   "password" : "aaaa1234"}
+
+<> 2019-05-15T025512.403.json
+
+###
+
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{"username": "s246360@studenti.polito.it",   "password" : "aaaa1234"}
+
+<> 2019-05-15T023532.200.json
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
+
+<> 2019-05-15T023506.200.txt
+
+###
+
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{"username": "s246360@studenti.polito.it",   "password" : "aaaa1234"}
+
+<> 2019-05-15T105422.403.json
+
+###
+
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{"username": "s246360@studenti.polito.it",   "password" : "aaaa1234"}
+
+<> 2019-05-15T104407.403.json
+
+###
+
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{"username": "s246360@studenti.polito.it",   "password" : "aaaa1234"}
+
+<> 2019-05-15T104159.403.json
+
+###
+
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{"username": "s246360@studenti.polito.it",   "password" : "aaaa1234"}
+
+<> 2019-05-15T103043.200.json
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
+
+<> 2019-05-15T102849.200.txt
+
+###
+
 POST http://localhost:8080/recover
 Content-Type: application/json
 
@@ -346,105 +445,6 @@ Content-Type: application/json
 {"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
 
 <> 2019-05-14T121041.200.txt
-
-###
-
-POST http://localhost:8080/login
-Content-Type: application/json
-
-{"username": "s246360@studenti.polito.it",   "password" : "aaaa1234"}
-
-<> 2019-05-14T120849.200.json
-
-###
-
-POST http://localhost:8080/login
-Content-Type: application/json
-
-{"username": "s246360@studenti.polito.it",   "password" : "aaaa1234"}
-
-<> 2019-05-14T120812.200.json
-
-###
-
-POST http://localhost:8080/register
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
-
-<> 2019-05-14T120701.200.txt
-
-###
-
-POST http://localhost:8080/login
-Content-Type: application/json
-
-{"username": "s246360@studenti.polito.it",   "password" : "aaaa1234"}
-
-<> 2019-05-14T115743.500.json
-
-###
-
-POST http://localhost:8080/register
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
-
-<> 2019-05-14T115714.200.txt
-
-###
-
-POST http://localhost:8080/login
-Content-Type: application/json
-
-{"username": "s246360@studenti.polito.it",   "password" : "aaaa1234"}
-
-<> 2019-05-14T112431.500.json
-
-###
-
-POST http://localhost:8080/register
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
-
-<> 2019-05-14T112311.200.txt
-
-###
-
-POST http://localhost:8080/register
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
-
-<> 2019-05-14T112259.200.txt
-
-###
-
-POST http://localhost:8080/login
-Content-Type: application/json
-
-{"username": "s246360@studenti.polito.it",   "password" : "aaaa1234"}
-
-<> 2019-05-14T112024.500.json
-
-###
-
-POST http://localhost:8080/register
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
-
-<> 2019-05-14T111949.200.txt
-
-###
-
-POST http://localhost:8080/login
-Content-Type: application/json
-
-{"username": "s246360@studenti.polito.it",   "password" : "aaaa1234"}
-
-<> 2019-05-14T111850.500.json
 
 ###
 
