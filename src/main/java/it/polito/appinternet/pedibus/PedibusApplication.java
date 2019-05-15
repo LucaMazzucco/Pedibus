@@ -2,6 +2,8 @@ package it.polito.appinternet.pedibus;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.ozimov.springboot.mail.configuration.EnableEmailTools;
+import it.polito.appinternet.pedibus.model.User;
+import it.polito.appinternet.pedibus.repository.UserRepository;
 import org.json.JSONArray;
 import org.json.simple.parser.JSONParser;
 import org.slf4j.Logger;
@@ -26,6 +28,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
 
 @SpringBootApplication
 @EnableEmailTools
@@ -33,7 +37,10 @@ public class PedibusApplication {
 
 
     @Autowired
-    StopRepository stopRepo;
+    UserRepository userRepo;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Autowired
     org.springframework.data.mongodb.core.MongoTemplate mongoTemplate;
@@ -53,5 +60,12 @@ public class PedibusApplication {
     @PostConstruct
     public void init() {
         mongoTemplate.getDb().drop();
+        //Add the system-admin
+        User u = new User("admin@admin.com", passwordEncoder.encode("admin"), true);
+        List<String> roles = new LinkedList<>();
+        roles.add("ROLE_ADMIN");
+        roles.add("ROLE_USER");
+        u.setRoles(roles);
+        userRepo.insert(u);
     }
 }

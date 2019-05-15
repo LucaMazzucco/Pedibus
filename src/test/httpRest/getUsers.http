@@ -1,0 +1,10 @@
+GET http://localhost:8080/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTU1NzkyODg3OCwiZXhwIjoxNTU3OTMyNDc4fQ.cKta0x01QqS4ptPGedcBvNPO4BoD9FE2KluKUZuX4MY
+Content-Type: application/json
+
+{
+  "roles" : [ "ROLE_USER" ],
+  "username" : "admin"
+}
+
+###

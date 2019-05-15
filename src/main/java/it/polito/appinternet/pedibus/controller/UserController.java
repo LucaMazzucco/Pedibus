@@ -9,6 +9,7 @@ import it.polito.appinternet.pedibus.service.EmailSenderService;
 import it.polito.appinternet.pedibus.model.User;
 import it.polito.appinternet.pedibus.repository.ConfirmationTokenRepository;
 import it.polito.appinternet.pedibus.repository.UserRepository;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -121,6 +122,9 @@ public class UserController {
                 return "The two password must be the same!";
             }
             User u = new User(email,passwordEncoder.encode(password),false);
+            List<String> roles = new LinkedList<>();
+            roles.add("ROLE_USER");
+            u.setRoles(roles);
             userRepository.insert(u);
 
             ConfirmationToken confirmationToken = new ConfirmationToken(u);
@@ -164,5 +168,15 @@ public class UserController {
         return message;
     }
 
+    @GetMapping("/users")
+    public String getSystemUser(){
+        List<User> allUsers;
+        allUsers = userRepository.findAll();
+        List<String> usernames = new LinkedList<>();
+        for(User u: allUsers){
+            usernames.add(u.getName());
+        }
+        return new JSONArray(usernames).toString();
+    }
 
 }
