@@ -64,13 +64,12 @@ public class UserController {
             JSONObject json_input = new JSONObject(payload);
             if(!json_input.has("username") || !json_input.has("password")){
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-                //return ResponseEntity.badRequest().body("Wrong JSON format");
             }
             String username = json_input.getString("username");
             String password = json_input.getString("password");
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            User u = userRepository.findByEmail(username).get();
-            if(!u.isEnabled()){
+            User user = userRepository.findByEmail(username).get();
+            if(!user.isEnabled()){
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
             }
             String token = jwtTokenProvider.createToken(username, userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Username " + username + "not found")).getRoles());
@@ -127,17 +126,16 @@ public class UserController {
             return "User already exists!";
         }
         else{
-            //TODO: validate password e email
             if(!password.equals(passwordConfirm)){
                 return "The two password must be the same!";
             }
-            User u = new User(email,passwordEncoder.encode(password),false);
+            User user = new User(email,passwordEncoder.encode(password),false);
             List<String> roles = new LinkedList<>();
             roles.add("ROLE_USER");
-            u.setRoles(roles);
-            userRepository.insert(u);
+            user.setRoles(roles);
+            userRepository.insert(user);
 
-            ConfirmationToken confirmationToken = new ConfirmationToken(u);
+            ConfirmationToken confirmationToken = new ConfirmationToken(user);
 
             confirmationTokenRepository.insert(confirmationToken);
 
@@ -157,7 +155,6 @@ public class UserController {
     public ResponseEntity confirmUserAccount(@PathVariable String randomUUID)
     {
         ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(randomUUID);
-        String message;
         if(token != null)
         {
             Optional<User> user = userRepository.findByEmail(token.getUser().getEmail());
@@ -165,19 +162,15 @@ public class UserController {
                 user.get().setEnabled(true);
                 userRepository.save(user.get());
                 return new ResponseEntity(HttpStatus.OK);
-                //message = "Your account has been successfully confirmed";
             }
             else{
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
-                //message = "Your account doesn't exists";
             }
         }
         else
         {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
-            //message = "The link is invalid or broken!";
         }
-        //return message;
     }
 
     @GetMapping("/users")
@@ -185,8 +178,8 @@ public class UserController {
         List<User> allUsers;
         allUsers = userRepository.findAll();
         List<String> usernames = new LinkedList<>();
-        for(User u: allUsers){
-            usernames.add(u.getName());
+        for(User user: allUsers){
+            usernames.add(user.getName());
         }
         return new JSONArray(usernames).toString();
     }
