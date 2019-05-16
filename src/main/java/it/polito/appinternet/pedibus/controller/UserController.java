@@ -197,17 +197,41 @@ public class UserController {
             return;
 
         JSONObject jsonInput = new JSONObject(payload);
-        if(!jsonInput.has("Line"))
+        if(!jsonInput.has("Line") || !jsonInput.has("admin"))
             return;
 
+        boolean enableAdmin = jsonInput.getBoolean("admin");
         String line_name = jsonInput.getString("Line");
         Line line = lineRepository.findByLineName(line_name);
-        if(line.getAdmins().contains(user.getEmail())){
-            line.getAdmins().remove(user.getEmail());
+
+        if(line == null)
             return;
+
+        if(enableAdmin){
+            if(line.getAdmins().contains(user.getEmail()))
+                return;
+
+            if(user.getRoles().contains("ROLE_USER")){
+                user.getRoles().remove("ROLE_USER");
+                user.getRoles().add("ROLE_ADMIN");
+            }
+
+            user.getAdminLines().add(line_name);
+            line.getAdmins().add(user.getEmail());
+            return;
+
         }
 
-        line.getAdmins().add(user.getEmail());
+        if(user.getAdminLines().contains(line_name) && line.getAdmins().contains(user.getEmail())){
+            user.getAdminLines().remove(line_name);
+            line.getAdmins().remove(user.getEmail());
+
+            if(user.getAdminLines().isEmpty() && user.getRoles().contains("ROLE_ADMIN")){
+                user.getRoles().remove("ROLE_ADMIN");
+                user.getRoles().add("ROLE_USER");
+            }
+        }
+
     }
 
 }

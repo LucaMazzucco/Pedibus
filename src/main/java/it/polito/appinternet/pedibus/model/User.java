@@ -29,6 +29,7 @@ public class User implements UserDetails {
     private String name;
     private boolean isEnabled;
     private List<String> roles = new ArrayList<>();
+    private List<String> adminLines = new ArrayList<>();
 
     public User(String email, String password, boolean isEnabled) {
         this.email = email;
@@ -60,5 +61,4 @@ public class User implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
 }
