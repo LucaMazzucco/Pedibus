@@ -8,6 +8,7 @@ import it.polito.appinternet.pedibus.repository.UserRepository;
 import it.polito.appinternet.pedibus.service.EmailSenderService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,18 +34,18 @@ public class PasswordChangeController {
     PasswordEncoder passwordEncoder;
 
     @GetMapping("/recover/{randomUUID}")
-    public String showChangePassword(@PathVariable String randomUUID, @ModelAttribute("request")PwdChangePost pcp, Model m){
+    public ResponseEntity showChangePassword(@PathVariable String randomUUID, @ModelAttribute("request")PwdChangePost pcp, Model m){
         m.addAttribute("token", randomUUID);
         PwdChangeRequest pcr = pwdChangeRequestRepo.findByToken(randomUUID);
         if(pcr != null){
-            return "changePassword";
+            return new ResponseEntity(HttpStatus.OK);
         }
         else{
-            return "errorPage";
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
     @PostMapping("/recover/{randomUUID}")
-    public String changePassword(@PathVariable String randomUUID, @ModelAttribute("request") PwdChangePost pcp, Model m) {
+    public ResponseEntity changePassword(@PathVariable String randomUUID, @ModelAttribute("request") PwdChangePost pcp, Model m) {
         String pass1 = pcp.getPass1();
         String pass2 = pcp.getPass2();
         PwdChangeRequest pcr = pwdChangeRequestRepo.findByToken(randomUUID);
@@ -52,7 +53,6 @@ public class PasswordChangeController {
         cal.setTime(new Date());
         cal.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date utcDate = cal.getTime();
-        //TODO: aggiungere password validator
         if(pass1.equals(pass2)) {
             if(!pcr.getExpirationDate().before(utcDate)){
                 m.addAttribute("message", "Your link has expired");
@@ -62,11 +62,11 @@ public class PasswordChangeController {
             User u = optU.get();
             u.setPassword(passwordEncoder.encode(pass1));
             userRepository.save(u);
-            return "resultPwdChange";
+            return new ResponseEntity(HttpStatus.OK);
         }
         else{
             m.addAttribute("message", "The two password doesn't match");
-            return "resultPwdChange";
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
 }

@@ -1,3 +1,241 @@
+PUT http://localhost:8080/users/5cdd8af40abbab330c6b3173
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTU1ODAyMjkwNiwiZXhwIjoxNTU4MDI2NTA2fQ.E5FOx-QpdRvWw9qdlwisuiyxVgH1fMdJibKe9MyTfWE
+Content-Type: application/json
+
+{
+  "lineName": "Line1",
+  "enable": "false"
+}
+
+###
+
+PUT http://localhost:8080/users/5cdd8af40abbab330c6b3173
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTU1ODAyMjkwNiwiZXhwIjoxNTU4MDI2NTA2fQ.E5FOx-QpdRvWw9qdlwisuiyxVgH1fMdJibKe9MyTfWE
+Content-Type: application/json
+
+{
+  "lineName": "Line1",
+  "enable": "false"
+}
+
+###
+
+PUT http://localhost:8080/users/5cdd8af40abbab330c6b3173
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTU1ODAyMjkwNiwiZXhwIjoxNTU4MDI2NTA2fQ.E5FOx-QpdRvWw9qdlwisuiyxVgH1fMdJibKe9MyTfWE
+Content-Type: application/json
+
+{
+  "lineName": "Line1",
+  "enable": "true"
+}
+
+###
+
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{"username": "admin@admin.com",   "password" : "admin"}
+
+<> 2019-05-16T060826.200.json
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s243920@studenti.polito.it",   "password" : "12_zwRHIPKA",   "passwordConfirm": "12_zwRHIPKA"}
+
+<> 2019-05-16T060822.200.txt
+
+###
+
+PUT http://localhost:8080/users/5cdd89e50abbab2ec0495731
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTU1ODAyMjY1MCwiZXhwIjoxNTU4MDI2MjUwfQ.ngHnamyiNaifh2V3KUK-hCq3OiNS23TWDAbaHvG9sNw
+Content-Type: application/json
+
+{
+  "lineName": "Line1",
+  "enable": "true"
+}
+
+###
+
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{"username": "admin@admin.com",   "password" : "admin"}
+
+<> 2019-05-16T060410.200.json
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s243920@studenti.polito.it",   "password" : "12_zwRHIPKA",   "passwordConfirm": "12_zwRHIPKA"}
+
+<> 2019-05-16T060351.200.txt
+
+###
+
+PUT http://localhost:8080/users/5cdd88a00abbab0a205eedd6
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTU1ODAyMjQ4NiwiZXhwIjoxNTU4MDI2MDg2fQ.pHqhhcHaMlPWv4UdlmshCzcXvszV5PJeFratGAj_bGI
+Content-Type: application/json
+
+{
+  "lineName": "Line1",
+  "enable": "true"
+}
+
+###
+
+POST http://localhost:8080/login
+Content-Type: application/json
+
+{"username": "admin@admin.com",   "password" : "admin"}
+
+<> 2019-05-16T060127.200.json
+
+###
+
+PUT http://localhost:8080/users/5cdd88a00abbab0a205eedd6
+Content-Type: application/json
+
+{
+  "lineName": "Line1",
+  "enable": "true"
+}
+
+<> 2019-05-16T060045.403.json
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s243920@studenti.polito.it",   "password" : "12_zwRHIPKA",   "passwordConfirm": "12_zwRHIPKA"}
+
+<> 2019-05-16T055826.200.txt
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s243920@studenti.polito.it",   "password" : "12_zwRHIPKA",   "passwordConfirm": "12_zwRHIPKA"}
+
+<> 2019-05-16T055519.200.txt
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "12_zwRHIPKA",   "passwordConfirm": "12_zwRHIPKA"}
+
+<> 2019-05-16T055226.200.txt
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "12_zwRHIPKA",   "passwordConfirm": "12_zwRHIPKA"}
+
+<> 2019-05-16T055142.200.txt
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "12_zwRHIPKA",   "passwordConfirm": "12_zwRHIPKA"}
+
+<> 2019-05-16T054840.200.txt
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "12_zwRHIPKA",   "passwordConfirm": "12_zwRHIPKA"}
+
+<> 2019-05-16T053126.200.txt
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "Provapsw1_",   "passwordConfirm": "Provapsw1_"}
+
+<> 2019-05-16T052834.200.txt
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "Provapsw1_",   "passwordConfirm": "Provapsw1_"}
+
+<> 2019-05-16T052801.200.txt
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "Provapsw1_",   "passwordConfirm": "Provapsw1_"}
+
+<> 2019-05-16T052424.200.txt
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "Provapsw1",   "passwordConfirm": "Provapsw1"}
+
+<> 2019-05-16T052253.200.txt
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "Provapsw1",   "passwordConfirm": "Provapsw1"}
+
+<> 2019-05-16T052243.200.txt
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "Aaaa12345",   "passwordConfirm": "Aaaa12345"}
+
+<> 2019-05-16T052150.200.txt
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "aaaa12345",   "passwordConfirm": "aaaa12345"}
+
+<> 2019-05-16T052127.200.txt
+
+###
+
+POST http://localhost:8080/register
+Content-Type: application/json
+
+{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
+
+<> 2019-05-16T052054.200.txt
+
+###
+
 GET http://localhost:8080/users
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTU1NzkyODg3OCwiZXhwIjoxNTU3OTMyNDc4fQ.cKta0x01QqS4ptPGedcBvNPO4BoD9FE2KluKUZuX4MY
 Content-Type: application/json
@@ -235,231 +473,6 @@ Content-Type: application/json
 {"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
 
 <> 2019-05-15T100345.200.txt
-
-###
-
-POST http://localhost:8080/recover
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it"}
-
-<> 2019-05-14T051852.200.txt
-
-###
-
-POST http://localhost:8080/register
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
-
-<> 2019-05-14T051835.200.txt
-
-###
-
-POST http://localhost:8080/recover
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it"}
-
-<> 2019-05-14T051601.200.txt
-
-###
-
-POST http://localhost:8080/register
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
-
-<> 2019-05-14T051537.200.txt
-
-###
-
-POST http://localhost:8080/recover
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it"}
-
-<> 2019-05-14T051402.200.txt
-
-###
-
-POST http://localhost:8080/register
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
-
-<> 2019-05-14T051349.200.txt
-
-###
-
-POST http://localhost:8080/recover
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it"}
-
-<> 2019-05-14T051203.200.txt
-
-###
-
-POST http://localhost:8080/register
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
-
-<> 2019-05-14T051134.200.txt
-
-###
-
-POST http://localhost:8080/register
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
-
-<> 2019-05-14T045211.200.txt
-
-###
-
-POST http://localhost:8080/register
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
-
-<> 2019-05-14T045057.200.txt
-
-###
-
-POST http://localhost:8080/recover
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it"}
-
-<> 2019-05-14T044935.200.txt
-
-###
-
-POST http://localhost:8080/register
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
-
-<> 2019-05-14T044925.200.txt
-
-###
-
-POST http://localhost:8080/recover
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it"}
-
-<> 2019-05-14T041815.200.txt
-
-###
-
-POST http://localhost:8080/register
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
-
-<> 2019-05-14T041803.200.txt
-
-###
-
-POST http://localhost:8080/recover
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it"}
-
-<> 2019-05-14T034900.200.txt
-
-###
-
-POST http://localhost:8080/register
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
-
-<> 2019-05-14T034847.200.txt
-
-###
-
-POST http://localhost:8080/recover
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it"}
-
-<> 2019-05-14T033702.200.txt
-
-###
-
-POST http://localhost:8080/register
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
-
-<> 2019-05-14T033649.200.txt
-
-###
-
-POST http://localhost:8080/recover
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it"}
-
-<> 2019-05-14T033305.200.txt
-
-###
-
-POST http://localhost:8080/register
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
-
-<> 2019-05-14T033254.200.txt
-
-###
-
-POST http://localhost:8080/register
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
-
-<> 2019-05-14T031919.404.json
-
-###
-
-POST http://localhost:8080/register
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
-
-<> 2019-05-14T031747.404.json
-
-###
-
-POST http://localhost:8080/recover
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it"}
-
-<> 2019-05-14T031410.200.txt
-
-###
-
-POST http://localhost:8080/register
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it",   "password" : "aaaa1234",   "passwordConfirm": "aaaa1234"}
-
-<> 2019-05-14T031349.200.txt
-
-###
-
-POST http://localhost:8080/recover
-Content-Type: application/json
-
-{"email": "s246360@studenti.polito.it"}
-
-<> 2019-05-14T030837.200.txt
 
 ###
 

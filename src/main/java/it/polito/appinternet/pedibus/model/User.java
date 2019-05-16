@@ -1,5 +1,6 @@
 package it.polito.appinternet.pedibus.model;
 
+import it.polito.appinternet.pedibus.annotations.ValidPassword;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,7 +26,10 @@ public class User implements UserDetails {
     @Id
     private String id;
     private String email;
+
+    @ValidPassword
     private String password;
+
     private String name;
     private boolean isEnabled;
     private List<String> roles = new ArrayList<>();

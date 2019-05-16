@@ -20,6 +20,7 @@
 
     <dependencies>
 
+
         <dependency>
             <groupId>it.ozimov</groupId>
             <artifactId>spring-boot-email-core</artifactId>
@@ -108,8 +109,13 @@
             <artifactId>jaxb-api</artifactId>
             <version>2.1</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.passay</groupId>
+            <artifactId>passay</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
+
 
     <build>
         <plugins>

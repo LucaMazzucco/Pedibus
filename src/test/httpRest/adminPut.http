@@ -1,0 +1,10 @@
+PUT http://localhost:8080/users/5cdd8af40abbab330c6b3173
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTU1ODAyMjkwNiwiZXhwIjoxNTU4MDI2NTA2fQ.E5FOx-QpdRvWw9qdlwisuiyxVgH1fMdJibKe9MyTfWE
+Content-Type: application/json
+
+{
+  "lineName": "Line1",
+  "enable": "false"
+}
+
+###
