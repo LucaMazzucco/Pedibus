@@ -1,12 +1,10 @@
 package it.polito.appinternet.pedibus.controller;
 
-import it.polito.appinternet.pedibus.model.ConfirmationToken;
-import it.polito.appinternet.pedibus.model.PwdChangePost;
-import it.polito.appinternet.pedibus.model.PwdChangeRequest;
+import it.polito.appinternet.pedibus.model.*;
+import it.polito.appinternet.pedibus.repository.LineRepository;
 import it.polito.appinternet.pedibus.repository.PwdChangeRequestRepository;
 import it.polito.appinternet.pedibus.security.JwtTokenProvider;
 import it.polito.appinternet.pedibus.service.EmailSenderService;
-import it.polito.appinternet.pedibus.model.User;
 import it.polito.appinternet.pedibus.repository.ConfirmationTokenRepository;
 import it.polito.appinternet.pedibus.repository.UserRepository;
 import org.json.JSONArray;
@@ -25,6 +23,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+
 import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -34,6 +35,9 @@ import java.util.*;
 public class UserController {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private LineRepository lineRepository;
 
     @Autowired
     private ConfirmationTokenRepository confirmationTokenRepository;
@@ -177,6 +181,33 @@ public class UserController {
             usernames.add(u.getName());
         }
         return new JSONArray(usernames).toString();
+    }
+
+    @PutMapping("/users/{user_id}")
+    public void enableUserAdmin(@PathVariable String user_id, @RequestBody String payload, ServletRequest req){
+        Optional<User> opt_user = userRepository.findById(user_id);
+
+        if(!opt_user.isPresent()){
+            return;
+        }
+        User user = opt_user.get();
+        String token = jwtTokenProvider.resolveToken((HttpServletRequest) req);
+        String username = jwtTokenProvider.getUsername(token);
+        if(username == null)
+            return;
+
+        JSONObject jsonInput = new JSONObject(payload);
+        if(!jsonInput.has("Line"))
+            return;
+
+        String line_name = jsonInput.getString("Line");
+        Line line = lineRepository.findByLineName(line_name);
+        if(line.getAdmins().contains(user.getEmail())){
+            line.getAdmins().remove(user.getEmail());
+            return;
+        }
+
+        line.getAdmins().add(user.getEmail());
     }
 
 }

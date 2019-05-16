@@ -26,6 +26,8 @@ public class Line{
     @Getter @Setter
     private List<Stop> stopListR;
 
+    private List<String> lineAdmins;
+
     @JsonCreator
     public Line(@JsonProperty("lineName") String lineName, @JsonProperty("stopListA") List<Stop> stopListA, @JsonProperty("stopListR") List<Stop> stopListR) {
         this.lineName = lineName;
@@ -36,5 +38,9 @@ public class Line{
     @Override
     public String toString() {
         return lineName + stopListA + stopListR;
+    }
+
+    public List<String> getAdmins(){
+        return lineAdmins;
     }
 }
