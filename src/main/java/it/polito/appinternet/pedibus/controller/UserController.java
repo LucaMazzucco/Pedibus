@@ -10,6 +10,7 @@ import it.polito.appinternet.pedibus.repository.UserRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -62,11 +63,15 @@ public class UserController {
         try {
             JSONObject json_input = new JSONObject(payload);
             if(!json_input.has("username") || !json_input.has("password")){
-                return ResponseEntity.badRequest().body("Wrong JSON format");
+                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
             }
             String username = json_input.getString("username");
             String password = json_input.getString("password");
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+            User user = userRepository.findByEmail(username).get();
+            if(!user.isEnabled()){
+                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            }
             String token = jwtTokenProvider.createToken(username, userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Username " + username + "not found")).getRoles());
 
             Map<Object, Object> model = new HashMap<>();
@@ -121,17 +126,16 @@ public class UserController {
             return "User already exists!";
         }
         else{
-            //TODO: validate password e email
             if(!password.equals(passwordConfirm)){
                 return "The two password must be the same!";
             }
-            User u = new User(email,passwordEncoder.encode(password),false);
+            User user = new User(email,passwordEncoder.encode(password),false);
             List<String> roles = new LinkedList<>();
             roles.add("ROLE_USER");
-            u.setRoles(roles);
-            userRepository.insert(u);
+            user.setRoles(roles);
+            userRepository.insert(user);
 
-            ConfirmationToken confirmationToken = new ConfirmationToken(u);
+            ConfirmationToken confirmationToken = new ConfirmationToken(user);
 
             confirmationTokenRepository.insert(confirmationToken);
 
@@ -148,28 +152,25 @@ public class UserController {
     }
 
     @GetMapping("/confirm/{randomUUID}")
-    public String confirmUserAccount(@PathVariable String randomUUID)
+    public ResponseEntity confirmUserAccount(@PathVariable String randomUUID)
     {
         ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(randomUUID);
-        String message;
         if(token != null)
         {
             Optional<User> user = userRepository.findByEmail(token.getUser().getEmail());
             if(user.isPresent()){
                 user.get().setEnabled(true);
                 userRepository.save(user.get());
-                message = "Your account has been successfully confirmed";
+                return new ResponseEntity(HttpStatus.OK);
             }
             else{
-                message = "Your account doesn't exists";
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
         }
         else
         {
-            message = "The link is invalid or broken!";
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-
-        return message;
     }
 
     @GetMapping("/users")
@@ -177,8 +178,8 @@ public class UserController {
         List<User> allUsers;
         allUsers = userRepository.findAll();
         List<String> usernames = new LinkedList<>();
-        for(User u: allUsers){
-            usernames.add(u.getName());
+        for(User user: allUsers){
+            usernames.add(user.getName());
         }
         return new JSONArray(usernames).toString();
     }
@@ -197,11 +198,11 @@ public class UserController {
             return;
 
         JSONObject jsonInput = new JSONObject(payload);
-        if(!jsonInput.has("Line") || !jsonInput.has("admin"))
+        if(!jsonInput.has("lineName") || !jsonInput.has("enable"))
             return;
 
-        boolean enableAdmin = jsonInput.getBoolean("admin");
-        String line_name = jsonInput.getString("Line");
+        boolean enableAdmin = jsonInput.getBoolean("enable");
+        String line_name = jsonInput.getString("lineName");
         Line line = lineRepository.findByLineName(line_name);
 
         if(line == null)
@@ -218,6 +219,8 @@ public class UserController {
 
             user.getAdminLines().add(line_name);
             line.getAdmins().add(user.getEmail());
+            userRepository.save(user);
+            lineRepository.save(line);
             return;
 
         }
@@ -230,8 +233,9 @@ public class UserController {
                 user.getRoles().remove("ROLE_ADMIN");
                 user.getRoles().add("ROLE_USER");
             }
+            userRepository.save(user);
+            lineRepository.save(line);
         }
 
     }
-
 }
