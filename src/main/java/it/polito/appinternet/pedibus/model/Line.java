@@ -12,22 +12,21 @@ import java.util.List;
 
 @Document(collection = "lines")
 @NoArgsConstructor
+@Getter @Setter
 public class Line{
 
     @Id
-    @Getter @Setter
     private String id;
 
-    @Getter @Setter
     private String lineName;
 
-    @Getter @Setter
     private List<Stop> stopListA;
 
-    @Getter @Setter
     private List<Stop> stopListR;
 
     private List<String> lineAdmins = new ArrayList<>();
+
+    private List<Ride> rides;
 
     @JsonCreator
     public Line(@JsonProperty("lineName") String lineName, @JsonProperty("stopListA") List<Stop> stopListA, @JsonProperty("stopListR") List<Stop> stopListR) {

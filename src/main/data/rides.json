@@ -1,0 +1,14 @@
+[
+  {
+    "flagAndata":"true",
+    "rideDate":"2019/04/15",
+    "reservations": [
+    ]
+  },
+  {
+    "flagAndata":"false",
+    "rideDate": "2019/04/15",
+    "reservations": [
+    ]
+  }
+]

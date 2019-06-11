@@ -5,9 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
-import it.polito.appinternet.pedibus.model.Role;
-import org.springframework.data.mongodb.core.index.IndexDirection;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,7 +14,6 @@ import static java.util.stream.Collectors.toList;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Document(collection = "users")
 @NoArgsConstructor
@@ -25,13 +21,16 @@ import java.util.Set;
 public class User implements UserDetails {
     @Id
     private String id;
-    private String email;
 
+    private String email;
     @ValidPassword
     private String password;
 
     private String name;
-    private boolean isEnabled;
+    private String surname;
+    private String registrationNumber;
+
+    private boolean isEnabled; //Flag account abilitato
     private List<String> roles = new ArrayList<>();
     private List<String> adminLines = new ArrayList<>();
 

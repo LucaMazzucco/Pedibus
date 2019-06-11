@@ -14,34 +14,34 @@ import java.util.Date;
 
 @Document(collection = "reservations")
 @NoArgsConstructor
+@Getter @Setter
 public class Reservation {
 
     @Id
-    @Getter @Setter
     private String id;
 
-    @Getter @Setter
     private String lineName;
 
-    @Getter @Setter
     private String stopName;
 
-    @Getter @Setter
-    private Person passenger;
+    private User passenger;
 
-    @Getter @Setter
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
     private Date reservationDate;
 
     //true = da stopName a scuola; false = da scuola a stopName
-    @Getter @Setter
     private boolean flagAndata;
 
-    public Reservation(@JsonProperty("lineName") String lineName, @JsonProperty("stopName") String stopName, @JsonProperty("passenger") Person passenger, @JsonProperty("reservationDate") Date reservationDate, @JsonProperty("isA") boolean flagAndata) {
+    private boolean isPresent;
+
+    public Reservation(@JsonProperty("lineName") String lineName, @JsonProperty("stopName") String stopName,
+                       @JsonProperty("passenger") User passenger, @JsonProperty("reservationDate") Date reservationDate,
+                       @JsonProperty("isA") boolean flagAndata, @JsonProperty("isPresent") Boolean isPresent) {
         this.lineName = lineName;
         this.stopName = stopName;
         this.passenger = passenger;
         this.reservationDate = reservationDate;
         this.flagAndata = flagAndata;
+        this.isPresent = isPresent;
     }
 }

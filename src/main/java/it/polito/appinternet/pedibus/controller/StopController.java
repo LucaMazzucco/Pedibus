@@ -5,7 +5,6 @@ import it.polito.appinternet.pedibus.model.Stop;
 import it.polito.appinternet.pedibus.repository.StopRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.PostConstruct;
