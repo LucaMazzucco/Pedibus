@@ -127,7 +127,6 @@ public class LineController {
                             )
                     );
                     stop.put("stopName",k);
-                    //TODO: Da impostare come prendersi l'orario delle fermate
                     stop.put("time",stopRepo.findByStopName(k).getTime());
                     stop.put("people",people);
                     stopsJson.put(stop);
