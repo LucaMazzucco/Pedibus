@@ -2,7 +2,6 @@ package it.polito.appinternet.pedibus.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.data.annotation.Id;
@@ -14,7 +13,6 @@ import java.util.Date;
 @NoArgsConstructor
 @Getter @Setter
 public class Stop {
-
     @Id
     private String id;
 

@@ -20,6 +20,7 @@ public class Ride {
     @Id
     private String id;
 
+    private String lineName;
     private Boolean flagAndata;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
@@ -28,7 +29,10 @@ public class Ride {
     private List<String> reservations;
 
     @JsonCreator
-    public Ride(@JsonProperty("flagAndata") Boolean flagAndata, @JsonProperty("rideDate") Date rideDate, @JsonProperty("reservations") List<String> reservations) {
+    public Ride(@JsonProperty("lineName") String lineName,
+            @JsonProperty("flagAndata") Boolean flagAndata, @JsonProperty("rideDate") Date rideDate,
+            @JsonProperty("reservations") List<String> reservations) {
+        this.lineName = lineName;
         this.flagAndata = flagAndata;
         this.rideDate = rideDate;
         this.reservations = reservations;

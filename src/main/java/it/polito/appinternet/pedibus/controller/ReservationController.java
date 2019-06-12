@@ -3,10 +3,7 @@ package it.polito.appinternet.pedibus.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import it.polito.appinternet.pedibus.model.*;
-import it.polito.appinternet.pedibus.repository.LineRepository;
-import it.polito.appinternet.pedibus.repository.UserRepository;
-import it.polito.appinternet.pedibus.repository.ReservationRepository;
-import it.polito.appinternet.pedibus.repository.StopRepository;
+import it.polito.appinternet.pedibus.repository.*;
 import org.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,19 +29,36 @@ public class ReservationController {
     UserRepository userRepo;
 
     @Autowired
-    StopRepository stopRepo;
+    RideRepository rideRepo;
 
     @PostConstruct
     public void init() {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            Reservation[] newRes = mapper.readValue(new FileReader("src/main/data/reservation.json"), Reservation[].class);
-            for(Reservation r : newRes){
-                reservationRepo.insert(r);
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+//        ObjectMapper mapper = new ObjectMapper();
+//        ObjectMapper rideMapper = new ObjectMapper();
+//        try {
+//            Ride[] newRides = rideMapper.readValue(new FileReader("src/main/data/rides.json"), Ride[].class);
+//            Reservation[] newRes = mapper.readValue(new FileReader("src/main/data/reservation.json"), Reservation[].class);
+//            List<Reservation> reservationsSupportList = new LinkedList<>();
+//            for(Ride ride : newRides){
+//                for(Reservation r : newRes){
+//                    if(ride.getLineName().equals(r.getLineName()) &&
+//                            ride.getRideDate().getDate() == r.getReservationDate().getDate() &&
+//                            ride.getFlagAndata() == r.isFlagAndata()
+//                    ){
+//                        r = reservationRepo.insert(r);
+//                        ride.getReservations().add(r.getId());
+//                    }
+//                    else{
+//                        reservationsSupportList.add(r);
+//                    }
+//                }
+//                rideRepo.insert(ride);
+//                newRes = reservationsSupportList.toArray(new Reservation[reservationsSupportList.size()]);
+//                reservationsSupportList = new LinkedList<>();
+//            }
+//        } catch (Exception e){
+//            e.printStackTrace();
+//        }
     }
 
     @GetMapping("/insertReservation")
@@ -120,7 +134,8 @@ public class ReservationController {
         JSONObject main_json = new JSONObject(payload);
         if(!main_json.has("flagAndata") ||
             !main_json.has("stopName") ||
-            !main_json.has("passenger")
+            !main_json.has("passenger") ||
+                !main_json.has("isPresent")
             ){
             return new Long(-2);
         }
@@ -134,10 +149,24 @@ public class ReservationController {
         }
         User p = userRepo.findByRegistrationNumber(p_json.getString("registrationNumber"));
         String stopName = main_json.getString("stopName");
-        Stop s = stopRepo.findByStopName(stopName);
         Boolean flagAndata = main_json.getBoolean("flagAndata");
+        if(flagAndata==null){
+            return new Long(-4);
+        }
+        Stop s;
+        if(flagAndata){
+            s = l.getStopListA().stream()
+                    .filter(x->x.getStopName().equals(stopName))
+                    .findAny().orElse(null);
+        }
+        else{
+            s = l.getStopListR().stream()
+                    .filter(x->x.getStopName().equals(stopName))
+                    .findAny().orElse(null);
+        }
         Boolean isPresent = main_json.getBoolean("isPresent");
         Ride ride = l.getRides().stream()
+                .filter(r->r.getLineName().equals(line_name))
                 .filter(r->r.getRideDate().getDate()==tmp_date.getDate())
                 .filter(r -> r.getFlagAndata()==flagAndata)
                 .findAny().orElse(null);
@@ -147,6 +176,7 @@ public class ReservationController {
         Reservation r = new Reservation(line_name,stopName,p,tmp_date,flagAndata,isPresent);
         r = reservationRepo.insert(r); //insert crea un nuovo id
         ride.getReservations().add(r.getId());
+        lineRepo.save(l);
         //ride.getReservations().put(r.getId(),p.getEmail());
         return Long.getLong(r.getId());
     }

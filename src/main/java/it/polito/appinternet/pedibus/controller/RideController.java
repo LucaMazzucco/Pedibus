@@ -17,15 +17,6 @@ public class RideController {
 
     @PostConstruct
     public void init() {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            Ride[] newRides = mapper.readValue(new FileReader("src/main/data/rides.json"), Ride[].class);
-            for(Ride ride : newRides){
-                rideRepo.insert(ride);
-            }
-            return;
-        } catch (Exception e){
-            e.printStackTrace();
-        }
+        //moved to reservationController
     }
 }

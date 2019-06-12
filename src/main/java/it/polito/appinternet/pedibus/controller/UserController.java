@@ -1,5 +1,6 @@
 package it.polito.appinternet.pedibus.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polito.appinternet.pedibus.model.*;
 import it.polito.appinternet.pedibus.repository.LineRepository;
 import it.polito.appinternet.pedibus.repository.PwdChangeRequestRepository;
@@ -19,23 +20,22 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 
-import static org.springframework.http.ResponseEntity.created;
 import static org.springframework.http.ResponseEntity.ok;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.util.*;
 
 @RestController
 public class UserController {
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository userRepo;
 
     @Autowired
     private LineRepository lineRepository;
@@ -58,6 +58,21 @@ public class UserController {
     @Autowired
     private PwdChangeRequestRepository pwdChangeRequestRepo;
 
+    @PostConstruct
+    public void init(){
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            User[] newUsers = mapper.readValue(new FileReader("src/main/data/persons.json"), User[].class);
+            for(User a : newUsers){
+                userRepo.insert(a);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     @PostMapping("/login")
     public ResponseEntity loginUser(@RequestBody String payload){
         try {
@@ -68,11 +83,11 @@ public class UserController {
             String username = json_input.getString("username");
             String password = json_input.getString("password");
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            User user = userRepository.findByEmail(username).get();
+            User user = userRepo.findByEmail(username).get();
             if(!user.isEnabled()){
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
             }
-            String token = jwtTokenProvider.createToken(username, userRepository.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Username " + username + "not found")).getRoles());
+            String token = jwtTokenProvider.createToken(username, userRepo.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Username " + username + "not found")).getRoles());
 
             Map<Object, Object> model = new HashMap<>();
             model.put("username", username);
@@ -90,7 +105,7 @@ public class UserController {
             return ResponseEntity.badRequest().body("Wrong JSON format");
         }
         String email = jsonInput.getString("email");
-        Optional<User> existingUser = userRepository.findByEmail(email);
+        Optional<User> existingUser = userRepo.findByEmail(email);
         if(!existingUser.isPresent()){
             return ResponseEntity.badRequest().body("No user associated with the given mail");
         }
@@ -121,7 +136,7 @@ public class UserController {
         String email = jsonInput.getString("email");
         String password = jsonInput.getString("password");
         String passwordConfirm = jsonInput.getString("passwordConfirm");
-        Optional<User> existingUser = userRepository.findByEmail(email);
+        Optional<User> existingUser = userRepo.findByEmail(email);
         if(existingUser.isPresent()){
             return "User already exists!";
         }
@@ -133,7 +148,7 @@ public class UserController {
             List<String> roles = new LinkedList<>();
             roles.add("ROLE_USER");
             user.setRoles(roles);
-            userRepository.insert(user);
+            userRepo.insert(user);
 
             ConfirmationToken confirmationToken = new ConfirmationToken(user);
 
@@ -157,10 +172,10 @@ public class UserController {
         ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(randomUUID);
         if(token != null)
         {
-            Optional<User> user = userRepository.findByEmail(token.getUser().getEmail());
+            Optional<User> user = userRepo.findByEmail(token.getUser().getEmail());
             if(user.isPresent()){
                 user.get().setEnabled(true);
-                userRepository.save(user.get());
+                userRepo.save(user.get());
                 return new ResponseEntity(HttpStatus.OK);
             }
             else{
@@ -176,7 +191,7 @@ public class UserController {
     @GetMapping("/users")
     public String getSystemUser(){
         List<User> allUsers;
-        allUsers = userRepository.findAll();
+        allUsers = userRepo.findAll();
         List<String> usernames = new LinkedList<>();
         for(User user: allUsers){
             usernames.add(user.getName());
@@ -186,7 +201,7 @@ public class UserController {
 
     @PutMapping("/users/{user_id}")
     public void enableUserAdmin(@PathVariable String user_id, @RequestBody String payload, ServletRequest req){
-        Optional<User> opt_user = userRepository.findById(user_id);
+        Optional<User> opt_user = userRepo.findById(user_id);
 
         if(!opt_user.isPresent()){
             return;
@@ -219,7 +234,7 @@ public class UserController {
 
             user.getAdminLines().add(line_name);
             line.getAdmins().add(user.getEmail());
-            userRepository.save(user);
+            userRepo.save(user);
             lineRepository.save(line);
             return;
 
@@ -233,7 +248,7 @@ public class UserController {
                 user.getRoles().remove("ROLE_ADMIN");
                 user.getRoles().add("ROLE_USER");
             }
-            userRepository.save(user);
+            userRepo.save(user);
             lineRepository.save(line);
         }
 

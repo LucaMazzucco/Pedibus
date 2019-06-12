@@ -3,6 +3,7 @@ package it.polito.appinternet.pedibus.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polito.appinternet.pedibus.model.*;
 import it.polito.appinternet.pedibus.repository.*;
+import lombok.extern.java.Log;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -22,9 +23,6 @@ import java.util.stream.Collectors;
 public class LineController {
 
     @Autowired
-    StopRepository stopRepo;
-
-    @Autowired
     LineRepository lineRepo;
 
     @Autowired
@@ -32,10 +30,6 @@ public class LineController {
 
     @Autowired
     ReservationRepository reservationRepo;
-
-    @Autowired
-    RideRepository rideRepo;
-
 
 
     @GetMapping("/insertLine")
@@ -78,27 +72,27 @@ public class LineController {
     private JSONObject encapsulateLine(Line line){
         JSONObject lineJson = new JSONObject();
         JSONArray ridesJson = new JSONArray();
-        for(Ride r:line.getRides().stream()
-                .filter(r1->r1.getReservations().size()>0)
-                .collect(Collectors.toList())){
+        for(Ride r:line.getRides()){
             JSONObject rideJson = new JSONObject();
-            JSONArray stopsJson;
+            JSONArray stopsJson = new JSONArray();
             JSONArray stopsBackJson = new JSONArray();
-            Ride r2 = rideRepo.findByRideDateAndFlagAndata(r.getRideDate(),!r.getFlagAndata());
-            Ride tmp;
-            if(r2!=null){
-                if(r2.getReservations().size()==0){
-                    r2 = null;
+            Ride r2 = line.getRides().stream()
+                    .filter(x->x.getRideDate().getDate()==r.getRideDate().getDate())
+                    .filter(x->x.getFlagAndata()!=r.getFlagAndata())
+                    .findFirst().orElse(null);
+            if(!r.getFlagAndata()){
+                if(r2!=null){
+                    continue;
                 }
-                else if(r2.getFlagAndata()){
-                    tmp = r;
-                    r = r2;
-                    r2 = tmp;
+                else{
+                   stopsBackJson = encapsulateStops(r,line.getStopListR());
                 }
             }
-            stopsJson = encapsulateStops(r);
-            if(r2!=null){
-                stopsBackJson = encapsulateStops(r2);
+            else{
+                stopsJson = encapsulateStops(r,line.getStopListA());
+                if(r2!=null){
+                    stopsBackJson = encapsulateStops(r2,line.getStopListA());
+                }
             }
             rideJson.put("date",r.getRideDate());
             rideJson.put("stops",stopsJson);
@@ -110,7 +104,7 @@ public class LineController {
         return lineJson;
     }
 
-    private JSONArray encapsulateStops(Ride ride){
+    private JSONArray encapsulateStops(Ride ride,List<Stop> stops){
         JSONArray stopsJson = new JSONArray();
         ride.getReservations().stream()
                 .map(e->reservationRepo.findById(e))
@@ -127,7 +121,12 @@ public class LineController {
                             )
                     );
                     stop.put("stopName",k);
-                    stop.put("time",stopRepo.findByStopName(k).getTime());
+                    Stop s = stops.stream()
+                            .filter(x->x.getStopName().equals(k))
+                            .findAny().orElse(null);
+                    if(s!=null){
+                        stop.put("time",s.getTime());
+                    }
                     stop.put("people",people);
                     stopsJson.put(stop);
                 })

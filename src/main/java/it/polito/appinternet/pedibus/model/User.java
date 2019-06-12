@@ -1,5 +1,6 @@
 package it.polito.appinternet.pedibus.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import it.polito.appinternet.pedibus.annotations.ValidPassword;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,6 +39,16 @@ public class User implements UserDetails {
         this.email = email;
         this.password = password;
         this.isEnabled = isEnabled;
+    }
+    public User(@JsonProperty("email") String email, @JsonProperty("name") String name,
+                       @JsonProperty("surname") String surname, @JsonProperty("registrationNumber") String registrationNumber,
+                       @JsonProperty("isEnabled") boolean isEnabled, @JsonProperty("password") String password) {
+        this.name=name;
+        this.surname = surname;
+        this.registrationNumber = registrationNumber;
+        this.isEnabled=isEnabled;
+        this.password=password;
+        this.email=email;
     }
 
     @Override

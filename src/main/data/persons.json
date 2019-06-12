@@ -2,16 +2,25 @@
   {
     "name": "jeanpiero",
     "surname": "francois",
-    "registrationNumber": "jpf"
+    "registrationNumber": "jpf",
+    "email": "j@j.com",
+    "password": "12_zwRHIPKA",
+    "isEnabled": "true"
   },
   {
     "name": "luca",
     "surname": "mazzucco",
-    "registrationNumber": "lmz"
+    "registrationNumber": "lmz",
+    "email": "l@l.com",
+    "password": "12_zwRHIPKA",
+    "isEnabled": "true"
   },
   {
     "name": "alberto",
     "surname": "benincasa",
-    "registrationNumber": "lrt"
+    "registrationNumber": "lrt",
+    "email": "a@a.com",
+    "password": "12_zwRHIPKA",
+    "isEnabled": "true"
   }
 ]

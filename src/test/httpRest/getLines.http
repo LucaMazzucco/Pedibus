@@ -1,14 +1,9 @@
-POST http://localhost:8080/reservations/Linea1/20190415
+GET http://localhost:8080/getLines/
 Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTU2MDM0OTk2NywiZXhwIjoxNTYwMzUzNTY3fQ.GA_foIr0_OTimih8hIzCNwrVyNoLD-_laVBFIxvxv5I
 Content-Type: application/json
 
 {
-  "stopName": "Stop2",
-  "flagAndata": "true",
-  "isPresent": "false",
-  "passenger":
-  {
-  "registrationNumber": "jpf",   "name" : "Jeanpierre",   "surname": "a"
-  }
+
 }
+
 ###
