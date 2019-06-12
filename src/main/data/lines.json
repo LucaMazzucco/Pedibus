@@ -31,14 +31,12 @@
     ],
     "rides": [
       {
-        "lineName": "Linea1",
         "flagAndata":"true",
         "rideDate":"2019/04/15",
         "reservations": [
         ]
       },
       {
-        "lineName": "Linea1",
         "flagAndata":"false",
         "rideDate": "2019/04/15",
         "reservations": [
@@ -78,14 +76,12 @@
     ],
     "rides": [
       {
-        "lineName": "Linea2",
         "flagAndata":"true",
         "rideDate":"2019/04/15",
         "reservations": [
         ]
       },
       {
-        "lineName": "Linea2",
         "flagAndata":"false",
         "rideDate": "2019/04/15",
         "reservations": [

@@ -98,7 +98,6 @@ public class ReservationController {
                     personPerStopR.put(r.getStopName(), l);
                 }
             }
-
             JSONObject mainObj = new JSONObject();
             JSONObject jsonDataA = new JSONObject();
             JSONObject jsonDataR = new JSONObject();
@@ -166,18 +165,23 @@ public class ReservationController {
         }
         Boolean isPresent = main_json.getBoolean("isPresent");
         Ride ride = l.getRides().stream()
-                .filter(r->r.getLineName().equals(line_name))
                 .filter(r->r.getRideDate().getDate()==tmp_date.getDate())
                 .filter(r -> r.getFlagAndata()==flagAndata)
                 .findAny().orElse(null);
         if(s==null || p==null || flagAndata==null || l==null || ride==null || isPresent==null){
             return new Long(-4);
         }
+        if(ride.getReservations().stream()
+                .map(x->reservationRepo.findById(x).getPassenger().getRegistrationNumber())
+                .filter(x->x.equals(p.getRegistrationNumber()))
+                .count() > 0
+            ){
+            return new Long(-5);
+        }
         Reservation r = new Reservation(line_name,stopName,p,tmp_date,flagAndata,isPresent);
         r = reservationRepo.insert(r); //insert crea un nuovo id
         ride.getReservations().add(r.getId());
         lineRepo.save(l);
-        //ride.getReservations().put(r.getId(),p.getEmail());
         return Long.getLong(r.getId());
     }
 
