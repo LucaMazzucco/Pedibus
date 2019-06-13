@@ -32,6 +32,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
 
+@CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
 public class UserController {
     @Autowired
@@ -88,11 +89,9 @@ public class UserController {
                 return new ResponseEntity(HttpStatus.UNAUTHORIZED);
             }
             String token = jwtTokenProvider.createToken(username, userRepo.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Username " + username + "not found")).getRoles());
-
-            Map<Object, Object> model = new HashMap<>();
-            model.put("username", username);
-            model.put("token", token);
-            return ok(model);
+            JSONObject res = new JSONObject();
+            res.put("token", token);
+            return ok(res.toString());
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username/password supplied");
         }
@@ -129,33 +128,40 @@ public class UserController {
     {
         JSONObject jsonInput = new JSONObject(payload);
         if(!jsonInput.has("email") ||
-            !jsonInput.has("password") ||
-            !jsonInput.has("passwordConfirm")){
+                !jsonInput.has("name") ||
+                !jsonInput.has("surname") ||
+                !jsonInput.has("registrationNumber") ||
+                !jsonInput.has("password")){
             return "Wrong request";
         }
-        String email = jsonInput.getString("email");
-        String password = jsonInput.getString("password");
-        String passwordConfirm = jsonInput.getString("passwordConfirm");
-        Optional<User> existingUser = userRepo.findByEmail(email);
-        if(existingUser.isPresent()){
+        ObjectMapper mapper = new ObjectMapper();
+        User newUser = null;
+        try {
+            newUser = mapper.readValue(payload, User.class);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if(newUser == null){
+            return "Input Error!!!";
+        }
+        User existingUser = userRepo.findByRegistrationNumber(newUser.getRegistrationNumber());
+        if(existingUser!=null){
             return "User already exists!";
         }
         else{
-            if(!password.equals(passwordConfirm)){
-                return "The two password must be the same!";
-            }
-            User user = new User(email,passwordEncoder.encode(password),false);
+            newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
+            newUser.setEnabled(false);
             List<String> roles = new LinkedList<>();
             roles.add("ROLE_USER");
-            user.setRoles(roles);
-            userRepo.insert(user);
+            newUser.setRoles(roles);
+            userRepo.insert(newUser);
 
-            ConfirmationToken confirmationToken = new ConfirmationToken(user);
+            ConfirmationToken confirmationToken = new ConfirmationToken(newUser);
 
             confirmationTokenRepository.insert(confirmationToken);
 
             SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setTo(email);
+            mailMessage.setTo(newUser.getEmail());
             mailMessage.setSubject("Complete Registration!");
             mailMessage.setFrom("pedibus.polito1819@gmail.com");
             mailMessage.setText("To confirm your account, please click here : "

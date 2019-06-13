@@ -1,7 +1,6 @@
 package it.polito.appinternet.pedibus.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import it.polito.appinternet.pedibus.model.*;
 import it.polito.appinternet.pedibus.repository.*;
 import org.json.JSONObject;
