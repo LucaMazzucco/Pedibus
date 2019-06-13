@@ -156,6 +156,7 @@ public class LineController {
     private JSONArray encapsulateNotReserved(Ride ride){
         JSONArray notReserved = new JSONArray();
         userRepo.findAll().stream()
+                .filter(u->u.getRoles().stream().noneMatch(s->s.equals("ROLE_ADMIN")))
                 .filter(u->
                         ride.getReservations().stream()
                                 .map(x -> reservationRepo.findById(x).getPassenger().getRegistrationNumber())
