@@ -259,4 +259,11 @@ public class UserController {
         }
 
     }
+
+    @GetMapping("/checkEmail/{email}")
+    public ResponseEntity<Boolean> checkEmailPresence(@PathVariable String email){
+        JSONObject response = new JSONObject();
+        response.put("res",userRepo.findByEmail(email).isPresent());
+        return ok(userRepo.findByEmail(email).isPresent());
+    }
 }
