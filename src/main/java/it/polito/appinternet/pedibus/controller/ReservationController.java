@@ -2,18 +2,18 @@ package it.polito.appinternet.pedibus.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polito.appinternet.pedibus.model.*;
-import it.polito.appinternet.pedibus.repository.*;
+import it.polito.appinternet.pedibus.repository.LineRepository;
+import it.polito.appinternet.pedibus.repository.ReservationRepository;
+import it.polito.appinternet.pedibus.repository.RideRepository;
+import it.polito.appinternet.pedibus.repository.UserRepository;
 import org.json.JSONObject;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
-import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.Date;
 
 @RestController
 public class ReservationController {
@@ -250,7 +250,6 @@ public class ReservationController {
         if (reservation == null){
             return;
         }
-
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
         Date d;
@@ -260,7 +259,6 @@ public class ReservationController {
             e.printStackTrace();
             return;
         }
-
         if(!reservation.getLineName().equals(line_name) || !reservation.getReservationDate().equals(d)){
             return ;
         }

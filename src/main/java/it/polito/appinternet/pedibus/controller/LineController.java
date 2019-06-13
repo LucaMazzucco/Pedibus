@@ -1,5 +1,6 @@
 package it.polito.appinternet.pedibus.controller;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polito.appinternet.pedibus.model.*;
 import it.polito.appinternet.pedibus.repository.*;
@@ -78,6 +79,8 @@ public class LineController {
             JSONObject rideJson = new JSONObject();
             JSONArray stopsJson = new JSONArray();
             JSONArray stopsBackJson = new JSONArray();
+            JSONArray notReserved = new JSONArray();
+            JSONArray notReservedBack = new JSONArray();
             Ride r2 = line.getRides().stream()
                     .filter(x->x.getRideDate().getDate()==r.getRideDate().getDate())
                     .filter(x->x.getFlagAndata()!=r.getFlagAndata())
@@ -88,17 +91,22 @@ public class LineController {
                 }
                 else{
                    stopsBackJson = encapsulateStops(r,line.getStopListR());
+                    notReservedBack = encapsulateNotReserved(r2);
                 }
             }
             else{
                 stopsJson = encapsulateStops(r,line.getStopListA());
+                notReserved = encapsulateNotReserved(r);
                 if(r2!=null){
                     stopsBackJson = encapsulateStops(r2,line.getStopListA());
+                    notReservedBack = encapsulateNotReserved(r2);
                 }
             }
             rideJson.put("date",r.getRideDate());
             rideJson.put("stops",stopsJson);
             rideJson.put("stopsBack",stopsBackJson);
+            rideJson.put("notReserved",notReserved);
+            rideJson.put("notReservedBack",notReservedBack);
             ridesJson.put(rideJson);
         }
         lineJson.put("lineName",line.getLineName());
@@ -108,13 +116,19 @@ public class LineController {
 
     private JSONArray encapsulateStops(Ride ride,List<Stop> stops){
         JSONArray stopsJson = new JSONArray();
+        HashMap<String,JSONObject> stopsJsonMap = new HashMap<>();
+        stops.forEach(s->{
+            JSONObject stopJson = new JSONObject();
+            stopJson.put("stopName",s.getStopName());
+            stopJson.put("time",s.getTime());
+            stopsJsonMap.put(s.getStopName(),stopJson);
+        });
         ride.getReservations().stream()
                 .map(e->reservationRepo.findById(e))
                 .collect(Collectors.toMap(e->e.getStopName(),e->e))
                 .entrySet().stream()
                 .collect(Collectors.groupingBy(e->e.getKey(),HashMap::new,Collectors.toList()))
                 .forEach((k,v)->{
-                    JSONObject stop = new JSONObject();
                     JSONArray people = new JSONArray();
                     v.forEach(e->people.put(
                             encapsulateUser(
@@ -122,17 +136,12 @@ public class LineController {
                             )
                             )
                     );
-                    stop.put("stopName",k);
-                    Stop s = stops.stream()
-                            .filter(x->x.getStopName().equals(k))
-                            .findAny().orElse(null);
-                    if(s!=null){
-                        stop.put("time",s.getTime());
+                    if(stopsJsonMap.containsKey(k)){
+                        stopsJsonMap.get(k).put("people",people);
                     }
-                    stop.put("people",people);
-                    stopsJson.put(stop);
                 })
         ;
+        stopsJsonMap.values().forEach(s->stopsJson.put(s));
         return stopsJson;
     }
 
@@ -142,6 +151,20 @@ public class LineController {
         jsonUser.put("surname",user.getSurname());
         jsonUser.put("isPresent",isPresent);
         return jsonUser;
+    }
+
+    private JSONArray encapsulateNotReserved(Ride ride){
+        JSONArray notReserved = new JSONArray();
+        userRepo.findAll().stream()
+                .filter(u->
+                        ride.getReservations().stream()
+                                .map(x -> reservationRepo.findById(x).getPassenger().getRegistrationNumber())
+                                .noneMatch(x -> x.equals(u.getRegistrationNumber()))
+                )
+                .forEach(u->
+                        notReserved.put(encapsulateUser(u,false))
+                );
+        return notReserved;
     }
 
     @GetMapping("/lines/{line_name}")
