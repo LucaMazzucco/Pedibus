@@ -124,15 +124,17 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@RequestBody String payload)
+    public ResponseEntity<String> registerUser(@RequestBody String payload)
     {
+        JSONObject jsonOutput = new JSONObject();
         JSONObject jsonInput = new JSONObject(payload);
         if(!jsonInput.has("email") ||
                 !jsonInput.has("name") ||
                 !jsonInput.has("surname") ||
                 !jsonInput.has("registrationNumber") ||
                 !jsonInput.has("password")){
-            return "Wrong request";
+            jsonOutput.put("result", "Wrong Request");
+            return ResponseEntity.badRequest().body(jsonOutput.toString());
         }
         ObjectMapper mapper = new ObjectMapper();
         User newUser = null;
@@ -142,11 +144,13 @@ public class UserController {
             e.printStackTrace();
         }
         if(newUser == null){
-            return "Input Error!!!";
+            jsonOutput.put("result", "Input Error!!");
+            return ResponseEntity.badRequest().body(jsonOutput.toString());
         }
         User existingUser = userRepo.findByRegistrationNumber(newUser.getRegistrationNumber());
         if(existingUser!=null){
-            return "User already exists!";
+            jsonOutput.put("result", "User already exists!");
+            return ResponseEntity.badRequest().body(jsonOutput.toString());
         }
         else{
             newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
@@ -168,7 +172,8 @@ public class UserController {
                     +"http://localhost:8080/confirm/" +confirmationToken.getConfirmationToken());
 
             emailSenderService.sendEmail(mailMessage);
-            return "You have been correctly registered! Check your email";
+            jsonOutput.put("result", "You have been correctly registered! Check your email");
+            return ok(jsonOutput.toString());
         }
     }
 
