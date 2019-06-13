@@ -1,5 +1,6 @@
 package it.polito.appinternet.pedibus.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polito.appinternet.pedibus.model.*;
 import it.polito.appinternet.pedibus.repository.LineRepository;
@@ -8,6 +9,7 @@ import it.polito.appinternet.pedibus.repository.RideRepository;
 import it.polito.appinternet.pedibus.repository.UserRepository;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
@@ -60,10 +62,31 @@ public class ReservationController {
 //        }
     }
 
-    @GetMapping("/insertReservation")
-    public String insertLine(Reservation reservation){
-        reservationRepo.insert(reservation);
-        return "Reservation inserted correctly";
+//    @GetMapping("/insertReservation")
+//    public String insertLine(Reservation reservation){
+//        reservationRepo.insert(reservation);
+//        return "Reservation inserted correctly";
+//    }
+    @GetMapping("reservations/{line_name}/{date}/{reservation_id}")
+    public ResponseEntity<String> findByDateAndLineAndId(@PathVariable String line_name, @PathVariable String date, @PathVariable String reservation_id){
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
+            format.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date tmp_date = format.parse(date);
+            Reservation reservation = reservationRepo.findByIdAndLineNameAndReservationDate(reservation_id,line_name,tmp_date);
+            if(reservation!=null){
+                return ResponseEntity.ok(objectMapper.writeValueAsString(reservation));
+            }
+            else{
+                return ResponseEntity.notFound().build();
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.badRequest().build();
     }
 
     @SuppressWarnings("Duplicates")
