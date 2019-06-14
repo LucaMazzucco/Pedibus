@@ -53,8 +53,9 @@ public class LineController {
         return lineNames.toString();
     }
 
+    //Get json of all lines
     @GetMapping("/getLines")
-    public String getLines(){
+    public String getLinesJson(){
         List<Line> allLines = lineRepo.findAll();
         JSONArray lines = new JSONArray();
         for(Line l:allLines){
@@ -63,8 +64,9 @@ public class LineController {
         return lines.toString();
     }
 
+    //Get json of a single line
     @GetMapping("/getLines/{line_name}")
-    public String getLine(@PathVariable String line_name){
+    public String getLineJson(@PathVariable String line_name){
         Line line = lineRepo.findByLineName(line_name);
         if(line!=null){
             return encapsulateLine(line).toString();
@@ -72,47 +74,79 @@ public class LineController {
         return "";
     }
 
+    //Get json of a single Ride A/R (frontend format)
+    @GetMapping("/getLines/{line_name}/{date}")
+    public String getRideJson(@PathVariable String line_name,
+                          @PathVariable String date){
+        JSONObject returnJson = new JSONObject();
+        try{
+            Line line = lineRepo.findByLineName(line_name);
+            Date rDate = new Date(date);
+            if(line==null){
+                return "";
+            }
+            Ride ride = line.getRides().stream()
+                    .filter(r->r.getRideDate().getDate()==rDate.getDate())
+                    .findAny().orElse(null);
+            if(ride==null){
+                return "";
+            }
+            returnJson = encapsulateRide(ride,line);
+        } catch (NullPointerException e){
+            e.printStackTrace();
+            return "";
+        }
+        return returnJson.toString();
+    }
+
     private JSONObject encapsulateLine(Line line){
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         JSONObject lineJson = new JSONObject();
         JSONArray ridesJson = new JSONArray();
         for(Ride r:line.getRides()){
-            JSONObject rideJson = new JSONObject();
-            JSONArray stopsJson = new JSONArray();
-            JSONArray stopsBackJson = new JSONArray();
-            JSONArray notReserved = new JSONArray();
-            JSONArray notReservedBack = new JSONArray();
-            Ride r2 = line.getRides().stream()
-                    .filter(x->x.getRideDate().getDate()==r.getRideDate().getDate())
-                    .filter(x->x.getFlagAndata()!=r.getFlagAndata())
-                    .findFirst().orElse(null);
-            if(!r.getFlagAndata()){
-                if(r2!=null){
-                    continue;
-                }
-                else{
-                   stopsBackJson = encapsulateStops(r,line.getStopListR());
-                    notReservedBack = encapsulateNotReserved(r2);
-                }
+            JSONObject rideJson = encapsulateRide(r,line);
+            if(rideJson!=null){
+                ridesJson.put(rideJson);
             }
-            else{
-                stopsJson = encapsulateStops(r,line.getStopListA());
-                notReserved = encapsulateNotReserved(r);
-                if(r2!=null){
-                    stopsBackJson = encapsulateStops(r2,line.getStopListA());
-                    notReservedBack = encapsulateNotReserved(r2);
-                }
-            }
-            rideJson.put("date",sdf.format(r.getRideDate()));
-            rideJson.put("stops",stopsJson);
-            rideJson.put("stopsBack",stopsBackJson);
-            rideJson.put("notReserved",notReserved);
-            rideJson.put("notReservedBack",notReservedBack);
-            ridesJson.put(rideJson);
         }
         lineJson.put("lineName",line.getLineName());
         lineJson.put("rides",ridesJson);
         return lineJson;
+    }
+
+    private JSONObject encapsulateRide(Ride r,Line line){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        JSONObject rideJson = new JSONObject();
+        JSONArray stopsJson = new JSONArray();
+        JSONArray stopsBackJson = new JSONArray();
+        JSONArray notReserved = new JSONArray();
+        JSONArray notReservedBack = new JSONArray();
+        Ride r2 = line.getRides().stream()
+                .filter(x->x.getRideDate().getDate()==r.getRideDate().getDate())
+                .filter(x->x.getFlagAndata()!=r.getFlagAndata())
+                .findFirst().orElse(null);
+        if(!r.getFlagAndata()){
+            if(r2!=null){
+                return null;
+            }
+            else{
+                stopsBackJson = encapsulateStops(r,line.getStopListR());
+                notReservedBack = encapsulateNotReserved(r2);
+            }
+        }
+        else{
+            stopsJson = encapsulateStops(r,line.getStopListA());
+            notReserved = encapsulateNotReserved(r);
+            if(r2!=null){
+                stopsBackJson = encapsulateStops(r2,line.getStopListA());
+                notReservedBack = encapsulateNotReserved(r2);
+            }
+        }
+        rideJson.put("date",sdf.format(r.getRideDate()));
+        rideJson.put("stops",stopsJson);
+        rideJson.put("stopsBack",stopsBackJson);
+        rideJson.put("notReserved",notReserved);
+        rideJson.put("notReservedBack",notReservedBack);
+        return rideJson;
     }
 
     private JSONArray encapsulateStops(Ride ride,List<Stop> stops){
@@ -171,47 +205,144 @@ public class LineController {
                 );
         return notReserved;
     }
-/*
+
     @PutMapping("/putLineAttendance/{line_name}")
     public ResponseEntity<String> updateLineToUpdatePassengersInfo(@PathVariable String line_name, @RequestBody String payload){
-        if(line_name==null){
-            return (ResponseEntity<String>) ResponseEntity.badRequest();
+        if(line_name==null || payload==null){
+            return ResponseEntity.badRequest().build();
         }
         try{
             Line line = lineRepo.findByLineName(line_name);
             List<Ride> rides = line.getRides();
             JSONObject lineJson = new JSONObject(payload);
             JSONArray ridesJson = lineJson.getJSONArray("rides");
+            List<Reservation> reservationsToSave = new LinkedList<>();
+            List<Reservation> reservationsToInsert = new LinkedList<>();
             for(int i=0; i<ridesJson.length();i++){
                 JSONObject rideJson = ridesJson.getJSONObject(i);
                 Ride rideA = rides.stream()
                         .filter(r->r.getRideDate().getDate()==(new Date(rideJson.getString("date")).getDate()))
-                        .filter(r->r.getFlagAndata()==true).findAny().get();
+                        .filter(Ride::getFlagAndata).findAny().orElse(null);
                 Ride rideR = rides.stream()
                         .filter(r->r.getRideDate().getDate()==(new Date(rideJson.getString("date")).getDate()))
-                        .filter(r->r.getFlagAndata()==false).findAny().get();
-                decapsulateRideToUpdatePassengersInfo(rideJson.getJSONArray("stops"),rideJson.getJSONArray("notReserved"),rideA);
-                //decapsulateRide(rideJson,rideR);
+                        .filter(r-> !r.getFlagAndata()).findAny().orElse(null);
+                decapsulateRideToUpdatePassengersInfo(line_name,rideJson.getJSONArray("stops"),
+                        rideA, reservationsToInsert, reservationsToSave);
+                decapsulateRideToUpdatePassengersInfo(line_name,rideJson.getJSONArray("stopsBack"),
+                        rideR, reservationsToInsert, reservationsToSave);
             }
+            reservationsToSave.forEach(reservationRepo::save);
+            reservationsToInsert.forEach(reservation->{
+                Ride ride = line.getRides().stream()
+                        .filter(r->r.getRideDate().getDate()==reservation.getReservationDate().getDate())
+                        .filter(r->r.getFlagAndata()==reservation.isFlagAndata())
+                        .findAny().orElse(null);
+                Reservation res = reservationRepo.insert(reservation);
+                ride.getReservations().add(res.getId());
+                //Should always find a ride in the specified direction or the reservation in wrong
+            });
             lineRepo.save(line);
         } catch (JSONException e) {
             e.printStackTrace();
-            return (ResponseEntity<String>) ResponseEntity.badRequest();
+            return ResponseEntity.badRequest().build();
+        } catch (NullPointerException e){
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
         }
-        return ResponseEntity.ok("Everything updated");
+        return ResponseEntity.ok("");
     }
 
-    private void decapsulateRideToUpdatePassengersInfo(JSONArray stops, JSONArray notReserved, Ride ride){
+    @PutMapping("putLineAttendance/{line_name}/{date}")
+    public ResponseEntity<String> updateRideToUpdatePassengersInfo(@PathVariable String line_name,
+                                                                   @PathVariable String date,
+                                                                   @RequestBody String payload){
+        if(line_name==null || date == null || payload == null){
+            return ResponseEntity.badRequest().build();
+        }
+        try{
+            Line line = lineRepo.findByLineName(line_name);
+            List<Reservation> reservationsToSave = new LinkedList<>();
+            List<Reservation> reservationsToInsert = new LinkedList<>();
+            JSONObject rideJson = new JSONObject(payload);
+            if(!rideJson.getString("date").equals(date)){
+                return ResponseEntity.badRequest().build();
+            }
+            Ride rideA = line.getRides().stream()
+                    .filter(r->r.getRideDate().getDate()==(new Date(date).getDate()))
+                    .filter(r->r.getFlagAndata()==true).findAny().orElse(null);
+            Ride rideR = line.getRides().stream()
+                    .filter(r->r.getRideDate().getDate()==(new Date(date).getDate()))
+                    .filter(r->r.getFlagAndata()==false).findAny().orElse(null);
+            decapsulateRideToUpdatePassengersInfo(line_name,rideJson.getJSONArray("stops"),
+                    rideA, reservationsToInsert,reservationsToSave);
+            decapsulateRideToUpdatePassengersInfo(line_name,rideJson.getJSONArray("stopsBack"),
+                    rideR, reservationsToInsert, reservationsToSave);
+            reservationsToSave.forEach(reservationRepo::save);
+            reservationsToInsert.forEach(reservation->{
+                reservation = reservationRepo.insert(reservation);
+                if(reservation.isFlagAndata()){
+                    rideA.getReservations().add(reservation.getId());
+                }
+                else{
+                    rideR.getReservations().add(reservation.getId());
+                }
+            });
+            lineRepo.save(line);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        } catch (NullPointerException e){
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
+        return ResponseEntity.ok("");
+    }
+
+    private void decapsulateRideToUpdatePassengersInfo(String lineName, JSONArray stops, Ride ride,
+                                                       List<Reservation> reservationsToInsert,
+                                                       List<Reservation> reservationsToSave){
+        if(ride == null){
+            return;
+        }
         for(int i=0;i<stops.length();i++){
             JSONObject stopJson = stops.getJSONObject(i);
+            String stopName = stopJson.getString("stopName");
+            if(stopName==null){
+                throw new JSONException("stopName not found");
+            }
+            List<Reservation> reservations = ride.getReservations().stream()
+                    .map(r->reservationRepo.findById(r))
+                    .filter(r->r.getStopName().equals(stopName))
+                    .collect(Collectors.toList());
             JSONArray peopleJson = stopJson.getJSONArray("people");
             for(int j=0;j<peopleJson.length();j++){
                 JSONObject userJson = peopleJson.getJSONObject(j);
-
+                String ssn = userJson.getString("registrationNumber");
+                if(!userJson.has("registrationNumber") ||
+                        !userJson.has("isPresent")){
+                    throw new JSONException("passenger's info missing");
+                }
+                User user = userRepo.findByRegistrationNumber(ssn);
+                boolean isPresent = userJson.getBoolean("isPresent");
+                if(user==null){
+                    throw new JSONException("passenger info are not correct");
+                }
+                Reservation res = reservations.stream()
+                        .filter(r->r.getPassenger().getRegistrationNumber().equals(user.getRegistrationNumber()))
+                        .findAny().orElse(null);
+                if(res==null){
+                    //Was not reserved but manually signed present
+                    res = new Reservation(lineName,stopName,user,ride.getRideDate(),ride.getFlagAndata(),true);
+                    reservationsToInsert.add(res);
+                }
+                else if(isPresent!=res.isPresent()){
+                    res.setPresent(isPresent);
+                    reservationsToSave.add(res);
+                }
             }
         }
     }
-*/
+
 
     @GetMapping("/lines/{line_name}")
     public String findLineByName(@PathVariable String line_name){
