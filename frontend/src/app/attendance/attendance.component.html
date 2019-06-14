@@ -34,6 +34,14 @@
                 </mat-list-item>
               </mat-nav-list>
             </mat-expansion-panel>
+            <button mat-raised-button (click)="openDialog(template)">Not Registered</button>
+            <ng-template #template>
+              <mat-nav-list>
+                <mat-list-item *ngFor="let person of dataSource['notReserved']" [class.selected]="isPresent(person)" (click)="addPerson(person)">
+                  {{person.name}} {{person.surname}}
+                </mat-list-item>
+              </mat-nav-list>
+            </ng-template>
           </div>
         </mat-tab>
         <mat-tab label="Ritorno" class="mytabclass">
@@ -51,6 +59,15 @@
                 </mat-list-item>
               </mat-nav-list>
             </mat-expansion-panel>
+            <button mat-raised-button (click)="openDialog(templateBack)">NotRegistered</button>
+            <ng-template #templateBack>
+              <mat-nav-list>
+                <mat-list-item *ngFor="let person of dataSource['notReservedBack']" [class.selected]="isPresent(person)" (click)="addPerson(person)">
+                  {{person.name}} {{person.surname}}
+                </mat-list-item>
+              </mat-nav-list>
+            </ng-template>
+            
           </div>
         </mat-tab>
       </mat-tab-group>

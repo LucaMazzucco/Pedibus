@@ -5,6 +5,9 @@ import { Ride } from '../classes/ride';
 import { DataService } from '../services/data.service';
 import { PageEvent } from '@angular/material';
 import {Stop} from '../classes/stop';
+import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+
+
 
 @Component({
   selector: 'app-card',
@@ -13,7 +16,7 @@ import {Stop} from '../classes/stop';
 })
 export class AttendanceComponent implements OnInit, OnDestroy {
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService,private dialog: MatDialog) { }
 
   lines: Line[];
 
@@ -36,6 +39,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     this.dataSource.stops.sort((a, b) => a.time as any - (b.time as any));
     this.dataSource.stopsBack.sort((a, b) => a.time as any - (b.time as any));
     this.totalSize = this.currentLine.rides.length;
+    //console.log(this.dataSource[]);
   }
   ngOnDestroy(){
     this.subscription.unsubscribe();
@@ -108,4 +112,29 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     }
     return true;
   }
+
+  openDialog(templateRef) {
+    let dialogRef = this.dialog.open(templateRef, {
+        width: '250px',
+        // data: { name: this.name, animal: this.animal }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+        console.log('The dialog was closed');
+        // this.animal = result;
+    });
 }
+}
+
+// @Component({
+//   selector: 'bottom-sheet-overview-example-sheet',
+//   templateUrl: 'bottom-sheet-overview-example-sheet.html',
+// })
+// export class NotReservedPeopleModal {
+//   constructor(private _bottomSheetRef: MatBottomSheetRef<NotReservedPeopleModal>) {}
+
+//   openLink(event: MouseEvent): void {
+//     this._bottomSheetRef.dismiss();
+//     event.preventDefault();
+//   }
+// }

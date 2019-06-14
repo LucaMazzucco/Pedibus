@@ -24,6 +24,7 @@ import {MatInputModule} from '@angular/material/input';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {JwtInterceptor} from './services/jwt-interceptor';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatDialogModule} from '@angular/material/dialog';
 
 
 const routes: Routes = [
@@ -65,6 +66,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     HttpClientModule,
     MatSnackBarModule,
+    MatDialogModule,
     RouterModule.forRoot(
       routes,
       { enableTracing: false } // <-- debugging purposes only
