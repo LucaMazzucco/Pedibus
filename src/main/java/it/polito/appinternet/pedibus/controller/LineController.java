@@ -122,7 +122,8 @@ public class LineController {
         stops.forEach(s->{
             JSONObject stopJson = new JSONObject();
             stopJson.put("stopName",s.getStopName());
-            stopJson.put("time",sdf.format(s));
+            stopJson.put("time",sdf.format(s.getTime()));
+            stopJson.put("people",new JSONArray());
             stopsJsonMap.put(s.getStopName(),stopJson);
         });
         ride.getReservations().stream()
@@ -171,8 +172,8 @@ public class LineController {
         return notReserved;
     }
 /*
-    @PutMapping("/lines/{line_name}")
-    public ResponseEntity<String> putLine(@PathVariable String line_name, @RequestBody String payload){
+    @PutMapping("/putLineAttendance/{line_name}")
+    public ResponseEntity<String> updateLineToUpdatePassengersInfo(@PathVariable String line_name, @RequestBody String payload){
         if(line_name==null){
             return (ResponseEntity<String>) ResponseEntity.badRequest();
         }
@@ -182,14 +183,15 @@ public class LineController {
             JSONObject lineJson = new JSONObject(payload);
             JSONArray ridesJson = lineJson.getJSONArray("rides");
             for(int i=0; i<ridesJson.length();i++){
-                JSONObject rideJson = (JSONObject) ridesJson.get(i);
+                JSONObject rideJson = ridesJson.getJSONObject(i);
                 Ride rideA = rides.stream()
                         .filter(r->r.getRideDate().getDate()==(new Date(rideJson.getString("date")).getDate()))
                         .filter(r->r.getFlagAndata()==true).findAny().get();
                 Ride rideR = rides.stream()
                         .filter(r->r.getRideDate().getDate()==(new Date(rideJson.getString("date")).getDate()))
                         .filter(r->r.getFlagAndata()==false).findAny().get();
-
+                decapsulateRideToUpdatePassengersInfo(rideJson.getJSONArray("stops"),rideJson.getJSONArray("notReserved"),rideA);
+                //decapsulateRide(rideJson,rideR);
             }
             lineRepo.save(line);
         } catch (JSONException e) {
@@ -199,8 +201,15 @@ public class LineController {
         return ResponseEntity.ok("Everything updated");
     }
 
-    private decapsulateRide(JSONObject rideJson, Ride ride){
+    private void decapsulateRideToUpdatePassengersInfo(JSONArray stops, JSONArray notReserved, Ride ride){
+        for(int i=0;i<stops.length();i++){
+            JSONObject stopJson = stops.getJSONObject(i);
+            JSONArray peopleJson = stopJson.getJSONArray("people");
+            for(int j=0;j<peopleJson.length();j++){
+                JSONObject userJson = peopleJson.getJSONObject(j);
 
+            }
+        }
     }
 */
 
