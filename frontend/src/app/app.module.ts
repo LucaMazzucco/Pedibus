@@ -9,7 +9,7 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule, MatButtonModule, MatSidenavModule } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
-import { CardComponent } from './card/card.component'
+import { AttendanceComponent } from './attendance/attendance.component'
 import { MatCardModule } from '@angular/material';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -29,13 +29,13 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 const routes: Routes = [
   { path: 'login', component: LoginComponent},
   { path: 'register', component: RegisterComponent },
-  { path: 'presenze', component: CardComponent }
+  { path: 'presenze', component: AttendanceComponent }
 ];
 
 @NgModule({
   declarations: [
     AppComponent,
-    CardComponent,
+    AttendanceComponent,
     LoginComponent,
     RegisterComponent
   ],

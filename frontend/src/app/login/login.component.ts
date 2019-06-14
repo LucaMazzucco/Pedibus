@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-// https://stackblitz.com/edit/angular-6-registration-login-example?file=app%2F_helpers%2Fjwt.interceptor.ts
 
 interface User {
   email: string;

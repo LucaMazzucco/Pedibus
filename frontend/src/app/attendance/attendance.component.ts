@@ -8,10 +8,10 @@ import {Stop} from '../classes/stop';
 
 @Component({
   selector: 'app-card',
-  templateUrl: './card.component.html',
-  styleUrls: ['./card.component.scss']
+  templateUrl: './attendance.component.html',
+  styleUrls: ['./attendance.component.scss']
 })
-export class CardComponent implements OnInit, OnDestroy {
+export class AttendanceComponent implements OnInit, OnDestroy {
 
   constructor(private dataService: DataService) { }
 
