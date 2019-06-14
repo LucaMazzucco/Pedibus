@@ -1,25 +1,25 @@
 package it.polito.appinternet.pedibus.controller;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polito.appinternet.pedibus.model.*;
 import it.polito.appinternet.pedibus.repository.*;
-import lombok.extern.java.Log;
-import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.boot.jackson.JsonObjectDeserializer;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
+import javax.swing.text.DateFormatter;
 import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+
 
 @CrossOrigin(origins = "http://localhost:4200/presenze", maxAge = 3600)
 @RestController
@@ -73,6 +73,7 @@ public class LineController {
     }
 
     private JSONObject encapsulateLine(Line line){
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         JSONObject lineJson = new JSONObject();
         JSONArray ridesJson = new JSONArray();
         for(Ride r:line.getRides()){
@@ -102,7 +103,7 @@ public class LineController {
                     notReservedBack = encapsulateNotReserved(r2);
                 }
             }
-            rideJson.put("date",r.getRideDate());
+            rideJson.put("date",sdf.format(r.getRideDate()));
             rideJson.put("stops",stopsJson);
             rideJson.put("stopsBack",stopsBackJson);
             rideJson.put("notReserved",notReserved);
@@ -117,10 +118,11 @@ public class LineController {
     private JSONArray encapsulateStops(Ride ride,List<Stop> stops){
         JSONArray stopsJson = new JSONArray();
         HashMap<String,JSONObject> stopsJsonMap = new HashMap<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         stops.forEach(s->{
             JSONObject stopJson = new JSONObject();
             stopJson.put("stopName",s.getStopName());
-            stopJson.put("time",s.getTime());
+            stopJson.put("time",sdf.format(s));
             stopsJsonMap.put(s.getStopName(),stopJson);
         });
         ride.getReservations().stream()
@@ -148,7 +150,8 @@ public class LineController {
     private JSONObject encapsulateUser(User user,Boolean isPresent){
         JSONObject jsonUser = new JSONObject();
         jsonUser.put("name", user.getName());
-        jsonUser.put("surname",user.getSurname());
+        jsonUser.put("surname", user.getSurname());
+        jsonUser.put("registrationNumber", user.getRegistrationNumber());
         jsonUser.put("isPresent",isPresent);
         return jsonUser;
     }
@@ -167,6 +170,39 @@ public class LineController {
                 );
         return notReserved;
     }
+/*
+    @PutMapping("/lines/{line_name}")
+    public ResponseEntity<String> putLine(@PathVariable String line_name, @RequestBody String payload){
+        if(line_name==null){
+            return (ResponseEntity<String>) ResponseEntity.badRequest();
+        }
+        try{
+            Line line = lineRepo.findByLineName(line_name);
+            List<Ride> rides = line.getRides();
+            JSONObject lineJson = new JSONObject(payload);
+            JSONArray ridesJson = lineJson.getJSONArray("rides");
+            for(int i=0; i<ridesJson.length();i++){
+                JSONObject rideJson = (JSONObject) ridesJson.get(i);
+                Ride rideA = rides.stream()
+                        .filter(r->r.getRideDate().getDate()==(new Date(rideJson.getString("date")).getDate()))
+                        .filter(r->r.getFlagAndata()==true).findAny().get();
+                Ride rideR = rides.stream()
+                        .filter(r->r.getRideDate().getDate()==(new Date(rideJson.getString("date")).getDate()))
+                        .filter(r->r.getFlagAndata()==false).findAny().get();
+
+            }
+            lineRepo.save(line);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return (ResponseEntity<String>) ResponseEntity.badRequest();
+        }
+        return ResponseEntity.ok("Everything updated");
+    }
+
+    private decapsulateRide(JSONObject rideJson, Ride ride){
+
+    }
+*/
 
     @GetMapping("/lines/{line_name}")
     public String findLineByName(@PathVariable String line_name){
