@@ -1,12 +1,21 @@
 version: '3'
 services:
-  web-rest:
-    image: pedibus:latest
+  angular_app:
+    restart: always
+    build: ./frontend
+    volumes:
+      - ./frontend/dist/lab4:/usr/share/nginx/html
+    ports:
+      - "3000:80"
+    depends_on:
+      - web_app_spring
+  web_app_spring:
+    build: .
     ports:
       - "8080:8080"
     depends_on:
       - mongo
-    container_name: pedibus-server
+    container_name: web_app_spring
   mongo:
     image: mongo
     ports:

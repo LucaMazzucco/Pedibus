@@ -189,7 +189,7 @@ public class LineController {
     public void init() {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            Line[] newLines = mapper.readValue(new FileReader("src/main/data/lines.json"), Line[].class);
+            Line[] newLines = mapper.readValue(new FileReader("./src/main/data/lines.json"), Line[].class);
             for(Line l : newLines){
                 lineRepo.insert(l);
             }

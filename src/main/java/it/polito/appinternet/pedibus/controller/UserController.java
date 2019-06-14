@@ -63,7 +63,7 @@ public class UserController {
     public void init(){
         ObjectMapper mapper = new ObjectMapper();
         try {
-            User[] newUsers = mapper.readValue(new FileReader("src/main/data/persons.json"), User[].class);
+            User[] newUsers = mapper.readValue(new FileReader("./src/main/data/persons.json"), User[].class);
             for(User a : newUsers){
                 userRepo.insert(a);
             }

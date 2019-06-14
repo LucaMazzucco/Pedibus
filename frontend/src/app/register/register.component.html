@@ -1,0 +1,57 @@
+<div fxLayout="row" fxLayoutAlign="center center" fxFlexFill>
+  <mat-card fxFlex="40" fxFlex.xs="100" class="mat-elevation-z6 mat-card-style">
+    <mat-card-header>
+      <mat-card-title>Registrazione</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="example-container">
+        <form [formGroup]="registrationForm" (ngSubmit) = "onSubmit()">
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <mat-form-field fxFlex="100">
+              <input matInput placeholder="Insert your firstname" formControlName="firstname" required>
+              <mat-error *ngIf="registrationForm.controls.firstname.invalid">{{getFirstnameErrorMessage()}}</mat-error>      
+            </mat-form-field>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <mat-form-field fxFlex="100">
+              <input matInput placeholder="Insert your lastname" formControlName="lastname" required>
+              <mat-error *ngIf="registrationForm.controls.lastname.invalid">{{getLastnameErrorMessage()}}</mat-error>      
+            </mat-form-field>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <mat-form-field  fxFlex="100">
+              <input matInput placeholder="Insert your registration Number" formControlName="registrationNumber" required>
+              <mat-error *ngIf="registrationForm.controls.registrationNumber.invalid">{{getRegistrationNumberErrorMessage()}}</mat-error>      
+            </mat-form-field>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <mat-form-field  fxFlex="100">
+              <input matInput placeholder="Enter your email" formControlName="email" (change)="checkEmailPresence()" required>
+              <mat-error *ngIf="registrationForm.controls.email.invalid">{{getEmailErrorMessage()}}</mat-error>      
+            </mat-form-field>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <mat-form-field  fxFlex="100">
+              <input type="password" matInput placeholder="Password" formControlName="password" required>
+              <mat-error *ngIf="registrationForm.hasError('required', 'password')">Please enter your password</mat-error>
+            </mat-form-field>
+          </div>
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <mat-form-field  fxFlex="100">
+              <input type="password" matInput placeholder="Repeat password" formControlName="confirmPassword" required>
+              <mat-error *ngIf="registrationForm.controls.confirmPassword.hasError('notSame')">Passwords do not match</mat-error>  
+            </mat-form-field>
+          </div>
+          <mat-card-actions>
+              <button mat-raised-button color="primary">REGISTER</button>
+          </mat-card-actions>
+       </form>
+       <!-- <span *ngIf="infoMessage.length > 0">{{ infoMessage }}</span> -->
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+
+
+

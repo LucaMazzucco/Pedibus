@@ -1,0 +1,148 @@
+@import '~@angular/material/theming';
+
+@include mat-core();
+
+
+//Define colors
+$md-background: (
+    50 : #f6f9fa,
+    100 : #e7f1f2,
+    200 : #d8e8e9,
+    300 : #c8dee0,
+    400 : #bcd7da,
+    500 : #b0d0d3,
+    600 : #a9cbce,
+    700 : #a0c4c8,
+    800 : #97bec2,
+    900 : #87b3b7,
+    A100 : #ffffff,
+    A200 : #ffffff,
+    A400 : #e1fcff,
+    A700 : #c8faff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #000000,
+        700 : #000000,
+        800 : #000000,
+        900 : #000000,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$md-primary: (
+    50 : #e2eaeb,
+    100 : #b7cbcd,
+    200 : #87a9ab,
+    300 : #578689,
+    400 : #336c70,
+    500 : #0f5257,
+    600 : #0d4b4f,
+    700 : #0b4146,
+    800 : #08383c,
+    900 : #04282c,
+    A100 : #65efff,
+    A200 : #32eaff,
+    A400 : #00e4fe,
+    A700 : #00cde5,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #ffffff,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$md-accent: (
+    50 : #f0f8f0,
+    100 : #d9eeda,
+    200 : #c0e3c2,
+    300 : #a7d8a9,
+    400 : #94cf96,
+    500 : #81c784,
+    600 : #79c17c,
+    700 : #6eba71,
+    800 : #64b367,
+    900 : #51a654,
+    A100 : #ffffff,
+    A200 : #d4ffd6,
+    A400 : #a1ffa5,
+    A700 : #88ff8c,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #000000,
+        600 : #000000,
+        700 : #000000,
+        800 : #000000,
+        900 : #000000,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+
+//Hold the primary palette
+
+$custom-theme-primary: mat-palette($md-primary);
+$custom-theme-accent:  mat-palette($md-accent);
+$custom-theme-warn: mat-palette($mat-red);
+$custom-theme-background : map_get($md-primary, 100);
+$custom-theme-foreground : map_get($md-primary, 300);
+
+
+
+$custom-theme: mat-light-theme($custom-theme-primary, $custom-theme-accent, $custom-theme-warn);
+
+$background: map-get($custom-theme, background);
+$background: map_merge($background, (background: $custom-theme-background));
+$custom-theme: map_merge($custom-theme, (background: $background));
+
+@mixin card-component-style($custom-theme) {
+    // Extract whichever individual palettes you need from the theme.
+    $primary: map-get($custom-theme, primary);
+    $accent: map-get($custom-theme, accent); // Use mat-color to extract individual colors from a palette as necessary.
+    .mat-card-style{
+        background-color: mat-color($primary,300);
+        border-color: mat-color($accent, 400);
+    }
+    .expansion-panel{
+        background: mat-color($primary, 200);
+    }        
+    mat-list-item.selected {
+        background-color: mat-color($accent, 700);
+    }
+    mat-list-item.selected:hover {
+        background-color: mat-color($accent, 700) !important;
+    }
+    mat-expansion-panel.isFull{
+        background-color: mat-color($accent, 700);
+
+      }
+
+}
+
+@include angular-material-theme($custom-theme)
+@include card-component-style($custom-theme)

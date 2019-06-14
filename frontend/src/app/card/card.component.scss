@@ -1,0 +1,24 @@
+@import '~@angular/material/theming';
+
+.mytabclass {
+    overflow-y: auto ;
+    max-height: 500px;
+}
+
+::ng-deep.mat-paginator-range-label {
+    display: none !important;
+}
+
+
+::ng-deep.mat-paginator {
+    background: transparent;
+}
+
+::ng-deep.mat-paginator-container {
+    align-items: flex-end !important;
+}
+
+
+::ng-deep.mat-card-header-text {
+    display: none !important;
+}
