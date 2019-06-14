@@ -12,8 +12,8 @@
         </button>
       </mat-menu>
       <div fxFlex="70">
-        <mat-card-title>{{currentLine.lineName}}</mat-card-title>
-        <mat-card-subtitle>{{dataSource.date | date:"dd/MM/yy"}}</mat-card-subtitle>
+        <mat-card-title>{{currentLine?.lineName}}</mat-card-title>
+        <mat-card-subtitle>{{dataSource?.date}}</mat-card-subtitle>
       </div>
       <mat-paginator fxFlex="20" #paginator [pageSize]="1" [length]="totalSize" [hidePageSize]="true" [pageIndex]="currentPage" (page)="pageEvent = handlePage($event)"></mat-paginator>
     </mat-card-header>
@@ -21,15 +21,15 @@
       <mat-tab-group>
         <mat-tab label="Andata">
           <div class="mytabclass">
-            <mat-expansion-panel *ngFor="let stop of dataSource.stops" class="expansion-panel" [class.isFull]="stopIsFull(stop)">
+            <mat-expansion-panel *ngFor="let stop of dataSource?.stops" class="expansion-panel" [class.isFull]="stopIsFull(stop)">
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   <mat-icon>directions_run</mat-icon>
-                    {{stop.time | date:"HH:mm"}} &nbsp; &nbsp; &nbsp; {{stop.stopName}}
+                    {{stop?.time}} &nbsp; &nbsp; &nbsp; {{stop.stopName}}
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <mat-nav-list>
-                <mat-list-item *ngFor="let person of stop.people" [class.selected]="isPresent(person)" (click)="addPerson(person)">
+                <mat-list-item *ngFor="let person of stop?.people" [class.selected]="isPresent(person)" (click)="addPerson(person)">
                   {{person.name}} {{person.surname}}
                 </mat-list-item>
               </mat-nav-list>
@@ -38,11 +38,11 @@
         </mat-tab>
         <mat-tab label="Ritorno" class="mytabclass">
           <div class="mytabclass">
-            <mat-expansion-panel *ngFor="let stop of dataSource.stopsBack"  class="expansion-panel" [class.isFull]="stopIsFull(stop)">
+            <mat-expansion-panel *ngFor="let stop of dataSource?.stopsBack"  class="expansion-panel" [class.isFull]="stopIsFull(stop)">
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   <mat-icon >directions_run</mat-icon>
-                    {{stop.time | date:"HH:mm"}} &nbsp; &nbsp; &nbsp; {{stop.stopName}} 
+                    {{stop?.time}} &nbsp; &nbsp; &nbsp; {{stop.stopName}}
                   </mat-panel-title>
                 </mat-expansion-panel-header>
               <mat-nav-list>

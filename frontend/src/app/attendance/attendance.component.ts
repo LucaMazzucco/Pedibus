@@ -25,9 +25,13 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.getLines();
+
+  }
+
+  updateLines(lines : Line[]){
+    this.lines = lines;
     this.currentLine = this.lines[0];
     this.currentPage = this.binarySearch(this.currentLine.rides,new Date(),0,this.currentLine.rides.length-1,0);
-
     this.dataSource = this.currentLine.rides[this.currentPage];
     this.dataSource.stops.sort((a, b) => a.time as any - (b.time as any));
     this.dataSource.stopsBack.sort((a, b) => a.time as any - (b.time as any));
@@ -50,9 +54,9 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   }
 
   getLines(): void {
-    this.subscription = this.dataService.getLines().subscribe(lines => this.lines = lines);
-    this.lines.sort((a,b)=> a.lineName.localeCompare(b.lineName))
-      .forEach(l=>l.rides.sort((a,b)=>a.date as any-(b.date as any)));
+    this.subscription = this.dataService.getLines().subscribe(lines => this.updateLines(lines));
+    /*this.lines.sort((a,b)=> a.lineName.localeCompare(b.lineName))
+      .forEach(l=>l.rides.sort((a,b)=>a.date as any-(b.date as any)));*/
   }
 
   handlePage(event: PageEvent) {
@@ -63,16 +67,23 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     this.totalSize = this.currentLine.rides.length;
   }
 
+  private parseDate(date: any): Date {
+    let s = date.split('/');
+    return new Date(s[2], (s[1]-1), s[0], 0, 0, 0)
+  }
+
   private binarySearch(arr: Ride[], x: Date, start: number, end: number, prev: number): number {
     if (start > end) { // if no exact match found return the closest ride in the future
       return arr.length > prev+1 ? prev+1 : prev;
     }
-
     const mid=Math.floor((start + end)/2);
+    console.log('Tipo della dataaaaaa:' + arr[mid].date);
 
-    if (arr[mid].date.getDate() ===x.getDate()) { return mid; }
+    let d = this.parseDate(arr[mid].date);
+    console.log('Tipo della dataaaaaa doppoooooo:' + d);
+    if (d.getDate() ===x.getDate()) { return mid; }
 
-    if(arr[mid].date as any - (x as any)> 0) {
+    if(d as any - (x as any)> 0) {
       return this.binarySearch(arr, x, start, mid-1, mid);
     } else {
       return this.binarySearch(arr, x, mid+1, end, mid);
