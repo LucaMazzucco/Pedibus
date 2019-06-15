@@ -1,10 +1,11 @@
 <div fxLayout="row" fxLayoutAlign="center center" fxFlexFill>
-  <mat-card fxFlex="20" fxFlex.xs="30" class="mat-elevation-z6 mat-card-style">
-    <mat-card-header fxLayoutAlign="center center">
+  <mat-card fxFlex="40" fxFlex.xs="100" class="mat-elevation-z6 mat-card-style">
+    <mat-card-header>
         <mat-card-title>Login</mat-card-title>
     </mat-card-header>
-    <mat-card-content fxLayoutAlign="center center">
-      <form [formGroup]="loginForm" (ngSubmit) = "onSubmit()">
+    <mat-card-content>
+      <div class="myContainer">
+        <form [formGroup]="loginForm" (ngSubmit) = "onSubmit()">
           <table cellspacing="0">
             <tr>
               <td>
@@ -17,13 +18,15 @@
             <td><mat-form-field>
               <input matInput placeholder="Password" type="password" name="password" formControlName="password" required>
             </mat-form-field></td>
-          </tr></table>
+          </tr>
+        </table>
           <mat-card-actions fxLayoutAlign="center center">
-              <button mat-raised-button color="primary">Login</button>
+            <button mat-raised-button color="primary">Login</button>
           </mat-card-actions>
         </form>
-        <mat-spinner [style.display]="showSpinner ? 'block' : 'none'"></mat-spinner>
-        <span *ngIf="infoMessage.length > 0">{{ infoMessage }}</span>
+      </div>
+      <mat-spinner [style.display]="showSpinner ? 'block' : 'none'"></mat-spinner>
+      <span *ngIf="infoMessage.length > 0">{{ infoMessage }}</span>
     </mat-card-content>
 
   </mat-card>
