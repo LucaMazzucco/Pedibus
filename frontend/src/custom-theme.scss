@@ -120,13 +120,17 @@ $background: map-get($custom-theme, background);
 $background: map_merge($background, (background: $custom-theme-background));
 $custom-theme: map_merge($custom-theme, (background: $background));
 
-@mixin card-component-style($custom-theme) {
+@mixin attendance-component-style($custom-theme) {
     // Extract whichever individual palettes you need from the theme.
     $primary: map-get($custom-theme, primary);
     $accent: map-get($custom-theme, accent); // Use mat-color to extract individual colors from a palette as necessary.
     .mat-card-style{
         background-color: mat-color($primary,300);
         border-color: mat-color($accent, 400);
+    }
+    .mat-card-header-style{
+        background-color: mat-color($primary,500);
+        border-color: mat-color($accent, 600);
     }
     .expansion-panel{
         background: mat-color($primary, 200);
@@ -145,4 +149,4 @@ $custom-theme: map_merge($custom-theme, (background: $background));
 }
 
 @include angular-material-theme($custom-theme)
-@include card-component-style($custom-theme)
+@include attendance-component-style($custom-theme)

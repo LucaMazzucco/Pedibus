@@ -3,6 +3,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { tap, map, first } from 'rxjs/operators';
 import * as moment from "moment";
 import { Observable } from 'rxjs';
+import * as jwt_decode from 'jwt-decode';
 
 const REST_URL = 'http://localhost:8080';
 
@@ -18,7 +19,7 @@ interface UserRegistration {
   email: string;
   password: string;
 }
-
+export const TOKEN_NAME: string = 'jwt_token';
 @Injectable({
   providedIn: 'root',
 })
@@ -30,34 +31,39 @@ export class AuthService {
 
   login(username:string, password:string ) {
     return this.http.post<UserLogin>(REST_URL + '/login', {username, password})
-      
   }
   
   setSession(authResult) {
-    console.log(authResult)
-    const expiresAt = moment().add(authResult.expiresIn,'second');
-    localStorage.setItem('id_token', authResult.token);
-    localStorage.setItem("expires_at", JSON.stringify(expiresAt.valueOf()) );
-  
+    localStorage.setItem(TOKEN_NAME, authResult.token);
   }
   logout() {
-    localStorage.removeItem("id_token");
-    localStorage.removeItem("expires_at");
+    localStorage.removeItem(TOKEN_NAME);
   }
 
-  public isLoggedIn() {
-      return moment().isBefore(this.getExpiration());
+  getToken(): string {
+    return localStorage.getItem(TOKEN_NAME);
+  }
+
+  isLoggedIn(token?: string): boolean {
+    if(!token) token = this.getToken();
+    if(!token) return false;
+    const date = this.getTokenExpirationDate(token);
+    if(date === undefined) return false;
+    return (date.valueOf() > new Date().valueOf());
+  }
+
+  getTokenExpirationDate(token: string): Date {
+    const decoded = jwt_decode(token);
+    if (decoded.exp === undefined) return null;
+
+    const date = new Date(0);
+    date.setUTCSeconds(decoded.exp);
+    return date;
   }
 
   isLoggedOut() {
       return !this.isLoggedIn();
   }
-
-  getExpiration() {
-      const expiration = localStorage.getItem("expires_at");
-      const expiresAt = JSON.parse(expiration);
-      return moment(expiresAt);
-  }      
 
   getEmailPresence(email: string): Observable<Boolean>{
     // if(email === "a@a.it") return true;

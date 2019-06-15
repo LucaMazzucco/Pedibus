@@ -13,9 +13,11 @@ import org.springframework.beans.factory.annotation.Value;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 @Component
 public class JwtTokenProvider {
@@ -39,7 +41,7 @@ public class JwtTokenProvider {
         claims.put("roles", roles);
 
         Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        Date validity = new Date(now.getTime() + validityInMilliseconds); // Aggiungo 2 ore per passare da CEST a UTC
 
         return Jwts.builder()
                 .setClaims(claims)

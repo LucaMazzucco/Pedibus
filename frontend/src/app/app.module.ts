@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MatListModule } from '@angular/material/list';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -26,12 +25,18 @@ import {JwtInterceptor} from './services/jwt-interceptor';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatCheckboxModule} from "@angular/material";
+import {AuthguardService as AuthGuard} from "./services/authguard.service";
 
 
 const routes: Routes = [
+  { path: 'presenze',
+    component: AttendanceComponent,
+    canActivate:[AuthGuard]
+  },
   { path: 'login', component: LoginComponent},
-  { path: 'register', component: RegisterComponent },
-  { path: 'presenze', component: AttendanceComponent }
+  { path: 'register', component: RegisterComponent},
+  { path: '', component: LoginComponent },
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({
@@ -47,7 +52,6 @@ const routes: Routes = [
     HttpClientModule,
     MatCheckboxModule,
     BrowserAnimationsModule,
-    AppRoutingModule,
     MatListModule,
     MatInputModule,
     ReactiveFormsModule,
