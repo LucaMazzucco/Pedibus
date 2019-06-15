@@ -6,6 +6,7 @@ import { DataService } from '../services/data.service';
 import {MatTabChangeEvent, MatTableDataSource, PageEvent} from '@angular/material';
 import {Stop} from '../classes/stop';
 import {MatDialog} from '@angular/material/dialog';
+import {SelectionModel} from "@angular/cdk/collections";
 
 
 
@@ -27,7 +28,8 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   subscription: any;
   isBackTab: boolean;
   tableDatasource: any;
-  displayedColumns: string[] = ['nome', 'cognome'];
+  displayedColumns: string[] = ['seleziona', 'nome', 'cognome'];
+  selection = new SelectionModel<Person>(true, []);
 
   ngOnInit() {
     this.getLines();
@@ -97,14 +99,15 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       return this.binarySearch(arr, x, mid+1, end, mid);
     }
   }
-  addReservation(person: Person){
+  /*
+  addReservation(){
     if(this.isBackTab){
       this.dataSource.stopsBack.people.push(person)
     }
     else{
       this.dataSource.stops.people.push(person)
     }
-  }
+  }*/
   tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
     if(tabChangeEvent.index == 1){
       this.isBackTab = true;
@@ -141,13 +144,25 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       this.tableDatasource = new MatTableDataSource(this.dataSource.notReserved)
     }
     let dialogRef = this.dialog.open(templateRef, {
-        width: '250px',
+        width: '500px',
     });
 
     dialogRef.afterClosed().subscribe(result => {
         console.log('The dialog was closed');
     });
-}
+  }
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.tableDatasource.data.length;
+    return numSelected === numRows;
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  masterToggle() {
+    this.isAllSelected() ?
+        this.selection.clear() :
+        this.tableDatasource.data.forEach(row => this.selection.select(row));
+  }
 }
 
 // @Component({

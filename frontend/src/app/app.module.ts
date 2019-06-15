@@ -25,6 +25,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {JwtInterceptor} from './services/jwt-interceptor';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatCheckboxModule} from "@angular/material";
 
 
 const routes: Routes = [
@@ -44,6 +45,7 @@ const routes: Routes = [
     BrowserModule,
     MatTableModule,
     HttpClientModule,
+    MatCheckboxModule,
     BrowserAnimationsModule,
     AppRoutingModule,
     MatListModule,
