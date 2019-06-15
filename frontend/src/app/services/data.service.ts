@@ -23,12 +23,11 @@ export class DataService {
     return this.http.get<Line[]>(REST_URL + '/getLines')
   }
 
-  putLineAttendance(){
-
+  putLineAttendance(line: Line){
+    return this.http.put<Line>(REST_URL + "/putLineAttendance/" + line.lineName, {line}).pipe(first()).subscribe(data => console.log(data));
   }
 
   putRideAttendance(ride: Ride, lineName: String){
-    let date = ride.date.toDateString;
     return this.http.put<Ride>(REST_URL + "/putLineAttendance/" + lineName + "/ride", {ride}).pipe(first()).subscribe(data => console.log(data));
   }
 

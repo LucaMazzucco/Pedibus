@@ -92,6 +92,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
         this.dataSource.notReserved = this.dataSource.notReserved.filter(obj => obj !== person);
       }
       this.selection.clear();
+      //this.dataService.putLineAttendance(this.currentLine);
       this.dataService.putRideAttendance(this.dataSource, this.currentLine.lineName);
     }
     /*

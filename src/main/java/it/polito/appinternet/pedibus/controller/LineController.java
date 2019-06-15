@@ -16,6 +16,7 @@ import javax.annotation.PostConstruct;
 import javax.swing.text.DateFormatter;
 import java.io.*;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -114,7 +115,7 @@ public class LineController {
     }
 
     private JSONObject encapsulateRide(Ride r,Line line){
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
         JSONObject rideJson = new JSONObject();
         JSONArray stopsJson = new JSONArray();
         JSONArray stopsBackJson = new JSONArray();
@@ -213,18 +214,20 @@ public class LineController {
         }
         try{
             Line line = lineRepo.findByLineName(line_name);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
             List<Ride> rides = line.getRides();
-            JSONObject lineJson = new JSONObject(payload);
+            JSONObject lineJson = new JSONObject(payload).getJSONObject("line");
             JSONArray ridesJson = lineJson.getJSONArray("rides");
             List<Reservation> reservationsToSave = new LinkedList<>();
             List<Reservation> reservationsToInsert = new LinkedList<>();
             for(int i=0; i<ridesJson.length();i++){
                 JSONObject rideJson = ridesJson.getJSONObject(i);
+                Date date = sdf.parse(rideJson.getString("date"));
                 Ride rideA = rides.stream()
-                        .filter(r->r.getRideDate().getDate()==(new Date(rideJson.getString("date")).getDate()))
+                        .filter(r->r.getRideDate().getDate()==(date.getDate()))
                         .filter(Ride::getFlagAndata).findAny().orElse(null);
                 Ride rideR = rides.stream()
-                        .filter(r->r.getRideDate().getDate()==(new Date(rideJson.getString("date")).getDate()))
+                        .filter(r->r.getRideDate().getDate()==(date.getDate()))
                         .filter(r-> !r.getFlagAndata()).findAny().orElse(null);
                 decapsulateRideToUpdatePassengersInfo(line_name,rideJson.getJSONArray("stops"),
                         rideA, reservationsToInsert, reservationsToSave);
@@ -248,6 +251,9 @@ public class LineController {
         } catch (NullPointerException e){
             e.printStackTrace();
             return ResponseEntity.status(500).build();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok("");
     }
@@ -259,17 +265,17 @@ public class LineController {
             return ResponseEntity.badRequest().build();
         }
         try{
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
             Line line = lineRepo.findByLineName(line_name);
             List<Reservation> reservationsToSave = new LinkedList<>();
             List<Reservation> reservationsToInsert = new LinkedList<>();
             JSONObject rideJson = new JSONObject(payload).getJSONObject("ride");
-            String date = rideJson.getString("date");
-            Date d = new Date(date);
+            Date date = sdf.parse(rideJson.getString("date"));
             Ride rideA = line.getRides().stream()
-                    .filter(r->r.getRideDate().getDate()==(new Date(date).getDate()))
+                    .filter(r->r.getRideDate().getDate()==(date.getDate()))
                     .filter(r->r.getFlagAndata()==true).findAny().orElse(null);
             Ride rideR = line.getRides().stream()
-                    .filter(r->r.getRideDate().getDate()==(new Date(date).getDate()))
+                    .filter(r->r.getRideDate().getDate()==(date.getDate()))
                     .filter(r->r.getFlagAndata()==false).findAny().orElse(null);
             decapsulateRideToUpdatePassengersInfo(line_name,rideJson.getJSONArray("stops"),
                     rideA, reservationsToInsert,reservationsToSave);
@@ -292,6 +298,9 @@ public class LineController {
         } catch (NullPointerException e){
             e.printStackTrace();
             return ResponseEntity.status(500).build();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok("");
     }
