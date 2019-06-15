@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule, MatButtonModule, MatSidenavModule } from '@angular/material';
+import {MatToolbarModule, MatButtonModule, MatSidenavModule, MatTableModule} from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AttendanceComponent } from './attendance/attendance.component'
 import { MatCardModule } from '@angular/material';
@@ -42,6 +42,7 @@ const routes: Routes = [
   ],
   imports: [
     BrowserModule,
+    MatTableModule,
     HttpClientModule,
     BrowserAnimationsModule,
     AppRoutingModule,

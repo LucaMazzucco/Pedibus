@@ -3,9 +3,9 @@ import { Person } from '../classes/person';
 import { Line } from '../classes/line';
 import { Ride } from '../classes/ride';
 import { DataService } from '../services/data.service';
-import { PageEvent } from '@angular/material';
+import {MatTabChangeEvent, MatTableDataSource, PageEvent} from '@angular/material';
 import {Stop} from '../classes/stop';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import {MatDialog} from '@angular/material/dialog';
 
 
 
@@ -25,16 +25,20 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   currentLine: Line;
   dataSource: any;
   subscription: any;
+  isBackTab: boolean;
+  tableDatasource: any;
+  displayedColumns: string[] = ['nome', 'cognome'];
 
   ngOnInit() {
     this.getLines();
-
+    this.isBackTab = false;
   }
 
   updateLines(lines : Line[]){
     this.lines = lines;
     this.currentLine = this.lines[0];
     this.currentPage = this.binarySearch(this.currentLine.rides,new Date(),0,this.currentLine.rides.length-1,0);
+    console.log(this.currentLine.rides.constructor.name)
     this.dataSource = this.currentLine.rides[this.currentPage];
     this.dataSource.stops.sort((a, b) => a.time as any - (b.time as any));
     this.dataSource.stopsBack.sort((a, b) => a.time as any - (b.time as any));
@@ -93,6 +97,22 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       return this.binarySearch(arr, x, mid+1, end, mid);
     }
   }
+  addReservation(person: Person){
+    if(this.isBackTab){
+      this.dataSource.stopsBack.people.push(person)
+    }
+    else{
+      this.dataSource.stops.people.push(person)
+    }
+  }
+  tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
+    if(tabChangeEvent.index == 1){
+      this.isBackTab = true;
+    }
+    else{
+      this.isBackTab = false;
+    }
+  }
 
   handleLine(line: Line) {
     this.currentLine = this.lines[this.lines.indexOf(line)];
@@ -114,14 +134,18 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   }
 
   openDialog(templateRef) {
+    if(this.isBackTab){
+      this.tableDatasource = new MatTableDataSource(this.dataSource.notReservedBack);
+    }
+    else{
+      this.tableDatasource = new MatTableDataSource(this.dataSource.notReserved)
+    }
     let dialogRef = this.dialog.open(templateRef, {
         width: '250px',
-        // data: { name: this.name, animal: this.animal }
     });
 
     dialogRef.afterClosed().subscribe(result => {
         console.log('The dialog was closed');
-        // this.animal = result;
     });
 }
 }
