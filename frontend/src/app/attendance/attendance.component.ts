@@ -63,8 +63,6 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 
   getLines(): void {
     this.subscription = this.dataService.getLines().subscribe(lines => this.updateLines(lines));
-    /*this.lines.sort((a,b)=> a.lineName.localeCompare(b.lineName))
-      .forEach(l=>l.rides.sort((a,b)=>a.date as any-(b.date as any)));*/
   }
 
   handlePage(event: PageEvent) {
@@ -74,9 +72,11 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     this.dataSource.stopsBack.sort((a, b) => a.time as any - (b.time as any));
     this.totalSize = this.currentLine.rides.length;
   }
+
   setStopIndex(i: number){
     this.stopIndex = i;
   }
+
   addReservation(): void {
     for (let person of this.selection.selected){
       person.isPresent = true;
@@ -92,14 +92,8 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       //this.dataService.putLineAttendance(this.currentLine);
       this.dataService.putRideAttendance(this.dataSource, this.currentLine.lineName);
     }
-    /*
-    if(this.isBackTab){
-      this.dataSource.stopsBack.people.push(person)
-    }
-    else{
-      this.dataSource.stops.people.push(person)
-    }*/
   }
+
   private parseDate(date: any): Date {
     let s = date.split('/');
     return new Date(s[2], (s[1]-1), s[0], 0, 0, 0)
@@ -181,16 +175,3 @@ export class AttendanceComponent implements OnInit, OnDestroy {
         this.tableDatasource.data.forEach(row => this.selection.select(row));
   }
 }
-
-// @Component({
-//   selector: 'bottom-sheet-overview-example-sheet',
-//   templateUrl: 'bottom-sheet-overview-example-sheet.html',
-// })
-// export class NotReservedPeopleModal {
-//   constructor(private _bottomSheetRef: MatBottomSheetRef<NotReservedPeopleModal>) {}
-
-//   openLink(event: MouseEvent): void {
-//     this._bottomSheetRef.dismiss();
-//     event.preventDefault();
-//   }
-// }
