@@ -1,9 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import {Component, OnInit, OnDestroy, Input} from '@angular/core';
 import { Person } from '../classes/person';
 import { Line } from '../classes/line';
 import { Ride } from '../classes/ride';
 import { DataService } from '../services/data.service';
-import {MatTabChangeEvent, MatTableDataSource, PageEvent} from '@angular/material';
+import {MatDialogConfig, MatTabChangeEvent, MatTableDataSource, PageEvent} from '@angular/material';
 import {Stop} from '../classes/stop';
 import {MatDialog} from '@angular/material/dialog';
 import {SelectionModel} from "@angular/cdk/collections";
@@ -20,7 +20,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   constructor(private dataService: DataService,private dialog: MatDialog) { }
 
   lines: Line[];
-
+  stopIndex: number;
   totalSize: number;
   currentPage: number;
   currentLine: Line;
@@ -76,7 +76,30 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     this.dataSource.stopsBack.sort((a, b) => a.time as any - (b.time as any));
     this.totalSize = this.currentLine.rides.length;
   }
-
+  setStopIndex(i: number){
+    console.log(i)
+    this.stopIndex = i;
+  }
+  addReservation(): void {
+    for (let person of this.selection.selected){
+      person.isPresent = true;
+      if(this.isBackTab){
+        this.dataSource.stopsBack[this.stopIndex].people.push(person)
+        this.dataSource.notReservedBack = this.dataSource.notReservedBack.filter(obj => obj !== person);
+      }
+      else{
+        this.dataSource.stops[this.stopIndex].people.push(person)
+        this.dataSource.notReserved = this.dataSource.notReserved.filter(obj => obj !== person);
+      }
+    }
+    /*
+    if(this.isBackTab){
+      this.dataSource.stopsBack.people.push(person)
+    }
+    else{
+      this.dataSource.stops.people.push(person)
+    }*/
+  }
   private parseDate(date: any): Date {
     let s = date.split('/');
     return new Date(s[2], (s[1]-1), s[0], 0, 0, 0)
@@ -99,15 +122,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       return this.binarySearch(arr, x, mid+1, end, mid);
     }
   }
-  /*
-  addReservation(){
-    if(this.isBackTab){
-      this.dataSource.stopsBack.people.push(person)
-    }
-    else{
-      this.dataSource.stops.people.push(person)
-    }
-  }*/
+
   tabChanged = (tabChangeEvent: MatTabChangeEvent): void => {
     if(tabChangeEvent.index == 1){
       this.isBackTab = true;
@@ -137,6 +152,11 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   }
 
   openDialog(templateRef) {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = {
+      id: 1,
+      title: 'Angular For Beginners'
+    };
     if(this.isBackTab){
       this.tableDatasource = new MatTableDataSource(this.dataSource.notReservedBack);
     }

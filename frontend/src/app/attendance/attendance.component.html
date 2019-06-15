@@ -21,7 +21,7 @@
       <mat-tab-group (selectedTabChange)="tabChanged($event)">
         <mat-tab label="Andata">
           <div class="mytabclass">
-            <mat-expansion-panel *ngFor="let stop of dataSource?.stops" class="expansion-panel" [class.isFull]="stopIsFull(stop)">
+            <mat-expansion-panel *ngFor="let stop of dataSource?.stops; let i = index" class="expansion-panel" [class.isFull]="stopIsFull(stop)">
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   <mat-icon>directions_run</mat-icon>
@@ -33,7 +33,7 @@
                   {{person.name}} {{person.surname}}
                 </mat-list-item>
               </mat-nav-list>
-              <button mat-raised-button (click)="openDialog(template)">Not Registered</button>
+              <button mat-raised-button (click)="openDialog(template); setStopIndex(i)">Not Registered</button>
             </mat-expansion-panel>
             <ng-template #template>
               <div fxLayout="column" fxLayoutGap="20px">
@@ -67,7 +67,7 @@
                   </table>
                 </div>
                 <div fxFlex="10" fxLayoutAlign="center center">
-                  <button mat-raised-button>Aggiungi bambini</button>
+                  <button mat-raised-button (click)="addReservation()">Aggiungi bambini</button>
                 </div>
               </div>
             </ng-template>
