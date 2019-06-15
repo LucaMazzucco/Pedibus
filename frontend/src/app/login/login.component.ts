@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {MatSnackBar} from '@angular/material/snack-bar';
 
 interface User {
   email: string;
@@ -15,9 +16,9 @@ interface User {
 
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
+  infoMessage: string = '';
 
-
-  constructor(private authService: AuthService, private formBuilder: FormBuilder) { }
+  constructor(private authService: AuthService, private formBuilder: FormBuilder, private _snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
@@ -30,7 +31,17 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void{
     console.log(this.f.email.value, this.f.password.value)
-    this.authService.login(this.f.email.value, this.f.password.value)
+    let response = this.authService.login(this.f.email.value, this.f.password.value);
+    response.subscribe(data => {
+      this.authService.setSession(data);
+      this.infoMessage = "You are logged!";
+      this._snackBar.open(this.infoMessage, '', {duration: 2000});
+      this.infoMessage = ''
+    }, error =>{
+      this.infoMessage = "Password or email are wrong!";
+      this._snackBar.open(this.infoMessage, '', {duration: 2000});
+      this.infoMessage = '';
+    })
   }
 
 }

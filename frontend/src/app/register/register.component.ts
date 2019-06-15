@@ -91,6 +91,7 @@ export class RegisterComponent implements OnInit {
     response.subscribe(data => {
       this.infoMessage = data.body['result'];
       this._snackBar.open(this.infoMessage, '', {duration: 2000});
+      this.infoMessage = ''
     }) 
   }
 

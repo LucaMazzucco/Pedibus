@@ -40,12 +40,10 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     this.lines = lines;
     this.currentLine = this.lines[0];
     this.currentPage = this.binarySearch(this.currentLine.rides,new Date(),0,this.currentLine.rides.length-1,0);
-    console.log(this.currentLine.rides.constructor.name)
     this.dataSource = this.currentLine.rides[this.currentPage];
     this.dataSource.stops.sort((a, b) => a.time as any - (b.time as any));
     this.dataSource.stopsBack.sort((a, b) => a.time as any - (b.time as any));
     this.totalSize = this.currentLine.rides.length;
-    //console.log(this.dataSource[]);
   }
   ngOnDestroy(){
     this.subscription.unsubscribe();
@@ -77,7 +75,6 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     this.totalSize = this.currentLine.rides.length;
   }
   setStopIndex(i: number){
-    console.log(i)
     this.stopIndex = i;
   }
   addReservation(): void {
@@ -113,10 +110,8 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       return arr.length > prev+1 ? prev+1 : prev;
     }
     const mid=Math.floor((start + end)/2);
-    console.log('Tipo della dataaaaaa:' + arr[mid].date);
 
     let d = this.parseDate(arr[mid].date);
-    console.log('Tipo della dataaaaaa doppoooooo:' + d);
     if (d.getDate() ===x.getDate()) { return mid; }
 
     if(d as any - (x as any)> 0) {
@@ -171,7 +166,6 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-        console.log('The dialog was closed');
     });
   }
   isAllSelected() {

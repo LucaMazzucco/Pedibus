@@ -30,13 +30,10 @@ export class AuthService {
 
   login(username:string, password:string ) {
     return this.http.post<UserLogin>(REST_URL + '/login', {username, password})
-      .pipe(first())
-      .subscribe(
-        (data) => this.setSession(data)
-      )
+      
   }
   
-  private setSession(authResult) {
+  setSession(authResult) {
     console.log(authResult)
     const expiresAt = moment().add(authResult.expiresIn,'second');
     localStorage.setItem('id_token', authResult.token);

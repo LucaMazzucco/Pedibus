@@ -19,10 +19,11 @@
             </mat-form-field></td>
           </tr></table>
           <mat-card-actions fxLayoutAlign="center center">
-              <button mat-raised-button (click)="login()" color="primary">Login</button>
+              <button mat-raised-button color="primary">Login</button>
           </mat-card-actions>
         </form>
         <mat-spinner [style.display]="showSpinner ? 'block' : 'none'"></mat-spinner>
+        <span *ngIf="infoMessage.length > 0">{{ infoMessage }}</span>
     </mat-card-content>
 
   </mat-card>
