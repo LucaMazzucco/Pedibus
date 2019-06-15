@@ -8,6 +8,8 @@ import { RIDES_DATA } from '../data/rides_data';*/
 import { Line } from '../classes/line';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { Ride } from '../classes/ride';
+import { first } from 'rxjs/operators';
 const REST_URL = 'http://localhost:8080';
 
 @Injectable({
@@ -19,6 +21,15 @@ export class DataService {
 
   getLines(): Observable<Line[]> {
     return this.http.get<Line[]>(REST_URL + '/getLines')
+  }
+
+  putLineAttendance(){
+
+  }
+
+  putRideAttendance(ride: Ride, lineName: String){
+    let date = ride.date.toDateString;
+    return this.http.put<Ride>(REST_URL + "/putLineAttendance/" + lineName + "/ride", {ride}).pipe(first()).subscribe(data => console.log(data));
   }
 
 }

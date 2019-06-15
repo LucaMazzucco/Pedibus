@@ -252,21 +252,19 @@ public class LineController {
         return ResponseEntity.ok("");
     }
 
-    @PutMapping("putLineAttendance/{line_name}/{date}")
+    @PutMapping("putLineAttendance/{line_name}/ride")
     public ResponseEntity<String> updateRideToUpdatePassengersInfo(@PathVariable String line_name,
-                                                                   @PathVariable String date,
                                                                    @RequestBody String payload){
-        if(line_name==null || date == null || payload == null){
+        if(line_name==null || payload == null){
             return ResponseEntity.badRequest().build();
         }
         try{
             Line line = lineRepo.findByLineName(line_name);
             List<Reservation> reservationsToSave = new LinkedList<>();
             List<Reservation> reservationsToInsert = new LinkedList<>();
-            JSONObject rideJson = new JSONObject(payload);
-            if(!rideJson.getString("date").equals(date)){
-                return ResponseEntity.badRequest().build();
-            }
+            JSONObject rideJson = new JSONObject(payload).getJSONObject("ride");
+            String date = rideJson.getString("date");
+            Date d = new Date(date);
             Ride rideA = line.getRides().stream()
                     .filter(r->r.getRideDate().getDate()==(new Date(date).getDate()))
                     .filter(r->r.getFlagAndata()==true).findAny().orElse(null);

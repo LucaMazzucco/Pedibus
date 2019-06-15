@@ -5,7 +5,7 @@ import { Ride } from '../classes/ride';
 import { DataService } from '../services/data.service';
 import {MatDialogConfig, MatTabChangeEvent, MatTableDataSource, PageEvent} from '@angular/material';
 import {Stop} from '../classes/stop';
-import {MatDialog} from '@angular/material/dialog';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {SelectionModel} from "@angular/cdk/collections";
 
 
@@ -91,6 +91,8 @@ export class AttendanceComponent implements OnInit, OnDestroy {
         this.dataSource.stops[this.stopIndex].people.push(person)
         this.dataSource.notReserved = this.dataSource.notReserved.filter(obj => obj !== person);
       }
+      this.selection.clear();
+      this.dataService.putRideAttendance(this.dataSource, this.currentLine.lineName);
     }
     /*
     if(this.isBackTab){
