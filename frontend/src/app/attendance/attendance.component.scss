@@ -1,5 +1,5 @@
 @import '~@angular/material/theming';
-
+[hidden] { display: none !important;}
 .mytabclass {
     overflow-y: auto ;
     max-height: 500px;

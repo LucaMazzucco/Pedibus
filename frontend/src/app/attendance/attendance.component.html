@@ -33,7 +33,7 @@
                   {{person.name}} {{person.surname}}
                 </mat-list-item>
               </mat-nav-list>
-              <button mat-raised-button (click)="openDialog(template); setStopIndex(i)" [hidden]="selection.isEmpty()">Aggiungi bambini</button>
+              <button mat-raised-button (click)="openDialog(template); setStopIndex(i)">Aggiungi bambini</button>
             </mat-expansion-panel>
             <ng-template #template>
               <div fxLayout="column" fxLayoutGap="20px">
@@ -87,7 +87,7 @@
                   {{person.name}} {{person.surname}}
                 </mat-list-item>
               </mat-nav-list>
-              <button mat-raised-button (click)="openDialog(templateBack); setStopIndex(i)" [hidden]="selectionBack.isEmpty()">Aggiungi bambini</button>
+              <button mat-raised-button (click)="openDialog(templateBack); setStopIndex(i)" >Aggiungi bambini</button>
             </mat-expansion-panel>
             <ng-template #templateBack>
               <div fxLayout="column" fxLayoutGap="20px">
