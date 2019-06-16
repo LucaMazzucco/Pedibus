@@ -1,6 +1,7 @@
 package it.polito.appinternet.pedibus.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import it.polito.appinternet.pedibus.model.*;
 import it.polito.appinternet.pedibus.repository.*;
 import org.json.JSONArray;
@@ -362,6 +363,59 @@ public class LineController {
         }
     }
 
+    @PutMapping("putLineAttendance/{line_name}/ride/user")
+    @Transactional
+    public ResponseEntity<String> updateUserToUpdatePassengersInfo(@PathVariable String line_name,
+                                                                   @RequestBody String payload) {
+        if (line_name == null || payload == null) {
+            return ResponseEntity.badRequest().build();
+        }
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
+            JSONObject mainJson = new JSONObject(payload);
+            if(!mainJson.has("person") ||
+                !mainJson.has("rideDate") ||
+                !mainJson.has("isBack")
+            ){
+                return ResponseEntity.badRequest().build();
+            }
+            JSONObject userJson = mainJson.getJSONObject("person");
+            if(!userJson.has("isPresent") ||
+                !userJson.has("registrationNumber") ||
+                !userJson.has("name") ||
+                !userJson.has("surname")
+            ){
+                return ResponseEntity.badRequest().build();
+            }
+            // No stop check required bc for the same line,date,direction can be only one reservation (on a ride)
+            // for the same registrationNumber whatever the stop
+            boolean isBack = mainJson.getBoolean("isBack");
+            boolean isPresent = userJson.getBoolean("isPresent");
+            String registrationNumber = userJson.getString("registrationNumber");
+            Date date = sdf.parse(mainJson.getString("rideDate"));
+            List<Reservation> reservations = reservationRepo.findByLineNameAndReservationDateAndFlagAndata(line_name,date,isBack);
+            if(reservations==null){
+                return ResponseEntity.notFound().build();
+            }
+            Reservation reservation = reservations.stream()
+                    .filter(r->r.getPassenger().getRegistrationNumber().equals(registrationNumber))
+                    .findAny().orElse(null);
+            if(reservation==null){
+                return ResponseEntity.notFound().build();
+            }
+            if(reservation.isPresent()!=isPresent){
+                reservation.setPresent(isPresent);
+                reservationRepo.save(reservation);
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        } catch (NullPointerException e){
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
+        return ResponseEntity.ok("");
+    }
 
     @GetMapping("/lines/{line_name}")
     public String findLineByName(@PathVariable String line_name){
