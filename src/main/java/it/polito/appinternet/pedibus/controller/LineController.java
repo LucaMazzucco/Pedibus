@@ -163,14 +163,12 @@ public class LineController {
         });
         ride.getReservations().stream()
                 .map(e->reservationRepo.findById(e))
-                .collect(Collectors.toMap(e->e.getStopName(),e->e))
-                .entrySet().stream()
-                .collect(Collectors.groupingBy(e->e.getKey(),HashMap::new,Collectors.toList()))
+                .collect(Collectors.groupingBy(e->e.getStopName(),HashMap::new,Collectors.toList()))
                 .forEach((k,v)->{
                     JSONArray people = new JSONArray();
                     v.forEach(e->people.put(
                             encapsulateUser(
-                                    e.getValue().getPassenger(),e.getValue().isPresent()
+                                    e.getPassenger(),e.isPresent()
                             )
                             )
                     );
