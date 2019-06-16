@@ -30,7 +30,6 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   tableDatasource: any;
   displayedColumns: string[] = ['seleziona', 'nome', 'cognome'];
   selection = new SelectionModel<Person>(true, []);
-  selectionBack = new SelectionModel<Person>(true, []);
 
   ngOnInit() {
     this.getLines();
