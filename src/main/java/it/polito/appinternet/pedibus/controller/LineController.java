@@ -293,15 +293,12 @@ public class LineController {
                 }
             });
             lineRepo.save(line);
-        } catch (JSONException e) {
+        } catch (JSONException | ParseException e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().build();
         } catch (NullPointerException e){
             e.printStackTrace();
             return ResponseEntity.status(500).build();
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.ok("");
     }
@@ -339,8 +336,8 @@ public class LineController {
                         .filter(r->r.getPassenger().getRegistrationNumber().equals(user.getRegistrationNumber()))
                         .findAny().orElse(null);
                 if(res==null){
-                    //Was not reserved but manually signed present
-                    res = new Reservation(lineName,stopName,user,ride.getRideDate(),ride.getFlagAndata(),true);
+                    //Was not reserved but manually added
+                    res = new Reservation(lineName,stopName,user,ride.getRideDate(),ride.getFlagAndata(),isPresent);
                     reservationsToInsert.add(res);
                 }
                 else if(isPresent!=res.isPresent()){
@@ -348,6 +345,20 @@ public class LineController {
                     reservationsToSave.add(res);
                 }
             }
+        }
+        if(reservationsToInsert.stream()
+                .filter(r->r.isFlagAndata()==ride.getFlagAndata())
+                .collect(Collectors.groupingBy(r->r.getPassenger().getRegistrationNumber(),Collectors.counting()))
+                .values().stream()
+                .anyMatch(v->v>1) ||
+                reservationsToSave.stream()
+                        .filter(r->r.isFlagAndata()==ride.getFlagAndata())
+                        .collect(Collectors.groupingBy(r->r.getPassenger().getRegistrationNumber(),Collectors.counting()))
+                        .values().stream()
+                        .anyMatch(v->v>1)
+        ){
+            //Duplicated passenger in json
+            throw new JSONException("Duplicated passenger in json");
         }
     }
 
