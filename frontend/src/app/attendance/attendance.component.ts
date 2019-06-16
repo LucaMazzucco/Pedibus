@@ -50,11 +50,13 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   }
 
   addPerson(person: Person) {
+
     if(person.isPresent) {
       person.isPresent = false;
     } else {
       person.isPresent = true;
     }
+    this.dataService.putPersonAttendance(this.dataSource.date, this.currentLine.lineName, this.isBackTab, person)
   }
 
   isPresent(person: Person): boolean {

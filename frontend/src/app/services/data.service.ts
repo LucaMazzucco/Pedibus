@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { Ride } from '../classes/ride';
 import { first } from 'rxjs/operators';
+import { Person } from '../classes/person';
 const REST_URL = 'http://localhost:8080';
 
 @Injectable({
@@ -29,6 +30,10 @@ export class DataService {
 
   putRideAttendance(ride: Ride, lineName: String){
     return this.http.put<Ride>(REST_URL + "/putLineAttendance/" + lineName + "/ride", {ride}).pipe(first()).subscribe(data => console.log(data));
+  }
+
+  putPersonAttendance(rideDate: Date, lineName: String, isBack: boolean, person: Person){
+    return this.http.put(REST_URL + "/putLineAttendance/" + lineName + "/ride/user", {rideDate, isBack, person}).pipe(first()).subscribe(data => console.log(data))
   }
 
 }
