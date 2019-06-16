@@ -10,6 +10,7 @@ import it.polito.appinternet.pedibus.repository.UserRepository;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
@@ -141,6 +142,7 @@ public class ReservationController {
 
     @SuppressWarnings("Duplicates")
     @PostMapping("/reservations/{line_name}/{date}")
+    @Transactional
     public Long addReservation(@PathVariable String line_name, @PathVariable String date, @RequestBody String payload){
         // To Test use addReservation.json
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
@@ -209,6 +211,7 @@ public class ReservationController {
 
     @SuppressWarnings("Duplicates")
     @PutMapping("/reservations/{line_name}/{date}/{reservation_id}")
+    @Transactional
     public Long updateReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable String reservation_id, @RequestBody String payload){
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -268,10 +271,11 @@ public class ReservationController {
 
     @SuppressWarnings("Duplicates")
     @DeleteMapping("/reservations/{line_name}/{date}/{reservation_id}")
-    public void deleteReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable String reservation_id){
+    @Transactional
+    public ResponseEntity<String> deleteReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable String reservation_id){
         Reservation reservation = reservationRepo.findById(reservation_id);
         if (reservation == null){
-            return;
+            return ResponseEntity.notFound().build();
         }
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -280,20 +284,21 @@ public class ReservationController {
             d = format.parse(date);
         } catch (ParseException e) {
             e.printStackTrace();
-            return;
+            return ResponseEntity.badRequest().build();
         }
         if(!reservation.getLineName().equals(line_name) || !reservation.getReservationDate().equals(d)){
-            return ;
+            return ResponseEntity.badRequest().build();
         }
         Ride r = lineRepo.findByLineName(reservation.getLineName()).getRides().stream()
                 .filter(ride -> ride.getRideDate().getDate()==d.getDate())
                 .filter(ride -> ride.getFlagAndata()==reservation.isFlagAndata())
                 .findAny().orElse(null);
-        reservationRepo.delete(reservation);
-        if(r==null){
-            return;
-        }
         r.getReservations().remove(reservation_id);
+        if(r==null){
+            return ResponseEntity.notFound().build();
+        }
+        reservationRepo.delete(reservation);
+        return ResponseEntity.ok("");
     }
 }
 

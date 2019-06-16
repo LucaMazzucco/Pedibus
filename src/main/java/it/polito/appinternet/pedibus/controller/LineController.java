@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.jackson.JsonObjectDeserializer;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
@@ -206,6 +207,7 @@ public class LineController {
     }
 
     @PutMapping("/putLineAttendance/{line_name}")
+    @Transactional
     public ResponseEntity<String> updateLineToUpdatePassengersInfo(@PathVariable String line_name, @RequestBody String payload){
         if(line_name==null || payload==null){
             return ResponseEntity.badRequest().build();
@@ -257,6 +259,7 @@ public class LineController {
     }
 
     @PutMapping("putLineAttendance/{line_name}/ride")
+    @Transactional
     public ResponseEntity<String> updateRideToUpdatePassengersInfo(@PathVariable String line_name,
                                                                    @RequestBody String payload){
         if(line_name==null || payload == null){

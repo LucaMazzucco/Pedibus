@@ -20,6 +20,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
@@ -98,6 +99,7 @@ public class UserController {
     }
 
     @PostMapping("/recover")
+    @Transactional
     public ResponseEntity recoverPassword(@RequestBody String payload){
         JSONObject jsonInput = new JSONObject(payload);
         if(!jsonInput.has("email")){
@@ -124,6 +126,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
+    @Transactional
     public ResponseEntity<String> registerUser(@RequestBody String payload)
     {
         JSONObject jsonOutput = new JSONObject();
@@ -211,6 +214,7 @@ public class UserController {
     }
 
     @PutMapping("/users/{user_id}")
+    @Transactional
     public void enableUserAdmin(@PathVariable String user_id, @RequestBody String payload, ServletRequest req){
         Optional<User> opt_user = userRepo.findById(user_id);
 
