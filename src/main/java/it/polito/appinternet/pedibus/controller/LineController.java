@@ -372,6 +372,7 @@ public class LineController {
         }
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
             JSONObject mainJson = new JSONObject(payload);
             if(!mainJson.has("person") ||
                 !mainJson.has("rideDate") ||
@@ -389,14 +390,11 @@ public class LineController {
             }
             // No stop check required bc for the same line,date,direction can be only one reservation (on a ride)
             // for the same registrationNumber whatever the stop
-            boolean isBack = mainJson.getBoolean("isBack");
+            boolean isAndata = !mainJson.getBoolean("isBack");
             boolean isPresent = userJson.getBoolean("isPresent");
             String registrationNumber = userJson.getString("registrationNumber");
             Date date = sdf.parse(mainJson.getString("rideDate"));
-            List<Reservation> reservations = reservationRepo.findByLineNameAndReservationDateAndFlagAndata(line_name,date,isBack);
-            if(reservations==null){
-                return ResponseEntity.notFound().build();
-            }
+            List<Reservation> reservations = reservationRepo.findByLineNameAndReservationDateAndFlagAndata(line_name,date,isAndata);
             Reservation reservation = reservations.stream()
                     .filter(r->r.getPassenger().getRegistrationNumber().equals(registrationNumber))
                     .findAny().orElse(null);
