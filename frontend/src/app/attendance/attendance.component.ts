@@ -81,6 +81,8 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     for (let person of this.selection.selected){
       person.isPresent = true;
       if(this.isBackTab){
+        console.log('Persona al ritorno'+ person.name)
+        console.log(this.stopIndex)
         this.dataSource.stopsBack[this.stopIndex].people.push(person)
         this.dataSource.notReservedBack = this.dataSource.notReservedBack.filter(obj => obj !== person);
       }

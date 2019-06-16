@@ -34,6 +34,9 @@ export class AuthService {
   }
   
   setSession(authResult) {
+    if (this.getToken() != null){
+      this.logout()
+    }
     localStorage.setItem(TOKEN_NAME, authResult.token);
   }
   logout() {

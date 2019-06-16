@@ -75,7 +75,7 @@
         </mat-tab>
         <mat-tab label="Ritorno" class="mytabclass">
           <div class="mytabclass">
-            <mat-expansion-panel *ngFor="let stop of dataSource?.stopsBack"  class="expansion-panel" [class.isFull]="stopIsFull(stop)">
+            <mat-expansion-panel *ngFor="let stop of dataSource?.stopsBack; let i = index"  class="expansion-panel" [class.isFull]="stopIsFull(stop)">
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   <mat-icon >directions_run</mat-icon>
@@ -87,7 +87,7 @@
                   {{person.name}} {{person.surname}}
                 </mat-list-item>
               </mat-nav-list>
-              <button mat-raised-button (click)="openDialog(templateBack)">Not Registered</button>
+              <button mat-raised-button (click)="openDialog(templateBack); setStopIndex(i)">Not Registered</button>
             </mat-expansion-panel>
             <ng-template #templateBack>
               <div fxLayout="column" fxLayoutGap="20px">
