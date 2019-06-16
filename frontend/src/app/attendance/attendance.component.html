@@ -33,7 +33,7 @@
                   {{person.name}} {{person.surname}}
                 </mat-list-item>
               </mat-nav-list>
-              <button mat-raised-button (click)="openDialog(template); setStopIndex(i)">Not Registered</button>
+              <button mat-raised-button (click)="openDialog(template); setStopIndex(i)" [hidden]="selection.isEmpty()">Aggiungi bambini</button>
             </mat-expansion-panel>
             <ng-template #template>
               <div fxLayout="column" fxLayoutGap="20px">
@@ -87,7 +87,7 @@
                   {{person.name}} {{person.surname}}
                 </mat-list-item>
               </mat-nav-list>
-              <button mat-raised-button (click)="openDialog(templateBack); setStopIndex(i)">Not Registered</button>
+              <button mat-raised-button (click)="openDialog(templateBack); setStopIndex(i)" [hidden]="selectionBack.isEmpty()">Aggiungi bambini</button>
             </mat-expansion-panel>
             <ng-template #templateBack>
               <div fxLayout="column" fxLayoutGap="20px">
@@ -97,14 +97,14 @@
                     <ng-container matColumnDef="seleziona">
                       <th mat-header-cell *matHeaderCellDef>
                         <mat-checkbox (change)="$event ? masterToggle() : null"
-                                      [checked]="selection.hasValue() && isAllSelected()"
-                                      [indeterminate]="selection.hasValue() && !isAllSelected()">
+                                      [checked]="selectionBack.hasValue() && isAllSelected()"
+                                      [indeterminate]="selectionBack.hasValue() && !isAllSelected()">
                         </mat-checkbox>
                       </th>
                       <td mat-cell *matCellDef="let row">
                         <mat-checkbox (click)="$event.stopPropagation()"
-                                      (change)="$event ? selection.toggle(row) : null"
-                                      [checked]="selection.isSelected(row)">
+                                      (change)="$event ? selectionBack.toggle(row) : null"
+                                      [checked]="selectionBack.isSelected(row)">
                         </mat-checkbox>
                       </td>
                     </ng-container>
@@ -117,7 +117,7 @@
                       <td mat-cell *matCellDef="let person"> {{person.surname}} </td>
                     </ng-container>
                     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selectionBack.toggle(row)"></tr>
                   </table>
                 </div>
                 <div fxFlex="10" fxLayoutAlign="center center">

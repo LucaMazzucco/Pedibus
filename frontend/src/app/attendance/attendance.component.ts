@@ -30,6 +30,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   tableDatasource: any;
   displayedColumns: string[] = ['seleziona', 'nome', 'cognome'];
   selection = new SelectionModel<Person>(true, []);
+  selectionBack = new SelectionModel<Person>(true, []);
 
   ngOnInit() {
     this.getLines();
@@ -79,23 +80,42 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     this.stopIndex = i;
   }
 
-  addReservation(): void {
-    for (let person of this.selection.selected){
-      person.isPresent = true;
-      if(this.isBackTab){
-        console.log('Persona al ritorno'+ person.name)
-        console.log(this.stopIndex)
+  // addReservation(): void {
+  //   for (let person of this.selection.selected){
+  //     person.isPresent = true;
+  //     if(this.isBackTab){
+  //       console.log('Persona al ritorno'+ person.name)
+  //       console.log(this.stopIndex)
+  //       this.dataSource.stopsBack[this.stopIndex].people.push(person)
+  //       this.dataSource.notReservedBack = this.dataSource.notReservedBack.filter(obj => obj !== person);
+  //     }
+  //     else{
+  //       this.dataSource.stops[this.stopIndex].people.push(person)
+  //       this.dataSource.notReserved = this.dataSource.notReserved.filter(obj => obj !== person);
+  //     }
+  //     this.selection.clear();
+  //     //this.dataService.putLineAttendance(this.currentLine);
+  //     this.dataService.putRideAttendance(this.dataSource, this.currentLine.lineName);
+  //   }
+  // }
+
+  addReservation(): void{
+    if(this.isBackTab){ 
+      for (let person of this.selectionBack.selected){ 
+        person.isPresent = true;
         this.dataSource.stopsBack[this.stopIndex].people.push(person)
         this.dataSource.notReservedBack = this.dataSource.notReservedBack.filter(obj => obj !== person);
+        this.selectionBack.clear();
       }
-      else{
+    } else {
+      for (let person of this.selection.selected){ 
+        person.isPresent = true;
         this.dataSource.stops[this.stopIndex].people.push(person)
         this.dataSource.notReserved = this.dataSource.notReserved.filter(obj => obj !== person);
+        this.selection.clear();
       }
-      this.selection.clear();
-      //this.dataService.putLineAttendance(this.currentLine);
-      this.dataService.putRideAttendance(this.dataSource, this.currentLine.lineName);
     }
+    this.dataService.putRideAttendance(this.dataSource, this.currentLine.lineName);
   }
 
   private parseDate(date: any): Date {

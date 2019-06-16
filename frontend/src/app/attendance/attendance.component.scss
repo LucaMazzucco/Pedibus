@@ -5,6 +5,8 @@
     max-height: 500px;
 }
 
+[hidden] { display: none !important;}
+
 ::ng-deep.mat-paginator-range-label {
     display: none !important;
 }
