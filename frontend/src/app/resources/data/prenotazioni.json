@@ -1,0 +1,52 @@
+{
+  "reservations": [
+    {
+      "linename": "Linea1",
+      "date": "11/dec/2019",
+      "stopsA": [
+        {
+          "stopName": "Fermata azzurra",
+          "time": "11:00"
+        },
+        {
+          "stopName": "Fermata rossa",
+          "time": "12:00"
+        }
+      ],
+      "stopsR": [
+        {
+          "stopName": "Fermata indaco",
+          "time": "16:00"
+        },
+        {
+          "stopName": "Fermata viola",
+          "time": "17:00"
+        }
+      ]
+    },
+    {
+      "linename": "Linea2",
+      "date": "15/dec/2019",
+      "stopsA": [
+        {
+          "stopName": "Fermata azzurra",
+          "time": "11:00"
+        },
+        {
+          "stopName": "Fermata rossa",
+          "time": "12:00"
+        }
+      ],
+      "stopsR": [
+        {
+          "stopName": "Fermata indaco",
+          "time": "16:00"
+        },
+        {
+          "stopName": "Fermata viola",
+          "time": "17:00"
+        }
+      ]
+    }
+  ]
+}

@@ -35,8 +35,11 @@ const routes: Routes = [
     component: AttendanceComponent,
     canActivate:[AuthGuard]
   },
-  { path: 'login', component: LoginComponent},
-  { path: 'prenotazioni', component: BookingComponent},
+  { path: 'login',
+    component: LoginComponent},
+  { path: 'prenotazioni',
+    component: BookingComponent
+  },
   { path: 'register', component: RegisterComponent},
   { path: '', component: LoginComponent },
   { path: '**', redirectTo: '' }

@@ -7,6 +7,7 @@ import {MatDialogConfig, MatTabChangeEvent, MatTableDataSource, PageEvent} from 
 import {Stop} from '../classes/stop';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {SelectionModel} from "@angular/cdk/collections";
+import {TitleService} from "../services/title.service";
 
 
 
@@ -17,7 +18,7 @@ import {SelectionModel} from "@angular/cdk/collections";
 })
 export class AttendanceComponent implements OnInit, OnDestroy {
 
-  constructor(private dataService: DataService,private dialog: MatDialog) { }
+  constructor(private dataService: DataService,private dialog: MatDialog, private titleservice: TitleService) { }
 
   lines: Line[];
   stopIndex: number;
@@ -32,8 +33,8 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   selection = new SelectionModel<Person>(true, []);
 
   ngOnInit() {
+    this.titleservice.changeTitle('Registro presenze')
     this.getLines();
-    this.isBackTab = false;
   }
 
   updateLines(lines : Line[]){
