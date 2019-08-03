@@ -6,7 +6,7 @@ services:
     volumes:
       - ./frontend/dist/lab4:/usr/share/nginx/html
     ports:
-      - "3000:80"
+      - "4200:80"
     depends_on:
       - web_app_spring
   web_app_spring:

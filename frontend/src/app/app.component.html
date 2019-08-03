@@ -14,11 +14,12 @@
           <a mat-list-item routerLink="/register" routerLinkActive="active" [hidden]="isLogged()">Registrazione</a>
           <a mat-list-item routerLink="/login" routerLinkActive="active" [hidden]="isLogged()">Login</a>
           <a mat-list-item routerLink="/presenze" routerLinkActive="active" [hidden]="!isLogged()">Presenze</a>
-            <a mat-list-item (click)="logout()" [hidden]="!isLogged()">Logout</a>
+          <a mat-list-item routerLink="/prenotazioni" routerLinkActive="active" [hidden]="!isLogged()">Prenotazioni</a>
+          <a mat-list-item (click)="logout()" [hidden]="!isLogged()">Logout</a>
           </mat-nav-list>
         </mat-sidenav>
 
-        <mat-sidenav-content>
+        <mat-sidenav-content fxLayoutGap="10px">
           <router-outlet> </router-outlet>              
         </mat-sidenav-content>
       </mat-sidenav-container>

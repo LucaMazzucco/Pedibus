@@ -14,6 +14,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatMenuModule } from '@angular/material/menu';
 import { RegisterComponent } from './register/register.component'
+import {MatSelectModule} from '@angular/material/select';
 import { LoginComponent } from './login/login.component';
 import { RouterModule, Routes } from '@angular/router';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -26,6 +27,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatCheckboxModule} from "@angular/material";
 import {AuthguardService as AuthGuard} from "./services/authguard.service";
+import { BookingComponent } from './booking/booking.component';
 
 
 const routes: Routes = [
@@ -34,6 +36,7 @@ const routes: Routes = [
     canActivate:[AuthGuard]
   },
   { path: 'login', component: LoginComponent},
+  { path: 'prenotazioni', component: BookingComponent},
   { path: 'register', component: RegisterComponent},
   { path: '', component: LoginComponent },
   { path: '**', redirectTo: '' }
@@ -44,13 +47,15 @@ const routes: Routes = [
     AppComponent,
     AttendanceComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    BookingComponent
   ],
   imports: [
     BrowserModule,
     MatTableModule,
     HttpClientModule,
     MatCheckboxModule,
+    MatSelectModule,
     BrowserAnimationsModule,
     MatListModule,
     MatInputModule,
