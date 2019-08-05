@@ -2,3 +2,10 @@
   background-image: url('../resources/images/foot-print.png');
   background-size: cover;
 }
+.readonly-wrapper {
+  cursor: not-allowed;
+}
+
+.readonly-wrapper .readonly-block {
+  pointer-events: none;
+}
