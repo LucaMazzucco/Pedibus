@@ -12,6 +12,7 @@ import { Ride } from '../classes/ride';
 import {catchError, first} from 'rxjs/operators';
 import { Person } from '../classes/person';
 import { Reservation } from "../classes/reservation";
+import {Message} from "../classes/message";
 
 const REST_URL = 'http://localhost:8080';
 const FAKE_URL = 'http://localhost:3000';
@@ -45,6 +46,9 @@ export class DataService {
     return this.http.get<Reservation[]>(FAKE_URL + '/reservations');
   }
 
+  getMessages(): Observable<Message[]>{
+    return this.http.get<Message[]>(FAKE_URL + '/messages')
+  }
 
 
 }

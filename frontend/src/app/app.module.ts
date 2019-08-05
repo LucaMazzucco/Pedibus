@@ -28,6 +28,9 @@ import {MatDialogModule} from '@angular/material/dialog';
 import {MatCheckboxModule} from "@angular/material";
 import {AuthguardService as AuthGuard} from "./services/authguard.service";
 import { BookingComponent } from './booking/booking.component';
+import {MatBadgeModule} from '@angular/material/badge';
+import { MessagesComponent } from './messages/messages.component';
+
 
 
 const routes: Routes = [
@@ -41,6 +44,7 @@ const routes: Routes = [
     component: BookingComponent
   },
   { path: 'register', component: RegisterComponent},
+  { path: 'messaggi', component: MessagesComponent},
   { path: '', component: LoginComponent },
   { path: '**', redirectTo: '' }
 ];
@@ -51,7 +55,8 @@ const routes: Routes = [
     AttendanceComponent,
     LoginComponent,
     RegisterComponent,
-    BookingComponent
+    BookingComponent,
+    MessagesComponent
   ],
   imports: [
     BrowserModule,
@@ -66,6 +71,7 @@ const routes: Routes = [
     MatIconModule,
     MatExpansionModule,
     LayoutModule,
+    MatBadgeModule,
     MatToolbarModule,
     MatProgressSpinnerModule,
     MatButtonModule,

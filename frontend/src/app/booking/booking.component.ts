@@ -78,4 +78,7 @@ export class BookingComponent implements OnInit {
     this.isDisabled.push(true)
   }
 
+  deleteReservation(i): void{
+    this.reservations.splice(i,1)
+  }
 }
