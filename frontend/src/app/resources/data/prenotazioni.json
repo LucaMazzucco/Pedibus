@@ -13,6 +13,10 @@
           "time": "12:00"
         }
       ],
+      "selectedA": {
+        "stopName": "Fermata rossa",
+        "time": "12:00"
+      },
       "stopsR": [
         {
           "stopName": "Fermata indaco",
@@ -22,7 +26,11 @@
           "stopName": "Fermata viola",
           "time": "17:00"
         }
-      ]
+      ],
+      "selectedR": {
+        "stopName": "Fermata indaco",
+        "time": "16:00"
+      }
     },
     {
       "linename": "Linea2",
@@ -37,6 +45,10 @@
           "time": "12:00"
         }
       ],
+      "selectedA": {
+        "stopName": "Fermata azzurra",
+        "time": "11:00"
+      },
       "stopsR": [
         {
           "stopName": "Fermata indaco",
@@ -45,6 +57,12 @@
         {
           "stopName": "Fermata viola",
           "time": "17:00"
+        }
+      ],
+      "selectedR": [
+        {
+          "stopName": "Fermata indaco",
+          "time": "16:00"
         }
       ]
     }

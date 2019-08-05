@@ -39,7 +39,12 @@ export class DataService {
     return this.http.put(REST_URL + "/putLineAttendance/" + lineName + "/ride/user", {rideDate, isBack, person}).pipe(first()).subscribe(data => console.log(data))
   }
 
+  //TODO: Da implementare Backend
+
   getReservations(): Observable<Reservation[]>{
     return this.http.get<Reservation[]>(FAKE_URL + '/reservations');
   }
+
+
+
 }

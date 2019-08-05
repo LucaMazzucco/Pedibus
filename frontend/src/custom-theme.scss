@@ -128,10 +128,6 @@ $custom-theme: map_merge($custom-theme, (background: $background));
         background-color: mat-color($primary,300);
         border-color: mat-color($accent, 400);
     }
-    .mat-card-header-style{
-        background-color: mat-color($primary,500);
-        border-color: mat-color($accent, 600);
-    }
     .expansion-panel{
         background: mat-color($primary, 200);
     }        
@@ -148,5 +144,37 @@ $custom-theme: map_merge($custom-theme, (background: $background));
 
 }
 
+@mixin booking-component-style($custom-theme) {
+    // Extract whichever individual palettes you need from the theme.
+    $primary: map-get($custom-theme, primary);
+    $accent: map-get($custom-theme, accent); // Use mat-color to extract individual colors from a palette as necessary.
+
+    .template-style {
+        background-color: mat-color($primary, 300) !important;
+    }
+    .mat-card-light-style{
+        background-color: mat-color($primary,200);
+        border-color: mat-color($accent, 400);
+    }
+    .mat-card-content-style{
+        background-color: mat-color($primary, 200);
+    }
+    .expansion-panel{
+        background: mat-color($primary, 200);
+    }
+    mat-list-item.selected {
+        background-color: mat-color($accent, 700);
+    }
+    mat-list-item.selected:hover {
+        background-color: mat-color($accent, 700) !important;
+    }
+    mat-expansion-panel.isFull{
+        background-color: mat-color($accent, 700);
+
+    }
+
+}
+
 @include angular-material-theme($custom-theme)
 @include attendance-component-style($custom-theme)
+@include booking-component-style($custom-theme)

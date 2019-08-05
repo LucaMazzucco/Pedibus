@@ -1,5 +1,5 @@
 <div fxLayoutAlign="center center" fxLayout="column" fxLayoutGap="10px" fxFlexFill>
-  <mat-card *ngFor="let res of reservations; let i = index">
+  <mat-card *ngFor="let res of reservations; let i = index" class="mat-card-style">
     <mat-card-header>
       <div mat-card-avatar class="booking-card-header"></div>
       <mat-card-title>{{res.linename}}</mat-card-title>
@@ -8,7 +8,7 @@
     <mat-card-content fxLayout="column">
       <mat-form-field>
         <mat-label>Fermata di andata</mat-label>
-        <mat-select [disabled]="isDisabled[i]">
+        <mat-select [disabled]="isDisabled[i]" [(value)]="res.selectedA.stopName">
           <mat-option *ngFor="let stop of res.stopsA" [value]="stop.stopName">
             {{stop.stopName}}
           </mat-option>
@@ -16,7 +16,7 @@
       </mat-form-field>
       <mat-form-field>
         <mat-label>Fermata di ritorno</mat-label>
-        <mat-select [disabled]="isDisabled[i]">
+        <mat-select [disabled]="isDisabled[i]" [(value)]="res.selectedR.stopName">
           <mat-option *ngFor="let stop of res.stopsR" [value]="stop.stopName">
             {{stop.stopName}}
           </mat-option>
@@ -24,13 +24,57 @@
       </mat-form-field>
     </mat-card-content>
     <mat-card-actions fxLayout="row">
-      <button mat-button fxFlex="50" (click)="enableEditing(i)">EDIT</button>
-      <button mat-button fxFlex="50">SAVE</button>
+      <button mat-button fxFlex="30" (click)="enableEditing(i)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-button fxFlex="30">
+        <mat-icon>save</mat-icon>
+      </button>
+      <button mat-button fxFlex="30">
+        <mat-icon>delete</mat-icon>
+      </button>
     </mat-card-actions>
   </mat-card>
   <div fxLayout="row" fxLayoutAlign="start start">
-    <button mat-fab aria-label="Add reservation">
+    <button mat-fab aria-label="Add reservation" (click)="openDialog(newReservation)">
       <mat-icon>add</mat-icon>
     </button>
   </div>
 </div>
+
+<ng-template #newReservation>
+    <mat-card class="mat-card-light-style" fxLayout="column" fxLayoutGap="20px">
+      <mat-card-header fxFlex="10">
+        Aggiungi una nuova prenotazione per il pedibus!
+      </mat-card-header>
+      <mat-card-content fxFlex="80" fxLayout="column" fxLayoutGap="10px">
+          <mat-form-field>
+            <mat-label>Seleziona linea</mat-label>
+            <mat-select [(value)]="selectedLine" required>
+              <mat-option *ngFor="let line of lines" [value]="line">{{ line.lineName }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field *ngIf="selectedLine != null">
+            <mat-label>Seleziona data della corsa</mat-label>
+            <mat-select [(value)]="selectedRide" required>
+              <mat-option *ngFor="let ride of selectedLine.rides" [value]="ride">{{ ride.date }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field *ngIf="selectedRide != null">
+            <mat-label>Seleziona fermata di andata</mat-label>
+            <mat-select [(value)]="selectedStopA" required>
+              <mat-option *ngFor="let stopA of selectedRide.stops" [value]="stopA">{{ stopA.stopName }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field *ngIf="selectedStopA != null">
+            <mat-label>Seleziona fermata di ritorno</mat-label>
+            <mat-select [(value)]="selectedStopR" required>
+              <mat-option *ngFor="let stopR of selectedRide.stopsBack" [value]="stopR">{{ stopR.stopName }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+      </mat-card-content>
+      <mat-card-actions fxFlex="10" fxLayoutAlign="center center">
+        <button mat-raised-button (click)="addReservation()" [mat-dialog-close]> AGGIUNGI PRENOTAZIONE</button>
+      </mat-card-actions>
+    </mat-card>
+</ng-template>
