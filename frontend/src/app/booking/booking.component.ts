@@ -16,7 +16,7 @@ import {collectExternalReferences} from "@angular/compiler";
 })
 export class BookingComponent implements OnInit {
 
-  constructor(private dataService: DataService, private titleservice: TitleService, private dialog: MatDialog, ) { }
+  constructor(private dataService: DataService, private titleservice: TitleService, private dialog: MatDialog) { }
 
   reservations: Reservation[];
   subscription: any;
@@ -26,6 +26,7 @@ export class BookingComponent implements OnInit {
   selectedRide: Ride;
   selectedStopA: Stop;
   selectedStopR: Stop;
+
 
   ngOnInit() {
     this.getReservations();

@@ -4,6 +4,16 @@
       "timestamp": 0,
       "read": true,
       "body": "Nuovi messaggiiiiii"
+    },
+    {
+      "timestamp": 0,
+      "read": true,
+      "body": "Sei il nuovo admin!"
+    },
+    {
+      "timestamp": 0,
+      "read": false,
+      "body": "Complimenti coglione"
     }
   ]
 }

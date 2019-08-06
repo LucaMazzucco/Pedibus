@@ -33,7 +33,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   selection = new SelectionModel<Person>(true, []);
 
   ngOnInit() {
-    this.titleservice.changeTitle('Registro presenze')
+    this.titleservice.changeTitle('Registro presenze');
     this.getLines();
   }
 
