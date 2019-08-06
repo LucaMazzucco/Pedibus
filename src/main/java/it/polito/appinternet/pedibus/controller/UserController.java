@@ -10,6 +10,7 @@ import it.polito.appinternet.pedibus.repository.ConfirmationTokenRepository;
 import it.polito.appinternet.pedibus.repository.UserRepository;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.asm.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,7 @@ import static org.springframework.http.ResponseEntity.ok;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
@@ -92,6 +94,7 @@ public class UserController {
             String token = jwtTokenProvider.createToken(username, userRepo.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Username " + username + "not found")).getRoles());
             JSONObject res = new JSONObject();
             res.put("token", token);
+            res.put("email", user.getEmail());
             return ok(res.toString());
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username/password supplied");
@@ -178,6 +181,39 @@ public class UserController {
             jsonOutput.put("result", "You have been correctly registered! Check your email");
             return ok(jsonOutput.toString());
         }
+    }
+
+    @GetMapping("/{userEmail}/messages")
+    public ResponseEntity getUserMessages(@PathVariable String userEmail){
+        Optional<User> user = userRepo.findByEmail(userEmail);
+        if(user.isPresent()){
+            List<Message> messages;
+            messages = user.get().getMessages();
+            JSONArray result = new JSONArray(messages);
+            return ok(result.toString());
+        }
+        else{
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping("/{userEmail}/messages")
+    public ResponseEntity putMessages(@PathVariable String userEmail, @RequestBody String payload){
+        Optional<User> user = userRepo.findByEmail(userEmail);
+        if(user.isPresent()){
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                List<Message> newMsg;
+                newMsg = Arrays.asList(mapper.readValue(payload, Message[].class));
+                user.get().setMessages(newMsg);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else{
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/confirm/{randomUUID}")

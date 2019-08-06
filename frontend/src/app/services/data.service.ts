@@ -46,9 +46,12 @@ export class DataService {
     return this.http.get<Reservation[]>(FAKE_URL + '/reservations');
   }
 
-  getMessages(): Observable<Message[]>{
-    return this.http.get<Message[]>(FAKE_URL + '/messages')
+  getMessages(email: String): Observable<Message[]>{
+    return this.http.get<Message[]>(REST_URL +  '/' + email + '/messages')
   }
 
+  putMessages(messages: Message[], email: String){
+      return this.http.put(REST_URL + '/' + email + '/messages', messages).pipe(first()).subscribe(data => console.log(data));
+  }
 
 }

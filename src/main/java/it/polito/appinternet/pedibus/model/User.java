@@ -34,6 +34,7 @@ public class User implements UserDetails {
     private boolean isEnabled; //Flag account abilitato
     private List<String> roles = new ArrayList<>();
     private List<String> adminLines = new ArrayList<>();
+    private List<Message> messages = new ArrayList<>();
 
     public User(String email, String password, boolean isEnabled) {
         this.email = email;

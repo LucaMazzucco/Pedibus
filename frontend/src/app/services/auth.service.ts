@@ -37,9 +37,11 @@ export class AuthService {
     if (this.getToken() != null){
       this.logout()
     }
+    localStorage.setItem('current_user', authResult.email);
     localStorage.setItem(TOKEN_NAME, authResult.token);
   }
   logout() {
+    localStorage.removeItem('current_user');
     localStorage.removeItem(TOKEN_NAME);
   }
 

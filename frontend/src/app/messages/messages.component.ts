@@ -17,11 +17,16 @@ export class MessagesComponent implements OnInit {
 
 
   ngOnInit() {
-    this.dataservice.getMessages().subscribe(m => this.messages = m);
+    this.dataservice.getMessages(localStorage.getItem('current_user')).subscribe(m => {
+      this.messages = m;
+      console.log(this.messages)
+    });
     this.titleservice.changeTitle('I miei messaggi')
   }
 
   readMessage(mess: Message): void{
       mess.read = true;
+      this.dataservice.putMessages(this.messages, localStorage.getItem('current_user'));
   }
+
 }
