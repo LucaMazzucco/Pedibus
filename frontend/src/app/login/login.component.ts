@@ -3,6 +3,7 @@ import { AuthService } from '../services/auth.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import { Router } from "@angular/router";
+import {TitleService} from "../services/title.service";
 
 interface User {
   email: string;
@@ -19,9 +20,10 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   infoMessage: string = '';
 
-  constructor(private authService: AuthService, private formBuilder: FormBuilder, private _snackBar: MatSnackBar, private router: Router) { }
+  constructor(private authService: AuthService, private formBuilder: FormBuilder, private _snackBar: MatSnackBar, private router: Router, private titleservice: TitleService) { }
 
   ngOnInit() {
+    this.titleservice.changeTitle('Login');
     this.loginForm = this.formBuilder.group({
       email: ['', Validators.required],
       password: ['', Validators.required]

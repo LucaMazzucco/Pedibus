@@ -2,7 +2,7 @@
     <table mat-table [dataSource]="messages" class="mat-elevation-z8" fxFlex="90">
         <ng-container matColumnDef="data">
             <th mat-header-cell *matHeaderCellDef> Ora </th>
-            <td mat-cell *matCellDef="let mess" [class.readmessage-color]="!mess.read">{{ mess.timestamp }}</td>
+            <td mat-cell *matCellDef="let mess" [class.readmessage-color]="!mess.read">{{ mess.timestamp*1000 | date: 'short'}}</td>
         </ng-container>
         <ng-container matColumnDef="messaggio">
             <th mat-header-cell *matHeaderCellDef> Messaggio </th>
@@ -10,9 +10,17 @@
         </ng-container>
         <ng-container matColumnDef="read">
             <th mat-header-cell *matHeaderCellDef>Letto</th>
-            <td mat-cell *matCellDef="let mess" [class.readmessage-color]="!mess.read">
+            <td mat-cell *matCellDef="let mess" [class.readmessage-color]="!mess.read" >
                 <button mat-icon-button (click)="readMessage(mess)">
-                    <mat-icon>check_circle_outline</mat-icon>
+                    <mat-icon *ngIf="!mess.read">check_circle_outline</mat-icon>
+                </button>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="delete">
+            <th mat-header-cell *matHeaderCellDef>Elimina</th>
+            <td mat-cell *matCellDef="let mess" [class.readmessage-color]="!mess.read" >
+                <button mat-icon-button (click)="deleteMessage(mess)">
+                    <mat-icon>delete</mat-icon>
                 </button>
             </td>
         </ng-container>

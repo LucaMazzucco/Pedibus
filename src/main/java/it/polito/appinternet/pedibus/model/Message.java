@@ -5,17 +5,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-
 @Getter @Setter
 @NoArgsConstructor
 public class Message {
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
-    private Date timestamp;
+
+    private long timestamp;
     private boolean read;
     private String body;
 
-    public Message(Date timestamp, boolean read, String body) {
+    public Message(long timestamp, boolean read, String body) {
         this.timestamp = timestamp;
         this.read = read;
         this.body = body;

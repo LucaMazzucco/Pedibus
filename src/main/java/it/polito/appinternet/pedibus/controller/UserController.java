@@ -206,6 +206,7 @@ public class UserController {
                 List<Message> newMsg;
                 newMsg = Arrays.asList(mapper.readValue(payload, Message[].class));
                 user.get().setMessages(newMsg);
+                userRepo.save(user.get());
             } catch (IOException e) {
                 e.printStackTrace();
             }

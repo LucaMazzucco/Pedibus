@@ -14,6 +14,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.PostConstruct;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -49,8 +50,8 @@ public class PedibusApplication {
         //Add the system-admin
         User u = new User("admin@admin.com", passwordEncoder.encode("admin"), true);
         List<Message> messages = new LinkedList<>();
-        messages.add(new Message(new Date(), false, "Questo è il primo messaggio che ti mando"));
-        messages.add(new Message(new Date(), false, "Questo è il secondo messaggio che ti mando"));
+        messages.add(new Message(Instant.now().getEpochSecond(), false, "Questo è il primo messaggio che ti mando"));
+        messages.add(new Message(Instant.now().getEpochSecond(), false, "Questo è il secondo messaggio che ti mando"));
         u.setMessages(messages);
         List<String> roles = new LinkedList<>();
         roles.add("ROLE_ADMIN");
