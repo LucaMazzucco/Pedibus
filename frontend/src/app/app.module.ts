@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {Input, NgModule} from '@angular/core';
 import { AppComponent } from './app.component';
 import { MatListModule } from '@angular/material/list';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -30,8 +30,6 @@ import {AuthguardService as AuthGuard} from "./services/authguard.service";
 import { BookingComponent } from './booking/booking.component';
 import {MatBadgeModule} from '@angular/material/badge';
 import { MessagesComponent } from './messages/messages.component';
-
-
 
 const routes: Routes = [
   { path: 'presenze',

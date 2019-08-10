@@ -48,4 +48,7 @@ export class DataService {
       return this.http.put(REST_URL + '/' + email + '/messages', messages).pipe(first()).subscribe(data => console.log(data));
   }
 
+
+
+
 }

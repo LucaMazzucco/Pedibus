@@ -1,0 +1,4 @@
+GET http://localhost:8080/admin@admin.com/unread
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbkBhZG1pbi5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIiwiUk9MRV9VU0VSIl0sImlhdCI6MTU2NTM2ODYzNSwiZXhwIjoxNTY1MzcyMjM1fQ.l2Wz5rKiBjrL1JEuO6caAO1c6KnMiM4q8f7Ywvbt3jo
+
+###

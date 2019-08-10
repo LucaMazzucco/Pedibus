@@ -4,7 +4,7 @@
           <button mat-icon-button (click)="snav.toggle()" fxFlex="5" fxLayoutAlign="start start"><mat-icon>menu</mat-icon></button>
           <h1 class="app-name" fxLayoutAlign="center center" fxFlex="90">Pedibus</h1>
           <button mat-icon-button routerLink="/messaggi" routerLinkActive="active" fxLayoutAlign="end" *ngIf="isLogged()">
-            <mat-icon matBadge="15" matBadgeColor="warn" fxLayoutAlign="center center">notification_important</mat-icon>
+            <mat-icon [matBadge]="unreadMessages" matBadgeColor="warn" fxLayoutAlign="center center">notification_important</mat-icon>
           </button>
         </mat-toolbar-row>
         <mat-toolbar-row fxLayoutAlign="center center">
@@ -23,7 +23,7 @@
         </mat-sidenav>
 
         <mat-sidenav-content fxLayoutGap="10px">
-          <router-outlet> </router-outlet>              
+          <router-outlet (activate)="updateNotifications()"> </router-outlet>
         </mat-sidenav-content>
       </mat-sidenav-container>
 </div>

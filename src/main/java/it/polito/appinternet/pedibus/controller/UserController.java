@@ -217,6 +217,20 @@ public class UserController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @GetMapping("/unread/{userEmail}")
+    public ResponseEntity getUnreadMessages(@PathVariable String userEmail){
+        Optional<User> user = userRepo.findByEmail(userEmail);
+        if(user.isPresent()){
+            List<Message> mess = user.get().getMessages();
+            long n_unread = mess.stream().filter(m -> !m.isRead()).count();
+            return ok(n_unread);
+
+        }
+        else{
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping("/confirm/{randomUUID}")
     public ResponseEntity confirmUserAccount(@PathVariable String randomUUID)
     {

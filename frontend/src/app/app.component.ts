@@ -4,6 +4,8 @@ import {AuthService} from "./services/auth.service";
 import { Router } from "@angular/router";
 import {TitleService} from "./services/title.service";
 import {Observable} from "rxjs";
+import {DataService} from "./services/data.service";
+import {NotificationService} from "./services/notification.service";
 
 @Component({
   selector: 'app-root',
@@ -14,8 +16,9 @@ export class AppComponent implements OnDestroy, OnInit{
   mobileQuery: MediaQueryList;
   subtitle: String;
   private _mobileQueryListener: () => void;
+  unreadMessages: string;
 
-  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private authService: AuthService, private router: Router, private titleservice : TitleService) {
+  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher, private authService: AuthService, private router: Router, private titleservice : TitleService, private dataservice: DataService, private notificationService: NotificationService) {
     this.mobileQuery = media.matchMedia('(max-width: 600px)');
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
@@ -23,12 +26,13 @@ export class AppComponent implements OnDestroy, OnInit{
 
 
   ngOnInit(): void {
-    this.titleservice.currentTitle.subscribe(sub => this.subtitle = sub)
+    this.titleservice.currentTitle.subscribe(sub => this.subtitle = sub);
+    this.notificationService.unreadMessage.subscribe(n => this.unreadMessages = n);
+  }
+  isLogged(): Boolean{
+    return this.authService.isLoggedIn();
   }
 
-  isLogged(): Boolean{
-    return this.authService.isLoggedIn()
-  }
   logout(): void{
     this.authService.logout();
     this.router.navigate(['/login'])
@@ -36,4 +40,9 @@ export class AppComponent implements OnDestroy, OnInit{
   ngOnDestroy(): void {
     this.mobileQuery.removeListener(this._mobileQueryListener);
   }
+
+  updateNotifications(){
+    this.notificationService.updateMessageCount(localStorage.getItem('current_user'));
+  }
+
 }
