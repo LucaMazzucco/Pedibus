@@ -50,9 +50,16 @@ public class UserService {
     @Autowired
     private PwdChangeRequestRepository pwdChangeRequestRepo;
 
+    @Transactional
     public void userInsert(User user){
         userRepo.insert(user);
     }
+
+    @Transactional
+    public void userSave(User user){ userRepo.save(user); }
+
+    @Transactional
+    public void userRemove(User user){ userRepo.delete(user); }
 
     public User userGet(String email){
         return userRepo.findByEmail(email).get();
