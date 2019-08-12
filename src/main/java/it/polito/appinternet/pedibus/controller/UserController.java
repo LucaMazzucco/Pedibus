@@ -1,66 +1,33 @@
 package it.polito.appinternet.pedibus.controller;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.polito.appinternet.pedibus.model.*;
-import it.polito.appinternet.pedibus.repository.LineRepository;
-import it.polito.appinternet.pedibus.repository.PwdChangeRequestRepository;
-import it.polito.appinternet.pedibus.security.JwtTokenProvider;
-import it.polito.appinternet.pedibus.service.EmailSenderService;
-import it.polito.appinternet.pedibus.repository.ConfirmationTokenRepository;
-import it.polito.appinternet.pedibus.repository.UserRepository;
+import it.polito.appinternet.pedibus.model.Message;
+import it.polito.appinternet.pedibus.model.User;
+import it.polito.appinternet.pedibus.service.UserService;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.springframework.asm.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletRequest;
-import javax.servlet.http.HttpServletRequest;
-
-import static org.springframework.http.ResponseEntity.ok;
-
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.springframework.http.ResponseEntity.ok;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600)
 @RestController
 public class UserController {
     @Autowired
-    private UserRepository userRepo;
-
-    @Autowired
-    private LineRepository lineRepository;
-
-    @Autowired
-    private ConfirmationTokenRepository confirmationTokenRepository;
-
-    @Autowired
-    private EmailSenderService emailSenderService;
-
-    @Autowired
-    AuthenticationManager authenticationManager;
-
-    @Autowired
-    JwtTokenProvider jwtTokenProvider;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private PwdChangeRequestRepository pwdChangeRequestRepo;
+    UserService userService;
 
     @PostConstruct
     public void init(){
@@ -68,68 +35,42 @@ public class UserController {
         try {
             User[] newUsers = mapper.readValue(new FileReader("./src/main/data/persons.json"), User[].class);
             for(User a : newUsers){
-                userRepo.insert(a);
+                userService.userInsert(a);
             }
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        } catch (Exception e){
+        } catch (JsonParseException e) {
+            e.printStackTrace();
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     @PostMapping("/login")
     public ResponseEntity loginUser(@RequestBody String payload){
-        try {
-            JSONObject json_input = new JSONObject(payload);
-            if(!json_input.has("username") || !json_input.has("password")){
-                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-            }
-            String username = json_input.getString("username");
-            String password = json_input.getString("password");
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
-            User user = userRepo.findByEmail(username).get();
-            if(!user.isEnabled()){
-                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-            }
-            String token = jwtTokenProvider.createToken(username, userRepo.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Username " + username + "not found")).getRoles());
-            JSONObject res = new JSONObject();
-            res.put("token", token);
-            res.put("email", user.getEmail());
-            return ok(res.toString());
-        } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username/password supplied");
+        String username, password;
+        JSONObject json_input = new JSONObject(payload);
+        if(!json_input.has("username") || !json_input.has("password")){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
+        username = json_input.getString("username");
+        password = json_input.getString("password");
+        return userService.userLogin(username,password);
     }
 
     @PostMapping("/recover")
-    @Transactional
     public ResponseEntity recoverPassword(@RequestBody String payload){
         JSONObject jsonInput = new JSONObject(payload);
         if(!jsonInput.has("email")){
             return ResponseEntity.badRequest().body("Wrong JSON format");
         }
         String email = jsonInput.getString("email");
-        Optional<User> existingUser = userRepo.findByEmail(email);
-        if(!existingUser.isPresent()){
-            return ResponseEntity.badRequest().body("No user associated with the given mail");
-        }
-        User u = existingUser.get();
-        PwdChangeRequest pcr = new PwdChangeRequest(u);
-        pwdChangeRequestRepo.insert(pcr);
-
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(email);
-        mailMessage.setSubject("You have requested to change your password");
-        mailMessage.setFrom("pedibus.polito1819@gmail.com");
-        mailMessage.setText("To change your password click here : "
-                +"http://localhost:8080/recover/"+pcr.getToken());
-
-        emailSenderService.sendEmail(mailMessage);
-        return ok().body("Mail sent");
+        return userService.userRecoverPassword(email);
     }
 
     @PostMapping("/register")
-    @Transactional
     public ResponseEntity<String> registerUser(@RequestBody String payload)
     {
         JSONObject jsonOutput = new JSONObject();
@@ -153,42 +94,23 @@ public class UserController {
             jsonOutput.put("result", "Input Error!!");
             return ResponseEntity.badRequest().body(jsonOutput.toString());
         }
-        User existingUser = userRepo.findByRegistrationNumber(newUser.getRegistrationNumber());
-        if(existingUser!=null){
+        else if(userService.userRegister(newUser) == -1){
             jsonOutput.put("result", "User already exists!");
             return ResponseEntity.badRequest().body(jsonOutput.toString());
         }
         else{
-            newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-            newUser.setEnabled(false);
-            List<String> roles = new LinkedList<>();
-            roles.add("ROLE_USER");
-            newUser.setRoles(roles);
-            userRepo.insert(newUser);
-
-            ConfirmationToken confirmationToken = new ConfirmationToken(newUser);
-
-            confirmationTokenRepository.insert(confirmationToken);
-
-            SimpleMailMessage mailMessage = new SimpleMailMessage();
-            mailMessage.setTo(newUser.getEmail());
-            mailMessage.setSubject("Complete Registration!");
-            mailMessage.setFrom("pedibus.polito1819@gmail.com");
-            mailMessage.setText("To confirm your account, please click here : "
-                    +"http://localhost:8080/confirm/" +confirmationToken.getConfirmationToken());
-
-            emailSenderService.sendEmail(mailMessage);
             jsonOutput.put("result", "You have been correctly registered! Check your email");
-            return ok(jsonOutput.toString());
         }
+        return ok(jsonOutput.toString());
     }
 
     @GetMapping("/{userEmail}/messages")
     public ResponseEntity getUserMessages(@PathVariable String userEmail){
-        Optional<User> user = userRepo.findByEmail(userEmail);
-        if(user.isPresent()){
-            List<Message> messages;
-            messages = user.get().getMessages();
+        if(userEmail==null || userEmail.length()==0){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        List<Message> messages = userService.userGetMessages(userEmail);
+        if(messages!=null){
             JSONArray result = new JSONArray(messages);
             return ok(result.toString());
         }
@@ -199,131 +121,68 @@ public class UserController {
 
     @PutMapping("/{userEmail}/messages")
     public ResponseEntity putMessages(@PathVariable String userEmail, @RequestBody String payload){
-        Optional<User> user = userRepo.findByEmail(userEmail);
-        if(user.isPresent()){
-            ObjectMapper mapper = new ObjectMapper();
-            try {
-                List<Message> newMsg;
-                newMsg = Arrays.asList(mapper.readValue(payload, Message[].class));
-                user.get().setMessages(newMsg);
-                userRepo.save(user.get());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        ObjectMapper mapper = new ObjectMapper();
+        List<Message> newMsg = null;
+        try {
+            newMsg = Arrays.asList(mapper.readValue(payload, Message[].class));
+        } catch (IOException e){
+            e.printStackTrace();
         }
-        else{
+        if(newMsg == null){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        if(!userService.userPutMessages(userEmail,newMsg)){
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @GetMapping("/unread/{userEmail}")
-    public ResponseEntity getUnreadMessages(@PathVariable String userEmail){
-        Optional<User> user = userRepo.findByEmail(userEmail);
-        if(user.isPresent()){
-            List<Message> mess = user.get().getMessages();
-            long n_unread = mess.stream().filter(m -> !m.isRead()).count();
-            return ok(n_unread);
-
+    public ResponseEntity getUnreadMessagesCount(@PathVariable String userEmail){
+        if(userEmail.length()==0){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        else{
+        long count = userService.userGetUnreadMessagesCount(userEmail);
+        if(count<0){
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(count,HttpStatus.OK);
     }
 
     @GetMapping("/confirm/{randomUUID}")
     public ResponseEntity confirmUserAccount(@PathVariable String randomUUID)
     {
-        ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(randomUUID);
-        if(token != null)
-        {
-            Optional<User> user = userRepo.findByEmail(token.getUser().getEmail());
-            if(user.isPresent()){
-                user.get().setEnabled(true);
-                userRepo.save(user.get());
-                return new ResponseEntity(HttpStatus.OK);
-            }
-            else{
-                return new ResponseEntity(HttpStatus.NOT_FOUND);
-            }
+        if(randomUUID.length()==0){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        else
-        {
+        else if(userService.userConfirmAccount(randomUUID)==0){
+            return new ResponseEntity(HttpStatus.OK);
+        }
+        else {
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
 
     @GetMapping("/users")
     public String getSystemUser(){
-        List<User> allUsers;
-        allUsers = userRepo.findAll();
-        List<String> usernames = new LinkedList<>();
-        for(User user: allUsers){
-            usernames.add(user.getName());
-        }
+        List<String> usernames;
+        usernames = userService.userGetNames();
         return new JSONArray(usernames).toString();
     }
 
     @PutMapping("/users/{user_id}")
-    @Transactional
     public void enableUserAdmin(@PathVariable String user_id, @RequestBody String payload, ServletRequest req){
-        Optional<User> opt_user = userRepo.findById(user_id);
-
-        if(!opt_user.isPresent()){
-            return;
-        }
-        User user = opt_user.get();
-        String token = jwtTokenProvider.resolveToken((HttpServletRequest) req);
-        String username = jwtTokenProvider.getUsername(token);
-        if(username == null)
-            return;
-
         JSONObject jsonInput = new JSONObject(payload);
         if(!jsonInput.has("lineName") || !jsonInput.has("enable"))
             return;
 
         boolean enableAdmin = jsonInput.getBoolean("enable");
         String line_name = jsonInput.getString("lineName");
-        Line line = lineRepository.findByLineName(line_name);
-
-        if(line == null)
-            return;
-
-        if(enableAdmin){
-            if(line.getAdmins().contains(user.getEmail()))
-                return;
-
-            if(user.getRoles().contains("ROLE_USER")){
-                user.getRoles().remove("ROLE_USER");
-                user.getRoles().add("ROLE_ADMIN");
-            }
-
-            user.getAdminLines().add(line_name);
-            line.getAdmins().add(user.getEmail());
-            userRepo.save(user);
-            lineRepository.save(line);
-            return;
-
-        }
-
-        if(user.getAdminLines().contains(line_name) && line.getAdmins().contains(user.getEmail())){
-            user.getAdminLines().remove(line_name);
-            line.getAdmins().remove(user.getEmail());
-
-            if(user.getAdminLines().isEmpty() && user.getRoles().contains("ROLE_ADMIN")){
-                user.getRoles().remove("ROLE_ADMIN");
-                user.getRoles().add("ROLE_USER");
-            }
-            userRepo.save(user);
-            lineRepository.save(line);
-        }
-
+        userService.userEnableAdmin(user_id,req,line_name,enableAdmin);
     }
 
     @GetMapping("/checkEmail/{email}")
     public ResponseEntity<Boolean> checkEmailPresence(@PathVariable String email){
-        JSONObject response = new JSONObject();
-        response.put("res",userRepo.findByEmail(email).isPresent());
-        return ok(userRepo.findByEmail(email).isPresent());
+        return new ResponseEntity<>(userService.isUserPresent(email),HttpStatus.OK);
     }
 }
