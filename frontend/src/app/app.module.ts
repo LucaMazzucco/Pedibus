@@ -30,6 +30,7 @@ import {AuthguardService as AuthGuard} from "./services/authguard.service";
 import { BookingComponent } from './booking/booking.component';
 import {MatBadgeModule} from '@angular/material/badge';
 import { MessagesComponent } from './messages/messages.component';
+import { AdministrationComponent } from './administration/administration.component';
 
 const routes: Routes = [
   { path: 'presenze',
@@ -40,6 +41,9 @@ const routes: Routes = [
     component: LoginComponent},
   { path: 'prenotazioni',
     component: BookingComponent
+  },
+  { path: 'gestione',
+    component: AdministrationComponent
   },
   { path: 'register', component: RegisterComponent},
   { path: 'messaggi', component: MessagesComponent},
@@ -54,7 +58,8 @@ const routes: Routes = [
     LoginComponent,
     RegisterComponent,
     BookingComponent,
-    MessagesComponent
+    MessagesComponent,
+    AdministrationComponent
   ],
   imports: [
     BrowserModule,
