@@ -4,11 +4,11 @@ export class Stop {
 
     stopName: string;
     time: Date;
-    people: Person[];
+    children: Person[];
 
-    constructor(name: string, time: Date, people: Person[]) {
+    constructor(name: string, time: Date, children: Person[]) {
         this.stopName = name;
         this.time = time;
-        this.people = people;
+        this.children = children;
     }
 }

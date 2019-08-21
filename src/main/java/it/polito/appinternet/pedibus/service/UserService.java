@@ -64,6 +64,7 @@ public class UserService {
     public User userGet(String email){
         return userRepo.findByEmail(email).get();
     }
+    public User userFindById(String id){ return userRepo.findById(id).get();}
 
     public ResponseEntity userLogin(String username,String password){
         Optional<User> userOptional= userRepo.findByEmail(username);

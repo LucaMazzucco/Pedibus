@@ -29,7 +29,7 @@
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <mat-nav-list>
-                <mat-list-item *ngFor="let person of stop?.people" [class.selected]="isPresent(person)" (click)="addPerson(person)">
+                <mat-list-item *ngFor="let person of stop?.children" [class.selected]="isPresent(person)" (click)="addPerson(person)">
                   {{person.name}} {{person.surname}}
                 </mat-list-item>
               </mat-nav-list>
@@ -83,7 +83,7 @@
                   </mat-panel-title>
                 </mat-expansion-panel-header>
               <mat-nav-list>
-                <mat-list-item *ngFor="let person of stop.people" [class.selected]="isPresent(person)" (click)="addPerson(person)">
+                <mat-list-item *ngFor="let person of stop.children" [class.selected]="isPresent(person)" (click)="addPerson(person)">
                   {{person.name}} {{person.surname}}
                 </mat-list-item>
               </mat-nav-list>

@@ -12,11 +12,12 @@ public interface ReservationRepository extends MongoRepository<Reservation, Long
     //Reservation findByIdAndLineAndReservation_date (Reservation reservation, Line lineName, Date reservation_date);
     List<Reservation> findAll();
     //List<Reservation> findByLineAndReservationDate(String a, Date b);
-    List<Reservation> findByLineNameAndReservationDateAndFlagAndataIsTrue(String a, Date b);
-    List<Reservation> findByLineNameAndReservationDateAndFlagAndataIsFalse(String a, Date b);
-    List<Reservation> findByLineNameAndReservationDateAndFlagAndata(String lineName,Date rDate,boolean flag);
+    List<Reservation> findByLineNameAndReservationDateAndFlagGoingIsTrue(String a, Date b);
+    List<Reservation> findByLineNameAndReservationDateAndFlagGoingIsFalse(String a, Date b);
+    List<Reservation> findByLineNameAndReservationDateAndFlagGoing(String lineName,Date rDate,boolean flag);
     Reservation findById(String id);
     Reservation findByIdAndLineNameAndReservationDate(String id, String lineName, Date date);
+    Reservation findByLineNameAndReservationDateAndFlagGoingAndChild(String lineName, Date rDate, boolean flag, String childId);
     //Reservation findAllBy_Id
     //List<Reservation> findByLine_LineNameAndReservationDate(String name,Date rideDate);
 }

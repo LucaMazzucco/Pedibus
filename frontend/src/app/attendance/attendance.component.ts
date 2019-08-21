@@ -87,11 +87,11 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       if(this.isBackTab){
         console.log('Persona al ritorno'+ person.name)
         console.log(this.stopIndex)
-        this.dataSource.stopsBack[this.stopIndex].people.push(person)
+        this.dataSource.stopsBack[this.stopIndex].children.push(person)
         this.dataSource.notReservedBack = this.dataSource.notReservedBack.filter(obj => obj !== person);
       }
       else{
-        this.dataSource.stops[this.stopIndex].people.push(person)
+        this.dataSource.stops[this.stopIndex].children.push(person)
         this.dataSource.notReserved = this.dataSource.notReserved.filter(obj => obj !== person);
       }
       this.selection.clear();
@@ -154,8 +154,8 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 
   stopIsFull(stop: Stop): boolean {
     let i: number;
-    for(i=0;i<stop.people.length;i++) {
-      if(!this.isPresent(stop.people[i])) {
+    for(i=0;i<stop.children.length;i++) {
+      if(!this.isPresent(stop.children[i])) {
         return false;
       }
     }
