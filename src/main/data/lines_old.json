@@ -1,94 +1,92 @@
-{
-  "lines":[
-    {
-      "lineName":"Line1",
-      "stopListA":[
-        {
-          "stopName":"Stop1"
-        },
-        {
-          "stopName":"Stop2"
-        },
-        {
-          "stopName":"Stop3"
-        }
-      ],
-      "stopListR":[
-        {
-          "stopName":"Stop3"
-        },
-        {
-          "stopName":"Stop2"
-        },
-        {
-          "stopName":"Stop1"
-        }
-      ]
-    },
-    {
-      "lineName":"Line2",
-      "stopListA":[
-        {
-          "stopName":"Stop1"
-        },
-        {
-          "stopName":"Stop2"
-        },
-        {
-          "stopName":"Stop3"
-        }
-      ],
-      "stopListR":[
-        {
-          "stopName":"Stop3"
-        },
-        {
-          "stopName":"Stop2"
-        },
-        {
-          "stopName":"Stop1"
-        }
-      ]
-    }
-  ],
-  "reservations":[
-    {
-      "lineName":"Line1",
-      "stopName":"Stop1",
-      "stopType":"r",
-      "back":"false",
-      "date":"2019/04/15",
-      "passengers":[
-        {
-          "firstname":"jeanpiero",
-          "lastname":"francois",
-          "registrationNumber":"jpf"
-        },
-        {
-          "firstname":"luca",
-          "lastname":"mazzucco",
-          "registrationNumber":"lmz"
-        },
-        {
-          "firstname":"alberto",
-          "lastname":"benincasa",
-          "registrationNumber":"lrt"
-        }
-      ]
-    },
-    {
-      "lineName":"Line1",
-      "stopName":"Stop1",
-      "stopType":"a",
-      "back":"false",
-      "date":"2019/04/15",
-      "passengers":[
-        {
-          "firstname":"jeanpiero",
-          "lastname":"francois",
-          "registrationNumber":"jpf"
-        }
-      ]
-    }
-  ]
-}
+[
+  {
+    "lineName":"Linea Azzurra",
+    "stopListA":[
+      {
+        "stopName":"Stop1",
+        "time":"2019/04/15 08:30"
+      },
+      {
+        "stopName":"Stop2",
+        "time":"2019/04/15 08:40"
+      },
+      {
+        "stopName":"Stop3",
+        "time":"2019/04/15 08:50"
+      }
+    ],
+    "stopListR":[
+      {
+        "stopName":"Stop3",
+        "time":"2019/04/15 16:30"
+      },
+      {
+        "stopName":"Stop2",
+        "time":"2019/04/15 16:40"
+      },
+      {
+        "stopName":"Stop1",
+        "time":"2019/04/15 16:50"
+      }
+    ],
+    "rides": [
+      {
+        "flagAndata":"true",
+        "rideDate":"2019/04/15",
+        "reservations": [
+        ]
+      },
+      {
+        "flagAndata":"false",
+        "rideDate": "2019/04/15",
+        "reservations": [
+        ]
+      }
+    ]
+  },
+  {
+    "lineName":"Linea2",
+    "stopListA":[
+      {
+        "stopName":"Stop1",
+        "time":"2019/04/15 08:30"
+      },
+      {
+        "stopName":"Stop2",
+        "time":"2019/04/15 08:50"
+      },
+      {
+        "stopName":"Stop3",
+        "time":"2019/04/15 08:55"
+      }
+    ],
+    "stopListR":[
+      {
+        "stopName":"Stop3",
+        "time":"2019/04/15 16:30"
+      },
+      {
+        "stopName":"Stop2",
+        "time":"2019/04/15 16:40"
+      },
+      {
+        "stopName":"Stop1",
+        "time":"2019/04/15 16:55"
+      }
+    ],
+    "rides": [
+      {
+        "flagAndata":"true",
+        "rideDate":"2019/04/15",
+        "reservations": [
+        ]
+      },
+      {
+        "flagAndata":"false",
+        "rideDate": "2019/04/15",
+        "reservations": [
+        ]
+      }
+    ]
+  }
+]
