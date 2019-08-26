@@ -163,16 +163,16 @@ public class LineController {
         return lineService.encapsulateLine(line).toString();
     }
 
-    @PostConstruct
-    public void init() {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            Line[] newLines = mapper.readValue(new FileReader("./src/main/data/lines.json"), Line[].class);
-            for(Line l : newLines){
-                lineService.insertLine(l);
-            }
-        } catch (Exception e){
-            e.printStackTrace();
-        }
-    }
+//    @PostConstruct
+//    public void init() {
+//        ObjectMapper mapper = new ObjectMapper();
+//        try {
+//            Line[] newLines = mapper.readValue(new FileReader("./src/main/data/lines.json"), Line[].class);
+//            for(Line l : newLines){
+//                lineService.insertLine(l);
+//            }
+//        } catch (Exception e){
+//            e.printStackTrace();
+//        }
+//    }
 }
