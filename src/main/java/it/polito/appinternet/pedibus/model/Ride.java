@@ -7,7 +7,6 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -19,15 +18,12 @@ public class Ride {
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
     private Date rideDate;
+    private boolean flagGoing;
     private List<Stop> stops;
-    private List<Stop> stopsBack;
-    private List<String> companions = new LinkedList<>();
-    private List<String> companionsBack = new LinkedList<>();
-    boolean confirmed=false;
-    boolean confirmedBack=false;
 
     @JsonCreator
     public Ride(@JsonProperty("flagGoing") boolean flagGoing, @JsonProperty("rideDate") Date rideDate) {
+        this.flagGoing = flagGoing;
         this.rideDate = rideDate;
     }
 
