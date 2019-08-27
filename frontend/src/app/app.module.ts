@@ -31,6 +31,7 @@ import { BookingComponent } from './booking/booking.component';
 import {MatBadgeModule} from '@angular/material/badge';
 import { MessagesComponent } from './messages/messages.component';
 import { AvailabilityComponent } from './availability/availability.component';
+import { ShiftComponent } from './shift/shift.component';
 //import { AdministrationComponent } from './administration/administration.component';
 
 const routes: Routes = [
@@ -38,15 +39,13 @@ const routes: Routes = [
     component: AttendanceComponent,
     canActivate:[AuthGuard]
   },
-  { path: 'login',
-    component: LoginComponent},
-  { path: 'prenotazioni',
-    component: BookingComponent
-  },
+  { path: 'login', component: LoginComponent},
+  { path: 'prenotazioni', component: BookingComponent},
   { path: 'register', component: RegisterComponent},
   { path: 'disponibilita', component: AvailabilityComponent},
   { path: 'messaggi', component: MessagesComponent},
-  { path: '', component: LoginComponent },
+  { path: 'turni', component: ShiftComponent},
+  { path: '', component: LoginComponent},
   { path: '**', redirectTo: '' }
 ];
 
@@ -58,7 +57,8 @@ const routes: Routes = [
     RegisterComponent,
     BookingComponent,
     MessagesComponent,
-    AvailabilityComponent
+    AvailabilityComponent,
+    ShiftComponent
   ],
   imports: [
     BrowserModule,

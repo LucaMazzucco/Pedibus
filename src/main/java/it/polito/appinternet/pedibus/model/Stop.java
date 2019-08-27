@@ -15,8 +15,6 @@ public class Stop {
     private String stopName;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
     private Date time;
-    private boolean confirmed;
-    private List<String> companions = new LinkedList<>();
     private List<String> reservations = new LinkedList<>();
 
     @JsonCreator

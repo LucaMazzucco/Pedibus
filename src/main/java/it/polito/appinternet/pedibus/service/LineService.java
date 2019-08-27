@@ -6,6 +6,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,8 @@ public class LineService {
     ReservationService reservationService;
     @Autowired
     UserService userService;
+    @Autowired
+    RideService rideService;
 
     public String insertLine(Line l) {
         //TO DO: Controlli sulle stop della line da inserire e persone se presenti
@@ -337,5 +341,21 @@ public class LineService {
             //Duplicated passenger in json
             throw new JSONException("Duplicated passenger in json");
         }
+    }
+
+    private JSONObject getCompanions(){
+
+        List<Ride> rides = rideService.getRidesNotConfirmed();
+
+        JSONArray shifts = new JSONArray();
+
+        for(int i=0; i<rides.size(); i++){
+
+        }
+
+
+
+
+
     }
 }
