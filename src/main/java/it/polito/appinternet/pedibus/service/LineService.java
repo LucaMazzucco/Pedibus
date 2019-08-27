@@ -39,6 +39,7 @@ public class LineService {
         return "Line inserted correctly with id: " + l.getId();
     }
 
+
     public List<Line> findAll(){
         return lineRepo.findAll();
     }
