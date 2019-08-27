@@ -33,6 +33,12 @@ export class AppComponent implements OnDestroy, OnInit{
     return this.authService.isLoggedIn();
   }
 
+  /*TODO: isAdmin
+  isAdmin(): Boolean{
+    returno this.authService.isAdmin();
+  }
+  */
+
   logout(): void{
     this.authService.logout();
     this.router.navigate(['/login'])

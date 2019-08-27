@@ -1,0 +1,34 @@
+<!--<mat-form-field>
+  <input matInput (keyup)="applyFilter($event.target.value)" placeholder="cerca">
+</mat-form-field>
+<table mat-table [dataSource]="tableDs">
+  <ng-container matColumnDef="select">
+      <th mat-header-cell *matHeaderCellDef>
+          <mat-checkbox (change)="$event ? masterToggle() : null"
+                        [checked]="selection.hasValue() && isAllSelected()"
+                        [indeterminate]="selection.hasValue() && !isAllSelected()">
+          </mat-checkbox>
+      </th>
+      <td mat-cell *matCellDef="let row">
+          <mat-checkbox (click)="$event.stopPropagation()"
+                        (change)="$event ? selection.toggle(row) : null"
+                        [checked]="selection.isSelected(row)">
+          </mat-checkbox>
+      </td>
+  </ng-container>
+  <ng-container matColumnDef="nome">
+      <th mat-header-cell *matHeaderCellDef> Nome </th>
+      <td mat-cell *matCellDef="let giocatore"> {{giocatore.nome}} </td>
+  </ng-container>
+  <ng-container matColumnDef="squadra">
+      <th mat-header-cell *matHeaderCellDef> Squadra </th>
+      <td mat-cell *matCellDef="let giocatore"> {{giocatore.squadra}} </td>
+  </ng-container>
+  <ng-container matColumnDef="prezzo">
+      <th mat-header-cell *matHeaderCellDef> Prezzo </th>
+      <td mat-cell *matCellDef="let giocatore"> {{giocatore.prezzo}} </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="selection.toggle(row)"></tr>
+</table>-->
