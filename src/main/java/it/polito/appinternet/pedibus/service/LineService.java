@@ -139,6 +139,7 @@ public class LineService {
                     .map(r->childService.encapsulateChild(childService.findById(r.getChild()),r.isPresent()))
                     .forEach(children::put);
             stopJson.put("children",children);
+            stopsJson.put(stopJson);
         });
         return stopsJson;
     }

@@ -83,6 +83,7 @@ public class UserService {
         String token = jwtTokenProvider.createToken(username, userRepo.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Username " + username + "not found")).getRoles());
         JSONObject res = new JSONObject();
         res.put("token", token);
+        res.put("email", user.getEmail());
         return new ResponseEntity<>(res.toString(),HttpStatus.OK);
     }
 
