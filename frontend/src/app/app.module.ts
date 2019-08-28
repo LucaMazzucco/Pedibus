@@ -31,6 +31,10 @@ import { BookingComponent } from './booking/booking.component';
 import {MatBadgeModule} from '@angular/material/badge';
 import { MessagesComponent } from './messages/messages.component';
 import { AvailabilityComponent } from './availability/availability.component';
+import {MatStepperModule} from '@angular/material/stepper';
+import {MatRadioModule} from '@angular/material/radio';
+
+
 //import { AdministrationComponent } from './administration/administration.component';
 
 const routes: Routes = [
@@ -65,11 +69,13 @@ const routes: Routes = [
     MatTableModule,
     HttpClientModule,
     MatCheckboxModule,
+    MatRadioModule,
     MatSelectModule,
     BrowserAnimationsModule,
     MatListModule,
     MatInputModule,
     ReactiveFormsModule,
+    MatStepperModule,
     MatIconModule,
     MatExpansionModule,
     LayoutModule,

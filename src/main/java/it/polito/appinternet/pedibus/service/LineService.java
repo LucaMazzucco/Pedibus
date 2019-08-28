@@ -35,7 +35,6 @@ public class LineService {
         return "Line inserted correctly with id: " + l.getId();
     }
 
-
     public List<Line> findAll(){
         return lineRepo.findAll();
     }
@@ -339,4 +338,5 @@ public class LineService {
             throw new JSONException("Duplicated passenger in json");
         }
     }
+
 }
