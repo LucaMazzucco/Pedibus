@@ -14,8 +14,6 @@ export class MessagesComponent implements OnInit {
   messages: Message[];
   displayedColumns: string[] = ['data', 'messaggio', 'read', 'delete'];
 
-
-
   ngOnInit() {
     this.dataservice.getMessages(localStorage.getItem('current_user')).subscribe(m => {
       this.messages = m;
@@ -30,9 +28,7 @@ export class MessagesComponent implements OnInit {
   }
 
   deleteMessage(mess: Message): void{
-    console.log(this.messages);
     this.messages = this.messages.filter(a => (a != mess));
-    console.log(this.messages);
     this.dataservice.putMessages(this.messages, localStorage.getItem('current_user'));
   }
 

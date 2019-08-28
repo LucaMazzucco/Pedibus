@@ -7,6 +7,7 @@ import {catchError, first} from 'rxjs/operators';
 import { Person } from '../classes/person';
 import { Reservation } from "../classes/reservation";
 import {Message} from "../classes/message";
+import {Availability} from "../classes/availability";
 
 const REST_URL = 'http://localhost:8080';
 const FAKE_URL = 'http://localhost:3000';
@@ -48,7 +49,9 @@ export class DataService {
       return this.http.put(REST_URL + '/' + email + '/messages', messages).pipe(first()).subscribe(data => console.log(data));
   }
 
-
+  getAvailabilities(email: String): Observable<Availability[]>{
+    return this.http.get<Availability[]>(FAKE_URL + '/availabilities')
+  }
 
 
 }

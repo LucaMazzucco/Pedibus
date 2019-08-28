@@ -1,45 +1,44 @@
-<div fxLayoutAlign="center center" fxLayout="column" fxLayoutGap="10px" fxFlexFill>
-  <div fxLayout="row" fxLayoutAlign="start start">
-    <button mat-fab aria-label="Add reservation" (click)="openDialog(newAvailability)">
-      <mat-icon>add</mat-icon>
-    </button>
-  </div>
-</div>
-<!--<ng-template #newAvailability>-->
-  <!--<mat-card class="mat-card-light-style" fxLayout="column" fxLayoutGap="20px">-->
-    <!--<mat-card-header fxFlex="10">-->
-      <!--Quando sei disponibile?-->
-    <!--</mat-card-header>-->
-    <!--<mat-card-content fxFlex="80" fxLayout="column" fxLayoutGap="10px">-->
-      <!--<mat-form-field>-->
-        <!--<mat-label>Seleziona linea</mat-label>-->
-        <!--<mat-select [(value)]="selectedLine" required>-->
-          <!--<mat-option *ngFor="let line of lines" [value]="line">{{ line.lineName }}</mat-option>-->
-        <!--</mat-select>-->
-      <!--</mat-form-field>-->
-      <!--<mat-form-field *ngIf="selectedLine != null">-->
-        <!--<mat-label>Seleziona data della corsa</mat-label>-->
-        <!--<mat-select [(value)]="selectedRide" required>-->
-          <!--<mat-option *ngFor="let ride of selectedLine.rides" [value]="ride">{{ ride.date }}</mat-option>-->
-        <!--</mat-select>-->
-      <!--</mat-form-field>-->
-      <!--<mat-form-field *ngIf="selectedRide != null">-->
-        <!--<mat-label>Andata o ritorno</mat-label>-->
-        <!--<mat-select [(value)]="selectedFlagGoing" required>-->
-          <!--<mat-option value="andata"> Andata</mat-option>-->
-          <!--<mat-option value="ritorno"> Ritorno</mat-option>-->
-        <!--</mat-select>-->
-      <!--</mat-form-field>-->
+<div fxLayout="column">
+<div fxLayoutAlign="center center" fxLayout="row" fxLayoutGap="20px">
+  <table mat-table [dataSource]="tableDataSource" class="mat-elevation-z8" fxFlex="90">
+        <ng-container matColumnDef="lineName">
+          <th mat-header-cell *matHeaderCellDef> Linea </th>
+          <td mat-cell *matCellDef="let av" [class.availability-component-style]="av.confirmed">{{ av.lineName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="rideDate">
+          <th mat-header-cell *matHeaderCellDef> Data </th>
+          <td mat-cell *matCellDef="let av" [class.availability-component-style]="av.confirmed">{{ av.rideDate | date: 'shortDate' }}</td>
+        </ng-container>
+        <ng-container matColumnDef="flagGoing">
+          <th mat-header-cell *matHeaderCellDef> Andata/Ritorno </th>
+          <td mat-cell *matCellDef="let av" [class.availability-component-style]="av.confirmed" >
+            {{ av.flagGoing == true ? 'Andata' : 'Ritorno' }}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="delete">
+          <th mat-header-cell *matHeaderCellDef>Elimina</th>
+          <td mat-cell *matCellDef="let av ; let i = index;" [class.availability-component-style]="av.confirmed" >
+            <button mat-icon-button (click)="deleteAvailability(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
 
-    <!--</mat-card-content>-->
-    <!--<mat-card-actions fxFlex="10" fxLayoutAlign="center center">-->
-      <!--<button mat-raised-button (click)="addAvailabilty()" [mat-dialog-close]> AGGIUNGI PRENOTAZIONE</button>-->
-    <!--</mat-card-actions>-->
-  <!--</mat-card>-->
-<!--</ng-template>-->
+</div>
+
+<div fxLayoutAlign="end start">
+  <button class="floating-button" mat-fab aria-label="Add reservation" (click)="openDialog(newAvailability)">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
+</div>
+
 <ng-template #newAvailability>
   <mat-card class="mat-card-light-style" fxLayout="column" fxLayoutGap="20px">
-    <mat-card-header fxFlex="10">
+    <mat-card-header fxFlex="10" fxLayout="center center">
       Quando sei disponibile?
     </mat-card-header>
     <mat-card-content fxFlex="80" fxLayout="column" fxLayoutGap="10px">

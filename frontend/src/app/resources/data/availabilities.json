@@ -1,0 +1,18 @@
+{
+  "availabilities": [
+    {
+      "email": "admin@admin.com",
+      "lineName": "Linea indaco",
+      "rideDate": "19/apr/2019",
+      "confirmed": false,
+      "flagGoing": true
+    },
+    {
+      "email": "admin@admin.com",
+      "lineName": "Linea indaco",
+      "rideDate": "19/apr/2019",
+      "confirmed": false,
+      "flagGoing": false
+    }
+  ]
+}

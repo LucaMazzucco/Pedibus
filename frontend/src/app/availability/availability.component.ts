@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {TitleService} from "../services/title.service";
-import {MatDialog, MatDialogConfig} from "@angular/material";
+import {MatDialog, MatDialogConfig, MatTableDataSource} from "@angular/material";
 import {DataService} from "../services/data.service";
 import {Line} from "../classes/line";
 import {Availability} from "../classes/availability";
@@ -23,6 +23,9 @@ export class AvailabilityComponent implements OnInit {
   selectRideForm: FormGroup;
   selectGoingForm: FormGroup;
   isLinear: boolean;
+  displayedColumns: string[] = ['lineName', 'rideDate', 'flagGoing', 'delete'];
+  tableDataSource: any;
+
 
   constructor(private dataService: DataService, private titleservice: TitleService, private dialog: MatDialog, private _formBuilder: FormBuilder) {
   }
@@ -30,6 +33,10 @@ export class AvailabilityComponent implements OnInit {
   ngOnInit() {
     this.titleservice.changeTitle('Renditi disponibile per accompagnare!');
     this.isLinear = true;
+    this.dataService.getAvailabilities(localStorage.getItem('current_user')).subscribe(a =>{
+        this.availabilities = a;
+        this.tableDataSource = new MatTableDataSource<Availability>(this.availabilities);
+    });
     this.selectLineForm = this._formBuilder.group({
       selectedLine: ['', Validators.required]
     });
@@ -59,12 +66,17 @@ export class AvailabilityComponent implements OnInit {
     });
   }
   addAvailability(){
-    console.log(this.selectLineForm.controls)
-    //this.availabilities.push(new Availability(localStorage.getItem('current_user'), this.selectedLine.lineName, this.selectedRide.date, this.selectedFlagGoing.includes('andata')));
+    this.availabilities.push(new Availability(localStorage.getItem('current_user'), this.selectLineForm.controls.selectedLine.value.lineName, this.selectRideForm.controls.selectedRide.value.date, this.selectGoingForm.controls.selectedFlagGoing.value.includes('andata')));
+    this.tableDataSource._updateChangeSubscription()
+    console.log(this.availabilities)
     //TODO: Aggiunta al db
   }
-  deleteAvailability(i){
-    this.availabilities.splice(i,1)
+  deleteAvailability(i: number){
+      console.log(i);
+      this.availabilities.splice(i,1);
+      console.log(this.availabilities)
+      this.tableDataSource._updateChangeSubscription()
+      //TODO: Save to db
   }
 
 }
