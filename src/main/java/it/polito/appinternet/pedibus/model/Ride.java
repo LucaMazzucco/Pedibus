@@ -23,6 +23,7 @@ public class Ride {
     private List<Stop> stops;
     private boolean confirmed;
     private List<String> companions = new LinkedList<>();
+    private String officialCompanion;
 
     @JsonCreator
     public Ride(@JsonProperty("flagGoing") boolean flagGoing, @JsonProperty("rideDate") Date rideDate) {

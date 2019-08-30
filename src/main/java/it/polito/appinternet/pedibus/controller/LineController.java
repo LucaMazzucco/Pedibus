@@ -219,8 +219,78 @@ public class LineController {
             e.printStackTrace();
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
+    }
 
+    @PostMapping("/addShift")
+    public ResponseEntity addShift(@RequestBody String payload){
+        JSONObject mainJson = new JSONObject(payload);
+        if(!mainJson.has("email") || !mainJson.has("lineName") || !mainJson.has("rideDate") || !mainJson.has("flagGoing") || !mainJson.has("confirmed")){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        try{
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date date = sdf.parse(mainJson.getString("rideDate"));
 
+            Shift newShift = new Shift(mainJson.getString("email"),
+                    mainJson.getString("lineName"),
+                    date,
+                    mainJson.getBoolean("flagGoing"),
+                    mainJson.getBoolean("confirmed")
+            );
+
+            if(lineService.addNewShift(newShift, true) < 0){
+                return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
+            }
+            else{
+                if(lineService.sendMessageLineAdmin(newShift.getLineName(), newShift.getEmail()) < 0){
+                    return new ResponseEntity(HttpStatus.BAD_REQUEST);
+                }
+                else{
+                    return new ResponseEntity(HttpStatus.OK);
+                }
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/deleteShift")
+    public ResponseEntity removeShift(@RequestBody String payload){
+        JSONObject mainJson = new JSONObject(payload);
+        if(!mainJson.has("email") || !mainJson.has("lineName") || !mainJson.has("rideDate") || !mainJson.has("flagGoing") || !mainJson.has("confirmed")){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        try{
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date date = sdf.parse(mainJson.getString("rideDate"));
+
+            Shift newShift = new Shift(mainJson.getString("email"),
+                    mainJson.getString("lineName"),
+                    date,
+                    mainJson.getBoolean("flagGoing"),
+                    mainJson.getBoolean("confirmed")
+            );
+
+            if(lineService.addNewShift(newShift, false) < 0){
+                return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
+            }
+            else{
+                if(lineService.sendMessageLineAdmin(newShift.getLineName(), newShift.getEmail()) < 0){
+                    return new ResponseEntity(HttpStatus.BAD_REQUEST);
+                }
+                else{
+                    return new ResponseEntity(HttpStatus.OK);
+                }
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostConstruct

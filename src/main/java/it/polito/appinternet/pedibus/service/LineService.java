@@ -255,7 +255,7 @@ public class LineService {
     public int addNewAvailability(Shift availability){
         try{
             Line line = findByLineName(availability.getLineName());
-            Ride ride = line.getRides().stream().filter(r -> r.getRideDate().equals(availability.getRideDate())).findAny().orElse(null);
+            Ride ride = line.getRides().stream().filter(r -> r.getRideDate().equals(availability.getRideDate())).findAny().orElseThrow(NullPointerException::new);
             List<String> companions = new LinkedList<>();
             companions.add(availability.getEmail());
             ride.setCompanions(companions);
@@ -264,6 +264,37 @@ public class LineService {
             return 0;
         }
         catch (NullPointerException ne){
+            ne.printStackTrace();
+            return -1;
+        }
+    }
+
+    @Transactional
+    public int addNewShift(Shift shift, boolean confirmed){
+        try {
+            Line line = findByLineName(shift.getLineName());
+            Ride ride = line.getRides().stream().filter(r -> r.getRideDate().equals(shift.getRideDate())).findAny().orElseThrow(NullPointerException::new);
+            List<String> companions = ride.getCompanions();
+
+            String user = shift.getEmail();
+
+            if(ride.getOfficialCompanion().equals(user) && ride.isConfirmed()){
+                ride.setConfirmed(false);
+                ride.setOfficialCompanion("");
+                return -2;
+            }
+
+            if(ride.isConfirmed()){
+                return -3;
+            }
+
+            companions.add(shift.getEmail());
+            ride.setOfficialCompanion(user);
+            ride.setConfirmed(confirmed);
+            lineRepo.save(line);
+            return 0;
+        }
+        catch (NullPointerException ne) {
             ne.printStackTrace();
             return -1;
         }
