@@ -188,8 +188,14 @@ $custom-theme: map_merge($custom-theme, (background: $background));
 }
 
 @mixin availability-component-style($custom-theme){
-    .confirmed-shift-color{
+    .not-confirmed-shift-color{
         background-color: lightyellow;
+        -webkit-box-shadow: 0px 1px 0px 0px rgba(0,0,0,0.25);
+        -moz-box-shadow: 0px 1px 0px 0px rgba(0,0,0,0.25);
+        box-shadow: 0px 1px 0px 0px rgba(0,0,0,0.25);
+    }
+    .confirmed-shift-color{
+        background-color: lightgreen;
         -webkit-box-shadow: 0px 1px 0px 0px rgba(0,0,0,0.25);
         -moz-box-shadow: 0px 1px 0px 0px rgba(0,0,0,0.25);
         box-shadow: 0px 1px 0px 0px rgba(0,0,0,0.25);

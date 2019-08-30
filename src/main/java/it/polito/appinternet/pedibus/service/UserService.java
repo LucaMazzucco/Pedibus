@@ -162,7 +162,7 @@ public class UserService {
         }
         user = userOptional.get();
         return user.getMessages().stream()
-                .filter(Message::isRead)
+                .filter(m -> !m.isRead())
                 .count();
     }
 

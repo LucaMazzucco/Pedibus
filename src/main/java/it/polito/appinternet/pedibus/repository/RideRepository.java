@@ -14,4 +14,5 @@ public interface RideRepository extends MongoRepository<Ride, Long> {
     Ride findById(String id);
     Ride findByRideDate(Date d);
     Ride findByRideDateAndFlagGoing(Date d,Boolean b);
+    List<Ride> findByCompanionsContaining(String companion);
 }

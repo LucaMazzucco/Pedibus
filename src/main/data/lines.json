@@ -6,27 +6,24 @@
       {
         "flagGoing":"true",
         "rideDate":"2019/04/15",
+        "confirmed": false,
+        "companions": [],
         "stops": [
           {
             "stopName":"Stop1",
             "time": "08:30",
-            "confirmed": false,
-            "companions": [],
             "reservations": []
           },
           {
             "stopName":"Stop2",
             "time": "08:45",
-            "confirmed": false,
-            "companions": [],
             "reservations": []
           },
           {
             "stopName":"Stop3",
             "time": "09:00",
-            "confirmed": false,
-            "companions": [],
-            "reservations": []          }
+            "reservations": []
+          }
         ]
       }
     ]
@@ -38,27 +35,24 @@
       {
         "flagGoing":"true",
         "rideDate":"2019/04/15",
+        "confirmed": false,
+        "companions": ["admin@admin.com"],
         "stops": [
           {
             "stopName":"Stop1",
             "time": "08:30",
-            "confirmed": false,
-            "companions": [],
             "reservations": []
           },
           {
             "stopName":"Stop2",
             "time": "08:45",
-            "confirmed": false,
-            "companions": [],
             "reservations": []
           },
           {
             "stopName":"Stop3",
             "time": "09:00",
-            "confirmed": false,
-            "companions": [],
-            "reservations": []          }
+            "reservations": []
+          }
         ]
       }
     ]

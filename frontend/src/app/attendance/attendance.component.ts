@@ -1,10 +1,10 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
-import { Person } from '../classes/person';
-import { Line } from '../classes/line';
-import { Ride } from '../classes/ride';
+import { Person } from '../model/person';
+import { Line } from '../model/line';
+import { Ride } from '../model/ride';
 import { DataService } from '../services/data.service';
 import {MatDialogConfig, MatTabChangeEvent, MatTableDataSource, PageEvent} from '@angular/material';
-import {Stop} from '../classes/stop';
+import {Stop} from '../model/stop';
 import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {SelectionModel} from "@angular/cdk/collections";
 import {TitleService} from "../services/title.service";

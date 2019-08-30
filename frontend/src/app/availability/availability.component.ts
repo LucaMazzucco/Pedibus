@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import {TitleService} from "../services/title.service";
-import {MatDialog, MatDialogConfig, MatTableDataSource} from "@angular/material";
+import {MatDialog, MatDialogConfig, MatSnackBar, MatTableDataSource} from "@angular/material";
 import {DataService} from "../services/data.service";
-import {Line} from "../classes/line";
-import {Availability} from "../classes/availability";
-import {Ride} from "../classes/ride";
+import {Line} from "../model/line";
+import {Availability} from "../model/availability";
+import {Ride} from "../model/ride";
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 
@@ -15,7 +15,7 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 })
 export class AvailabilityComponent implements OnInit {
   lines: Line[];
-  availabilities: Availability[];
+  availabilities: Availability[] = [];
   // selectedLine: Line;
   // selectedRide: Ride;
   // selectedFlagGoing: string;
@@ -24,18 +24,19 @@ export class AvailabilityComponent implements OnInit {
   selectGoingForm: FormGroup;
   isLinear: boolean;
   displayedColumns: string[] = ['lineName', 'rideDate', 'flagGoing', 'delete'];
-  tableDataSource: any;
+  tableDataSource: MatTableDataSource<Availability> = new MatTableDataSource<Availability>(this.availabilities);
+  infoMessage: string = '';
 
 
-  constructor(private dataService: DataService, private titleservice: TitleService, private dialog: MatDialog, private _formBuilder: FormBuilder) {
+
+  constructor(private dataService: DataService,  private _snackBar: MatSnackBar, private titleservice: TitleService, private dialog: MatDialog, private _formBuilder: FormBuilder) {
   }
 
   ngOnInit() {
     this.titleservice.changeTitle('Renditi disponibile per accompagnare!');
     this.isLinear = true;
     this.dataService.getAvailabilities(localStorage.getItem('current_user')).subscribe(a =>{
-        this.availabilities = a;
-        this.tableDataSource = new MatTableDataSource<Availability>(this.availabilities);
+        this.tableDataSource.data = a;
     });
     this.selectLineForm = this._formBuilder.group({
       selectedLine: ['', Validators.required]
@@ -66,15 +67,23 @@ export class AvailabilityComponent implements OnInit {
     });
   }
   addAvailability(){
-    this.availabilities.push(new Availability(localStorage.getItem('current_user'), this.selectLineForm.controls.selectedLine.value.lineName, this.selectRideForm.controls.selectedRide.value.date, this.selectGoingForm.controls.selectedFlagGoing.value.includes('andata')));
+    let av: Availability = new Availability(localStorage.getItem('current_user'), this.selectLineForm.controls.selectedLine.value.lineName, this.selectRideForm.controls.selectedRide.value.date, this.selectGoingForm.controls.selectedFlagGoing.value.includes('andata'))
+    this.tableDataSource.data.push(av);
     this.tableDataSource._updateChangeSubscription()
-    console.log(this.availabilities)
-    //TODO: Aggiunta al db
+      let response =  this.dataService.addAvailability(av);
+      response.subscribe(data => {
+          this.infoMessage = "Aggiunta la disponibilità!";
+          this._snackBar.open(this.infoMessage, '', {duration: 2000});
+          this.infoMessage = ''
+      }, error =>{
+          this.infoMessage = "Non è stato possibile aggiungere la disponibilità";
+          this._snackBar.open(this.infoMessage, '', {duration: 2000});
+          this.infoMessage = '';
+      })
   }
   deleteAvailability(i: number){
       console.log(i);
       this.availabilities.splice(i,1);
-      console.log(this.availabilities)
       this.tableDataSource._updateChangeSubscription()
       //TODO: Save to db
   }

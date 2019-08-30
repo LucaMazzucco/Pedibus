@@ -4,13 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polito.appinternet.pedibus.model.*;
 import it.polito.appinternet.pedibus.service.LineService;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
@@ -20,6 +18,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 
 @CrossOrigin(origins = "http://localhost:4200/presenze", maxAge = 3600)
 @RestController
@@ -27,7 +27,6 @@ public class LineController {
 
     @Autowired
     LineService lineService;
-
 
     @GetMapping("/insertLine")
     public ResponseEntity<String> insertLine(Line l) {
@@ -161,6 +160,67 @@ public class LineController {
 //        mainObj.put("stopListA", stopA);
 //        mainObj.put("stopListR", stopR);
         return lineService.encapsulateLine(line).toString();
+    }
+
+    @GetMapping("/getAvailabilities/{email}")
+    public String getAvailabilities(@PathVariable String email){
+        if(email == null){
+            return "-1";
+        }
+        List<Line> myLines = lineService.getLineOfCompanions(email);
+        JSONArray availabilities = new JSONArray();
+        JSONObject tmp = new JSONObject();
+        myLines.forEach(l -> {
+            List<Ride> myRides = l.getRides().stream().filter(r -> r.getCompanions().contains(email)).collect(Collectors.toList());
+            myRides.forEach(r -> {
+                tmp.put("email", email);
+                tmp.put("lineName", l.getLineName());
+                tmp.put("rideDate", r.getRideDate());
+                tmp.put("confirmed", r.isConfirmed());
+                tmp.put("flagGoing", r.isFlagGoing());
+                availabilities.put(tmp);
+            });
+        });
+
+        return availabilities.toString();
+    }
+
+    @PostMapping("/addAvailability")
+    public ResponseEntity addAvailability(@RequestBody String payload){
+        JSONObject mainJson = new JSONObject(payload);
+        if(!mainJson.has("email") || !mainJson.has("lineName") || !mainJson.has("rideDate") || !mainJson.has("flagGoing") || !mainJson.has("confirmed")){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        try{
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date date = sdf.parse(mainJson.getString("rideDate"));
+
+            Shift newAvailability = new Shift(mainJson.getString("email"),
+                    mainJson.getString("lineName"),
+                    date,
+                    mainJson.getBoolean("flagGoing"),
+                    mainJson.getBoolean("confirmed")
+            );
+
+            if(lineService.addNewAvailability(newAvailability) < 0){
+                return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
+            }
+            else{
+                if(lineService.sendMessageLineAdmin(newAvailability.getLineName(), newAvailability.getEmail()) < 0){
+                    return new ResponseEntity(HttpStatus.BAD_REQUEST);
+                }
+                else{
+                    return new ResponseEntity(HttpStatus.OK);
+                }
+            }
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+
+
     }
 
     @PostConstruct

@@ -7,6 +7,7 @@ import lombok.*;
 import org.springframework.data.annotation.Id;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 
 @NoArgsConstructor
@@ -20,6 +21,8 @@ public class Ride {
     private Date rideDate;
     private boolean flagGoing;
     private List<Stop> stops;
+    private boolean confirmed;
+    private List<String> companions = new LinkedList<>();
 
     @JsonCreator
     public Ride(@JsonProperty("flagGoing") boolean flagGoing, @JsonProperty("rideDate") Date rideDate) {

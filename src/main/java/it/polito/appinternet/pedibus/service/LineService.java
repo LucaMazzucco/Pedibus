@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,6 +29,7 @@ public class LineService {
     ReservationService reservationService;
     @Autowired
     UserService userService;
+
 
     public String insertLine(Line l) {
         //TO DO: Controlli sulle stop della line da inserire e persone se presenti
@@ -250,6 +252,42 @@ public class LineService {
     }
 
     @Transactional
+    public int addNewAvailability(Shift availability){
+        try{
+            Line line = findByLineName(availability.getLineName());
+            Ride ride = line.getRides().stream().filter(r -> r.getRideDate().equals(availability.getRideDate())).findAny().orElse(null);
+            List<String> companions = new LinkedList<>();
+            companions.add(availability.getEmail());
+            ride.setCompanions(companions);
+            ride.setConfirmed(false);
+            lineRepo.save(line);
+            return 0;
+        }
+        catch (NullPointerException ne){
+            ne.printStackTrace();
+            return -1;
+        }
+    }
+
+    public int sendMessageLineAdmin(String lineName, String sender){
+        Line line = findByLineName(lineName);
+        List<String> admins = line.getAdmins();
+        if(admins.isEmpty()){
+            return -1;
+        }
+
+
+        Message m = new Message(Instant.now().getEpochSecond(), false, "L'accompagnatore " + sender + " è disponibile per la linea " + lineName );
+        admins.forEach(a -> {
+            User u = userService.userGet(a);
+            u.getMessages().add(m);
+            userService.userSave(u);
+        });
+
+        return 0;
+
+    }
+    @Transactional
     public int updateUserToUpdatePassengersInfo(String line_name, String dateString, String registrationNumber,
                                                 boolean isPresent, boolean isFlagGoing) {
         try {
@@ -337,6 +375,10 @@ public class LineService {
             //Duplicated passenger in json
             throw new JSONException("Duplicated passenger in json");
         }
+    }
+
+    public List<Line> getLineOfCompanions(String companion){
+        return lineRepo.findByRides_Companions(companion);
     }
 
 }
