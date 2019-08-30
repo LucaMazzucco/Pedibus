@@ -33,6 +33,7 @@ import { MessagesComponent } from './messages/messages.component';
 import { AvailabilityComponent } from './availability/availability.component';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatRadioModule} from '@angular/material/radio';
+import { ShiftComponent } from './shift/shift.component';
 
 
 //import { AdministrationComponent } from './administration/administration.component';
@@ -49,6 +50,7 @@ const routes: Routes = [
   },
   { path: 'register', component: RegisterComponent},
   { path: 'disponibilita', component: AvailabilityComponent},
+  { path: 'turni', component: ShiftComponent},
   { path: 'messaggi', component: MessagesComponent},
   { path: '', component: LoginComponent },
   { path: '**', redirectTo: '' }
@@ -62,7 +64,8 @@ const routes: Routes = [
     RegisterComponent,
     BookingComponent,
     MessagesComponent,
-    AvailabilityComponent
+    AvailabilityComponent,
+    ShiftComponent
   ],
   imports: [
     BrowserModule,

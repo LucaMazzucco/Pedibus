@@ -8,6 +8,7 @@ import { Person } from '../model/person';
 import { Reservation } from "../model/reservation";
 import {Message} from "../model/message";
 import {Availability} from "../model/availability";
+import {Shift} from "../model/shift";
 
 const REST_URL = 'http://localhost:8080';
 const FAKE_URL = 'http://localhost:3000';
@@ -61,5 +62,16 @@ export class DataService {
     return this.http.post<Availability>(REST_URL + '/deleteAvailability', av);
   }
 
+  getShifts(email: String): Observable<Shift[]>{
+    return this.http.get<Shift[]>(REST_URL + '/getShifts/' + email);
+  }
+
+  addShift(sh: Shift){
+    return this.http.post<Shift>(REST_URL + '/addShift', sh);
+  }
+
+  deleteShift(sh: Shift){
+    return this.http.post<Shift>(REST_URL + '/deleteShift', sh);
+  }
 
 }

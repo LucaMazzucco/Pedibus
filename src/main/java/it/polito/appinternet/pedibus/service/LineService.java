@@ -468,6 +468,10 @@ public class LineService {
 
     }
 
+    public List<Line> getLineShifts(String email){
+        return lineRepo.findByLineAdmins(email);
+    }
+
 
 
 }
