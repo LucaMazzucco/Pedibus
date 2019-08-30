@@ -57,5 +57,9 @@ export class DataService {
     return this.http.post<Availability>(REST_URL + '/addAvailability', av);
   }
 
+  deleteAvailability(av: Availability){
+    return this.http.post<Availability>(REST_URL + '/deleteAvailability', av);
+  }
+
 
 }

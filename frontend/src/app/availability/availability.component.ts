@@ -15,7 +15,6 @@ import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 })
 export class AvailabilityComponent implements OnInit {
   lines: Line[];
-  availabilities: Availability[] = [];
   // selectedLine: Line;
   // selectedRide: Ride;
   // selectedFlagGoing: string;
@@ -24,7 +23,7 @@ export class AvailabilityComponent implements OnInit {
   selectGoingForm: FormGroup;
   isLinear: boolean;
   displayedColumns: string[] = ['lineName', 'rideDate', 'flagGoing', 'delete'];
-  tableDataSource: MatTableDataSource<Availability> = new MatTableDataSource<Availability>(this.availabilities);
+  tableDataSource: MatTableDataSource<Availability> = new MatTableDataSource<Availability>([]);
   infoMessage: string = '';
 
 
@@ -82,10 +81,20 @@ export class AvailabilityComponent implements OnInit {
       })
   }
   deleteAvailability(i: number){
-      console.log(i);
-      this.availabilities.splice(i,1);
+      console.log(this.tableDataSource.data[i])
+      let response =  this.dataService.deleteAvailability(this.tableDataSource.data[i]);
+      this.tableDataSource.data.splice(i,1);
       this.tableDataSource._updateChangeSubscription()
-      //TODO: Save to db
+      response.subscribe(data => {
+        this.infoMessage = "Rimossa la disponibilità!";
+        this._snackBar.open(this.infoMessage, '', {duration: 2000});
+        this.infoMessage = ''
+      }, error =>{
+        this.infoMessage = "Non è stato possibile rimuovere la disponibilità";
+        this._snackBar.open(this.infoMessage, '', {duration: 2000});
+        this.infoMessage = '';
+
+      })
   }
 
 }

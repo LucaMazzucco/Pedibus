@@ -254,9 +254,10 @@ public class LineService {
     @Transactional
     public int addNewAvailability(Shift availability){
         try{
+            //TODO: Sostituire con una query più complessa, non avevo voglia di farlo per colpa delle date
             Line line = findByLineName(availability.getLineName());
             Ride ride = line.getRides().stream().filter(r -> r.getRideDate().equals(availability.getRideDate())).findAny().orElseThrow(NullPointerException::new);
-            List<String> companions = new LinkedList<>();
+            List<String> companions = ride.getCompanions();
             companions.add(availability.getEmail());
             ride.setCompanions(companions);
             ride.setConfirmed(false);
@@ -300,24 +301,32 @@ public class LineService {
         }
     }
 
-    public int sendMessageLineAdmin(String lineName, String sender){
+    public int sendMessageLineAdmin(String lineName, Message m){
         Line line = findByLineName(lineName);
         List<String> admins = line.getAdmins();
         if(admins.isEmpty()){
             return -1;
         }
 
-
-        Message m = new Message(Instant.now().getEpochSecond(), false, "L'accompagnatore " + sender + " è disponibile per la linea " + lineName );
         admins.forEach(a -> {
             User u = userService.userGet(a);
             u.getMessages().add(m);
             userService.userSave(u);
         });
-
         return 0;
-
     }
+
+    public int sendMessageToUser(String email, Message m){
+        User u = userService.userGet(email);
+        if(u == null){
+            return -1;
+        }
+        u.getMessages().add(m);
+        userService.userSave(u);
+        return 0;
+    }
+
+
     @Transactional
     public int updateUserToUpdatePassengersInfo(String line_name, String dateString, String registrationNumber,
                                                 boolean isPresent, boolean isFlagGoing) {
@@ -411,5 +420,54 @@ public class LineService {
     public List<Line> getLineOfCompanions(String companion){
         return lineRepo.findByRides_Companions(companion);
     }
+
+    @Transactional
+    public int deleteAvailability(Shift av){
+        try{
+            Line line = findByLineName(av.getLineName());
+            Ride ride = line.getRides().stream().filter(r -> {
+                if(r.getRideDate().equals(av.getRideDate()) && r.getCompanions().contains(av.getEmail()) && r.isFlagGoing() == av.getFlagGoing()){
+                    return true;
+                }
+                else{
+                    return false;
+                }
+            }).findAny().orElseThrow(NullPointerException::new);
+
+            ride.getCompanions().remove(av.getEmail());
+            lineRepo.save(line);
+            return 0;
+        }
+        catch (NullPointerException ne){
+            ne.printStackTrace();
+            return -1;
+        }
+    }
+
+    public Shift generateShift(JSONObject mainJson){
+        if(!mainJson.has("email") || !mainJson.has("lineName") || !mainJson.has("rideDate") || !mainJson.has("flagGoing") || !mainJson.has("confirmed")){
+            return null;
+        }
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date date = sdf.parse(mainJson.getString("rideDate"));
+            Shift shift = new Shift(mainJson.getString("email"),
+                    mainJson.getString("lineName"),
+                    date,
+                    mainJson.getBoolean("flagGoing"),
+                    mainJson.getBoolean("confirmed")
+            );
+            return shift;
+        }
+        catch (ParseException pe){
+            pe.getErrorOffset();
+            return null;
+        }
+
+
+    }
+
+
 
 }

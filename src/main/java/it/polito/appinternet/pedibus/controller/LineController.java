@@ -15,6 +15,7 @@ import javax.annotation.PostConstruct;
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -185,111 +186,76 @@ public class LineController {
         return availabilities.toString();
     }
 
-    @PostMapping("/addAvailability")
-    public ResponseEntity addAvailability(@RequestBody String payload){
+    @PostMapping("/deleteAvailability")
+    public ResponseEntity deleteAvailability(@RequestBody String payload) {
         JSONObject mainJson = new JSONObject(payload);
-        if(!mainJson.has("email") || !mainJson.has("lineName") || !mainJson.has("rideDate") || !mainJson.has("flagGoing") || !mainJson.has("confirmed")){
+        Shift avToDelete = lineService.generateShift(mainJson);
+        if (avToDelete == null) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-        try{
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
-            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date date = sdf.parse(mainJson.getString("rideDate"));
-
-            Shift newAvailability = new Shift(mainJson.getString("email"),
-                    mainJson.getString("lineName"),
-                    date,
-                    mainJson.getBoolean("flagGoing"),
-                    mainJson.getBoolean("confirmed")
-            );
-
-            if(lineService.addNewAvailability(newAvailability) < 0){
+        } else {
+            if (lineService.deleteAvailability(avToDelete) < 0) {
                 return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
-            }
-            else{
-                if(lineService.sendMessageLineAdmin(newAvailability.getLineName(), newAvailability.getEmail()) < 0){
+            } else {
+                Message m = new Message(Instant.now().getEpochSecond(), false, "L'accompagnatore: " + avToDelete.getEmail() + " ha tolto la disponibilità per la linea: " + avToDelete.getLineName());
+                if (lineService.sendMessageLineAdmin(avToDelete.getLineName(), m) < 0) {
                     return new ResponseEntity(HttpStatus.BAD_REQUEST);
-                }
-                else{
+                } else {
                     return new ResponseEntity(HttpStatus.OK);
                 }
             }
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
 
     @PostMapping("/addShift")
     public ResponseEntity addShift(@RequestBody String payload){
         JSONObject mainJson = new JSONObject(payload);
-        if(!mainJson.has("email") || !mainJson.has("lineName") || !mainJson.has("rideDate") || !mainJson.has("flagGoing") || !mainJson.has("confirmed")){
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-        try{
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
-            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date date = sdf.parse(mainJson.getString("rideDate"));
-
-            Shift newShift = new Shift(mainJson.getString("email"),
-                    mainJson.getString("lineName"),
-                    date,
-                    mainJson.getBoolean("flagGoing"),
-                    mainJson.getBoolean("confirmed")
-            );
-
-            if(lineService.addNewShift(newShift, true) < 0){
+        Shift newShift = lineService.generateShift(mainJson) ;
+        if(lineService.addNewShift(newShift, true) < 0){
                 return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
             }
-            else{
-                if(lineService.sendMessageLineAdmin(newShift.getLineName(), newShift.getEmail()) < 0){
-                    return new ResponseEntity(HttpStatus.BAD_REQUEST);
-                }
-                else{
-                    return new ResponseEntity(HttpStatus.OK);
-                }
+        else{
+        Message m = new Message(Instant.now().getEpochSecond(), false, "L'amministratore ti ha confermato come accompagnatore per la linea " + newShift.getLineName());
+        if(lineService.sendMessageToUser(newShift.getEmail(), m) < 0){
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
             }
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            else{
+                return new ResponseEntity(HttpStatus.OK);
+            }
         }
     }
 
     @PostMapping("/deleteShift")
     public ResponseEntity removeShift(@RequestBody String payload){
         JSONObject mainJson = new JSONObject(payload);
-        if(!mainJson.has("email") || !mainJson.has("lineName") || !mainJson.has("rideDate") || !mainJson.has("flagGoing") || !mainJson.has("confirmed")){
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        Shift newShift = lineService.generateShift(mainJson) ;
+        if(lineService.addNewShift(newShift, false) < 0){
+            return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
         }
-        try{
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
-            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date date = sdf.parse(mainJson.getString("rideDate"));
-
-            Shift newShift = new Shift(mainJson.getString("email"),
-                    mainJson.getString("lineName"),
-                    date,
-                    mainJson.getBoolean("flagGoing"),
-                    mainJson.getBoolean("confirmed")
-            );
-
-            if(lineService.addNewShift(newShift, false) < 0){
-                return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
+        else{
+            Message m = new Message(Instant.now().getEpochSecond(), false, "L'amministratore ti ha cancellato il turno per la linea: " + newShift.getLineName());
+            if((lineService.sendMessageToUser(newShift.getEmail(), m)) < 0){
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
             }
             else{
-                if(lineService.sendMessageLineAdmin(newShift.getLineName(), newShift.getEmail()) < 0){
-                    return new ResponseEntity(HttpStatus.BAD_REQUEST);
-                }
-                else{
-                    return new ResponseEntity(HttpStatus.OK);
-                }
+                return new ResponseEntity(HttpStatus.OK);
             }
         }
-        catch (Exception e){
-            e.printStackTrace();
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
+
+    @PostMapping("/addAvailability")
+    public ResponseEntity addAvailability(@RequestBody String payload) {
+        JSONObject mainJson = new JSONObject(payload);
+        Shift newAvailability = lineService.generateShift(mainJson);
+        if (lineService.addNewAvailability(newAvailability) < 0) {
+            return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
+        } else {
+            Message m = new Message(Instant.now().getEpochSecond(), false, "L'accompagnatore " + newAvailability.getEmail() + " è disponibile per la linea " + newAvailability.getLineName());
+            if (lineService.sendMessageLineAdmin(newAvailability.getLineName(), m) < 0) {
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            } else {
+                return new ResponseEntity(HttpStatus.OK);
+            }
         }
     }
 
