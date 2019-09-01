@@ -1,0 +1,8 @@
+.myContainer {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .myContainer > * {
+    width: 100%;
+  }

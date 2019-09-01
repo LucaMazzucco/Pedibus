@@ -29,6 +29,7 @@ import javax.swing.text.html.Option;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -111,6 +112,23 @@ public class UserService {
     }
 
     @Transactional
+    public Boolean userRegisterByAdmin(String email){
+
+        String token = UUID.randomUUID().toString();
+        //confirmationTokenRepository.insert(confirmationToken);
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(email);
+        mailMessage.setSubject("Complete Registration!");
+        mailMessage.setFrom("pedibus.polito1819@gmail.com");
+        mailMessage.setText("To confirm your account, please click here : "
+                + "http://localhost:4200/register/"
+                + token);
+        emailSenderService.sendEmail(mailMessage);
+
+        return true;
+    }
+
+    @Transactional
     public int userRegister(User newUser){
         User existingUser = userRepo.findByRegistrationNumber(newUser.getRegistrationNumber());
         if(existingUser!=null){
@@ -122,16 +140,9 @@ public class UserService {
         roles.add("ROLE_USER"); //TODO: Role deciso da chi l'ha aggiunto
         newUser.setRoles(roles);
         userRepo.insert(newUser);
-        ConfirmationToken confirmationToken = new ConfirmationToken(newUser);
-        confirmationTokenRepository.insert(confirmationToken);
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(newUser.getEmail());
-        mailMessage.setSubject("Complete Registration!");
-        mailMessage.setFrom("pedibus.polito1819@gmail.com");
-        mailMessage.setText("To confirm your account, please click here : "
-                + "http://localhost:8080/confirm/"
-                + confirmationToken.getConfirmationToken());
-        emailSenderService.sendEmail(mailMessage);
+
+
+
         return 0;
     }
 

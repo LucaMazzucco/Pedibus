@@ -185,4 +185,10 @@ public class UserController {
     public ResponseEntity<Boolean> checkEmailPresence(@PathVariable String email){
         return new ResponseEntity<>(userService.isUserPresent(email),HttpStatus.OK);
     }
+
+    @PostMapping("/registerAdmin/{email}")
+    public ResponseEntity<Boolean> registerAdmin(@PathVariable String email){
+        return new ResponseEntity<>(userService.userRegisterByAdmin(email), HttpStatus.OK);
+    }
+
 }

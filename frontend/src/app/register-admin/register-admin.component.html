@@ -1,0 +1,28 @@
+<div fxLayout="row" fxLayoutAlign="center center" fxFlexFill>
+  <mat-card fxFlex="40" fxFlex.xs="100" class="mat-elevation-z6 mat-card-style">
+    <mat-card-header>
+      <mat-card-title>Registrazione</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="myContainer">
+        <form [formGroup]="registrationAdminForm" (ngSubmit) = "onSubmit()">
+          
+          <div fxLayout="row" fxLayoutAlign="center center">
+            <mat-form-field  fxFlex="100">
+              <input matInput placeholder="Inserire la mail" formControlName="email" (change)="checkEmailPresence()" required>
+              <mat-error *ngIf="registrationAdminForm.controls.email.invalid">{{getEmailErrorMessage()}}</mat-error>      
+            </mat-form-field>
+          </div>
+          <mat-card-actions>
+              <button mat-raised-button color="primary">REGISTER</button>
+          </mat-card-actions>
+       </form>
+       <span *ngIf="infoMessage.length > 0">{{ infoMessage }}</span>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+
+
+
