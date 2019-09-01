@@ -64,6 +64,7 @@ public class UserService {
     public User userGet(String email){
         return userRepo.findByEmail(email).get();
     }
+    public User userFindById(String id){ return userRepo.findById(id).get();}
 
     public ResponseEntity userLogin(String username,String password){
         Optional<User> userOptional= userRepo.findByEmail(username);
@@ -82,6 +83,7 @@ public class UserService {
         String token = jwtTokenProvider.createToken(username, userRepo.findByEmail(username).orElseThrow(() -> new UsernameNotFoundException("Username " + username + "not found")).getRoles());
         JSONObject res = new JSONObject();
         res.put("token", token);
+        res.put("email", user.getEmail());
         return new ResponseEntity<>(res.toString(),HttpStatus.OK);
     }
 
@@ -160,7 +162,7 @@ public class UserService {
         }
         user = userOptional.get();
         return user.getMessages().stream()
-                .filter(Message::isRead)
+                .filter(m -> !m.isRead())
                 .count();
     }
 

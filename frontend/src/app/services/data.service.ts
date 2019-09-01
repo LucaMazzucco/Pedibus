@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
-import { Line } from '../classes/line';
+import { Line } from '../model/line';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { Ride } from '../classes/ride';
+import { Ride } from '../model/ride';
 import {catchError, first} from 'rxjs/operators';
-import { Person } from '../classes/person';
-import { Reservation } from "../classes/reservation";
-import {Message} from "../classes/message";
+import { Person } from '../model/person';
+import { Reservation } from "../model/reservation";
+import {Message} from "../model/message";
+import {Availability} from "../model/availability";
 
 const REST_URL = 'http://localhost:8080';
 const FAKE_URL = 'http://localhost:3000';
@@ -48,7 +49,17 @@ export class DataService {
       return this.http.put(REST_URL + '/' + email + '/messages', messages).pipe(first()).subscribe(data => console.log(data));
   }
 
+  getAvailabilities(email: String): Observable<Availability[]>{
+    return this.http.get<Availability[]>(REST_URL + '/getAvailabilities/' + email);
+  }
 
+  addAvailability(av: Availability){
+    return this.http.post<Availability>(REST_URL + '/addAvailability', av);
+  }
+
+  deleteAvailability(av: Availability){
+    return this.http.post<Availability>(REST_URL + '/deleteAvailability', av);
+  }
 
 
 }

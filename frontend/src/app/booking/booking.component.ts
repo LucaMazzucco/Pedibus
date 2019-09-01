@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import {DataService} from "../services/data.service";
-import {Reservation} from "../classes/reservation";
+import {Reservation} from "../model/reservation";
 import {TitleService} from "../services/title.service";
 import {MatDialog, MatDialogConfig, MatTableDataSource} from "@angular/material";
-import {Line} from "../classes/line";
-import {Stop} from "../classes/stop";
-import {Ride} from "../classes/ride";
+import {Line} from "../model/line";
+import {Stop} from "../model/stop";
+import {Ride} from "../model/ride";
 import {collectExternalReferences} from "@angular/compiler";
 
 

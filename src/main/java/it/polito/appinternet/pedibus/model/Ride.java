@@ -5,14 +5,11 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
-@Document(collection = "rides")
 @NoArgsConstructor
 @Getter @Setter
 public class Ride {
@@ -20,19 +17,18 @@ public class Ride {
     @Id
     private String id;
 
-    private Boolean flagAndata;
-
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
     private Date rideDate;
-
-    private List<String> reservations;
+    private boolean flagGoing;
+    private List<Stop> stops;
+    private boolean confirmed;
+    private List<String> companions = new LinkedList<>();
+    private String officialCompanion;
 
     @JsonCreator
-    public Ride(@JsonProperty("flagAndata") Boolean flagAndata, @JsonProperty("rideDate") Date rideDate,
-            @JsonProperty("reservations") List<String> reservations) {
-        this.flagAndata = flagAndata;
+    public Ride(@JsonProperty("flagGoing") boolean flagGoing, @JsonProperty("rideDate") Date rideDate) {
+        this.flagGoing = flagGoing;
         this.rideDate = rideDate;
-        this.reservations = reservations;
     }
 
 }

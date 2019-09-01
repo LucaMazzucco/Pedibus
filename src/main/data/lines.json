@@ -1,90 +1,58 @@
 [
   {
-    "lineName":"Linea1",
-    "stopListA":[
-      {
-        "stopName":"Stop1",
-        "time":"2019/04/15 08:30"
-      },
-      {
-        "stopName":"Stop2",
-        "time":"2019/04/15 08:40"
-      },
-      {
-        "stopName":"Stop3",
-        "time":"2019/04/15 08:50"
-      }
-    ],
-    "stopListR":[
-      {
-        "stopName":"Stop3",
-        "time":"2019/04/15 16:30"
-      },
-      {
-        "stopName":"Stop2",
-        "time":"2019/04/15 16:40"
-      },
-      {
-        "stopName":"Stop1",
-        "time":"2019/04/15 16:50"
-      }
-    ],
+    "lineName":"Linea Azzurra",
+    "lineAdmins": [ "admin@admin.com"],
     "rides": [
       {
-        "flagAndata":"true",
+        "flagGoing":"true",
         "rideDate":"2019/04/15",
-        "reservations": [
-        ]
-      },
-      {
-        "flagAndata":"false",
-        "rideDate": "2019/04/15",
-        "reservations": [
+        "confirmed": false,
+        "companions": [],
+        "stops": [
+          {
+            "stopName":"Stop1",
+            "time": "08:30",
+            "reservations": []
+          },
+          {
+            "stopName":"Stop2",
+            "time": "08:45",
+            "reservations": []
+          },
+          {
+            "stopName":"Stop3",
+            "time": "09:00",
+            "reservations": []
+          }
         ]
       }
     ]
   },
   {
-    "lineName":"Linea2",
-    "stopListA":[
-      {
-        "stopName":"Stop1",
-        "time":"2019/04/15 08:30"
-      },
-      {
-        "stopName":"Stop2",
-        "time":"2019/04/15 08:50"
-      },
-      {
-        "stopName":"Stop3",
-        "time":"2019/04/15 08:55"
-      }
-    ],
-    "stopListR":[
-      {
-        "stopName":"Stop3",
-        "time":"2019/04/15 16:30"
-      },
-      {
-        "stopName":"Stop2",
-        "time":"2019/04/15 16:40"
-      },
-      {
-        "stopName":"Stop1",
-        "time":"2019/04/15 16:55"
-      }
-    ],
+    "lineName":"Linea Viola",
+    "lineAdmins": [ "admin@admin.com"],
     "rides": [
       {
-        "flagAndata":"true",
+        "flagGoing":"true",
         "rideDate":"2019/04/15",
-        "reservations": [
-        ]
-      },
-      {
-        "flagAndata":"false",
-        "rideDate": "2019/04/15",
-        "reservations": [
+        "confirmed": false,
+        "companions": ["admin@admin.com"],
+        "stops": [
+          {
+            "stopName":"Stop1",
+            "time": "08:30",
+            "reservations": []
+          },
+          {
+            "stopName":"Stop2",
+            "time": "08:45",
+            "reservations": []
+          },
+          {
+            "stopName":"Stop3",
+            "time": "09:00",
+            "reservations": []
+          }
         ]
       }
     ]

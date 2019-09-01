@@ -146,7 +146,7 @@ public class UserController {
         if(count<0){
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(count,HttpStatus.OK);
+        return ok(count);
     }
 
     @GetMapping("/confirm/{randomUUID}")

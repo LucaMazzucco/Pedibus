@@ -6,8 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.index.IndexDirection;
-import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
@@ -21,27 +19,32 @@ public class Reservation {
     private String id;
 
     private String lineName;
-
     private String stopName;
-
-    private User passenger;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
+    private String child;
+    private String parent;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm")
     private Date reservationDate;
-
     //true = da stopName a scuola; false = da scuola a stopName
-    private boolean flagAndata;
-
+    private boolean flagGoing;
     private boolean isPresent;
 
-    public Reservation(@JsonProperty("lineName") String lineName, @JsonProperty("stopName") String stopName,
-                       @JsonProperty("passenger") User passenger, @JsonProperty("reservationDate") Date reservationDate,
-                       @JsonProperty("isA") boolean flagAndata, @JsonProperty("isPresent") Boolean isPresent) {
+    public Reservation(String lineName, String stopName, String child, String parent, Date reservationDate, boolean flagGoing, boolean isPresent) {
         this.lineName = lineName;
         this.stopName = stopName;
-        this.passenger = passenger;
+        this.child = child;
+        this.parent = parent;
         this.reservationDate = reservationDate;
-        this.flagAndata = flagAndata;
+        this.flagGoing = flagGoing;
         this.isPresent = isPresent;
     }
+//    public Reservation(@JsonProperty("lineName") String lineName, @JsonProperty("stopName") String stopName,
+//                       @JsonProperty("passenger") User passenger, @JsonProperty("reservationDate") Date reservationDate,
+//                       @JsonProperty("isA") boolean flagGoing, @JsonProperty("isPresent") Boolean isPresent) {
+//        this.lineName = lineName;
+//        this.stopName = stopName;
+//        this.passenger = passenger;
+//        this.reservationDate = reservationDate;
+//        this.flagGoing = flagGoing;
+//        this.isPresent = isPresent;
+//    }
 }

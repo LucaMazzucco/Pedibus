@@ -15,6 +15,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 @Document(collection = "users")
@@ -39,7 +40,8 @@ public class User implements UserDetails {
     private List<Message> messages = new ArrayList<>();
 
     private boolean isParent;
-    private List<String> childrenIds = new ArrayList<>();
+    private List<String> children = new LinkedList<>();
+    private List<String> reservations = new LinkedList<>();
 
     public User(String email, String password, boolean isEnabled) {
         this.email = email;
@@ -58,6 +60,16 @@ public class User implements UserDetails {
         this.isEnabled=isEnabled;
         this.password=password;
         this.email=email;
+    }
+
+    public User(String email, String password, String name, String surname, String registrationNumber, boolean isEnabled, boolean isParent) {
+        this.email = email;
+        this.password = password;
+        this.name = name;
+        this.surname = surname;
+        this.registrationNumber = registrationNumber;
+        this.isEnabled = isEnabled;
+        this.isParent = isParent;
     }
 
     @Override

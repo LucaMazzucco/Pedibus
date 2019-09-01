@@ -11,8 +11,7 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 @NoArgsConstructor
-@Getter
-@Setter
+@Getter @Setter
 public class PwdChangeRequest {
     @Id
     private String id;
