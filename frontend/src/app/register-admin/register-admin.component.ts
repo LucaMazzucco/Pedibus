@@ -4,6 +4,7 @@ import { AuthService } from '../services/auth.service';
 import { TitleService } from '../services/title.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import { Observable, Subscription } from 'rxjs';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-register-admin',
@@ -14,11 +15,13 @@ export class RegisterAdminComponent implements OnInit {
   registrationAdminForm: FormGroup;
   checkEmailTaken: Subscription;
   infoMessage: string = '';
+  roles: String[] = ["Amministratore", "Accompagnatore", "Genitore"];
 
   constructor(private formBuilder: FormBuilder, private authService: AuthService, private _snackBar: MatSnackBar, private titleService: TitleService) {
     this.titleService.changeTitle("Aggiungi un nuovo utente");
     this.registrationAdminForm = this.formBuilder.group({
-      email: ['', [Validators.required, Validators.email]]
+      email: ['', [Validators.required, Validators.email]],
+      role: ['', [Validators.required]]
     }, {validators: []});
   }
 
@@ -29,7 +32,7 @@ export class RegisterAdminComponent implements OnInit {
   checkEmailPresence(){
     let email = this.registrationAdminForm.controls.email.value;
     this.checkEmailTaken = this.authService.getEmailPresence(email)
-      .pipe()
+      .pipe(first())
       .subscribe(res=>{
       if(res){
         console.log(res);
@@ -48,12 +51,19 @@ export class RegisterAdminComponent implements OnInit {
             '';
   }
 
+  getRolesErrorMessage() {
+    let role = this.registrationAdminForm.controls.role;
+    return role.hasError('required') ? 'Questo campo non può essere vuoto' :
+            '';
+  }
+
   onSubmit(): void{
-    let response = this.authService.registerAdmin(this.registrationAdminForm.controls.email.value);
+    console.log(this.registrationAdminForm.controls.role.value)
+    let response = this.authService.registerAdmin(this.registrationAdminForm.controls.email.value,
+                                                  this.registrationAdminForm.controls.role.value);
 
     response.subscribe(data => {
-      if(data.valueOf()) {this.infoMessage = 'Utente aggiunto con successo'}
-      else {this.infoMessage = 'Inserimento del nuovo utente fallita'}
+      this.infoMessage = data.body['result'];
       this._snackBar.open(this.infoMessage, '', {duration: 2000});
       this.infoMessage = '';
     })

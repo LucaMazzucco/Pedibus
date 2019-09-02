@@ -6,3 +6,13 @@
   .myContainer > * {
     width: 100%;
   }
+
+  .my-radio-group {
+    display: flex;
+    flex-direction: column;
+    margin: 15px 0;
+  }
+  
+  .my-radio-button {
+    margin: 5px;
+  }

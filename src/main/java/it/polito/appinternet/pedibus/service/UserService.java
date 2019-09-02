@@ -68,7 +68,8 @@ public class UserService {
     public User userFindById(String id){ return userRepo.findById(id).get();}
 
     public ResponseEntity userLogin(String username,String password){
-        Optional<User> userOptional= userRepo.findByEmail(username);
+        List<User> users = userRepo.findAll();
+        Optional<User> userOptional = userRepo.findByEmail(username);
         if(!userOptional.isPresent()){
             return new ResponseEntity("Invalid username/password supplied",HttpStatus.NOT_FOUND);
         }
@@ -112,17 +113,22 @@ public class UserService {
     }
 
     @Transactional
-    public Boolean userRegisterByAdmin(String email){
+    public Boolean userRegisterByAdmin(String email, String role){
 
-        String token = UUID.randomUUID().toString();
-        //confirmationTokenRepository.insert(confirmationToken);
+        if(userRepo.findByEmail(email).isPresent()){
+            return false;
+        }
+
+        ConfirmationToken confirmationToken = new ConfirmationToken(email, role);
+        confirmationTokenRepository.insert(confirmationToken);
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(email);
         mailMessage.setSubject("Complete Registration!");
         mailMessage.setFrom("pedibus.polito1819@gmail.com");
         mailMessage.setText("To confirm your account, please click here : "
                 + "http://localhost:4200/register/"
-                + token);
+                + email + "/"
+                + confirmationToken.getConfirmationToken());
         emailSenderService.sendEmail(mailMessage);
 
         return true;
@@ -181,7 +187,7 @@ public class UserService {
     public int userConfirmAccount(String randomUUID){
         ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(randomUUID);
         if(token != null) {
-            Optional<User> user = userRepo.findByEmail(token.getUser().getEmail());
+            Optional<User> user = userRepo.findByEmail(token.getUser_email());
             if(user.isPresent()) {
                 user.get().setEnabled(true);
                 userRepo.save(user.get());
@@ -245,5 +251,10 @@ public class UserService {
             lineRepository.save(line);
         }
         return 0;
+    }
+
+    public boolean isTokenRight(String email, String token){
+        ConfirmationToken myToken = confirmationTokenRepository.findByConfirmationToken(token);
+        return (myToken != null && email.equals(myToken.getUser_email()));
     }
 }

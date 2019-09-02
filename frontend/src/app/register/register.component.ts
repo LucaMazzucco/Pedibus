@@ -7,6 +7,7 @@ import { group } from '@angular/animations';
 import { Observable, Subscription } from 'rxjs';
 import { first } from 'rxjs/operators';
 import { duration } from 'moment';
+import { Router } from '@angular/router';
 
 function checkPasswords(group: FormGroup){
   let pass = group.controls.password.value;
@@ -22,11 +23,13 @@ function checkPasswords(group: FormGroup){
 })
 
 export class RegisterComponent implements OnInit {
+  email: String = '';
+  token: String = '';
   registrationForm: FormGroup;
   checkEmailTaken: Subscription;
   infoMessage: string = '';
 
-  constructor( private formBuilder: FormBuilder, private authService: AuthService, private _snackBar: MatSnackBar, private titleService: TitleService) {
+  constructor( private formBuilder: FormBuilder, private authService: AuthService, private router: Router, private _snackBar: MatSnackBar, private titleService: TitleService) {
     this.titleService.changeTitle("Aggiungi un nuovo utente"); 
     this.registrationForm = this.formBuilder.group({
       firstname: ['', [Validators.required, Validators.minLength(2)]],
@@ -40,29 +43,16 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
     this.checkEmailTaken = null;
-  }
-  
-  /*checkEmailPresence(){
-    let email = this.registrationForm.controls.email.value;
-    this.checkEmailTaken = this.authService.getEmailPresence(email)
-      .pipe(first())
-      .subscribe(res=>{
-      if(res){
-        console.log(res);
-        this.registrationForm.controls['email'].setErrors({ isPresent: true });
-        
-      }
-      this.checkEmailTaken.unsubscribe();
+    let url = this.router.url;
+    this.email = url.split('/')[2]; 
+    this.token = url.split('/')[3];
+
+    this.authService.checkToken(this.email, this.token)
+    .pipe(first())
+    .subscribe(res => {
+      if(!res){ this.router.navigateByUrl('login'); }
     });
   }
-
-  getEmailErrorMessage() {
-    let email = this.registrationForm.controls.email;
-    return email.hasError('required') ? 'Questo campo non può essere vuoto' :
-          email.hasError('email') ? 'Per favore, inserisci una mail valida' :
-          email.hasError('isPresent') ? 'La mail inserita è già stata usata' :
-            '';
-  }*/
 
   getFirstnameErrorMessage() {
     let firstname = this.registrationForm.controls.firstname;
@@ -85,12 +75,13 @@ export class RegisterComponent implements OnInit {
             '';
   }
 
-  onSubmit(): void{
+  onSubmit(): void{ 
     let response = this.authService.register(this.registrationForm.controls.firstname.value, 
                               this.registrationForm.controls.lastname.value,
                               this.registrationForm.controls.registrationNumber.value,
-                              this.registrationForm.controls.email.value,
-                              this.registrationForm.controls.password.value);
+                              this.email,
+                              this.registrationForm.controls.password.value,
+                              this.token);
     response.subscribe(data => {
       this.infoMessage = data.body['result'];
       this._snackBar.open(this.infoMessage, '', {duration: 2000});

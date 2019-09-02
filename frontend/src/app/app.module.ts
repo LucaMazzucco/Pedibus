@@ -45,7 +45,7 @@ const routes: Routes = [
   },
   { path: 'login', component: LoginComponent},
   { path: 'prenotazioni', component: BookingComponent},
-  { path: 'register/:UUID', component: RegisterComponent },
+  { path: 'register/:email/:UUID', component: RegisterComponent },
   { path: 'registerAdmin', component: RegisterAdminComponent},
   { path: 'disponibilita', component: AvailabilityComponent},
   { path: 'messaggi', component: MessagesComponent},

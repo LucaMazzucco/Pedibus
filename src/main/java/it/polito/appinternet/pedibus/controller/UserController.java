@@ -186,9 +186,36 @@ public class UserController {
         return new ResponseEntity<>(userService.isUserPresent(email),HttpStatus.OK);
     }
 
-    @PostMapping("/registerAdmin/{email}")
-    public ResponseEntity<Boolean> registerAdmin(@PathVariable String email){
-        return new ResponseEntity<>(userService.userRegisterByAdmin(email), HttpStatus.OK);
+    @PostMapping("/registerAdmin")
+    public ResponseEntity registerAdmin(@RequestBody String payload){
+        JSONObject jsonInput = new JSONObject(payload);
+        JSONObject jsonOutput = new JSONObject();
+
+        if(!jsonInput.has("email") || !jsonInput.has("role")){
+            jsonOutput.put("result", "Wrong Request");
+            return ResponseEntity.badRequest().body(jsonOutput.toString());
+        }
+
+        String email = jsonInput.getString("email");
+        String role = jsonInput.getString("role");
+
+        if(userService.isUserPresent(email)){
+            jsonOutput.put("result", "User already exists!");
+            return ResponseEntity.badRequest().body(jsonOutput.toString());
+        }
+
+        if(!userService.userRegisterByAdmin(email, role)){
+            jsonOutput.put("result", "There has been some error during registration");
+            return ResponseEntity.badRequest().body(jsonOutput.toString());
+        } else {
+            jsonOutput.put("result", "The new user has been correctly registered");
+        }
+
+        return ok(jsonOutput.toString());
     }
 
+    @GetMapping("checkToken/{email}/{token}")
+    public ResponseEntity<Boolean> checkUserToken(@PathVariable String email, @PathVariable String token){
+        return new ResponseEntity<>(userService.isTokenRight(email, token), HttpStatus.OK);
+    }
 }
