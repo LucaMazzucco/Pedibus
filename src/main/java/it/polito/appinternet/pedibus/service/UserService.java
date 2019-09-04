@@ -113,13 +113,18 @@ public class UserService {
     }
 
     @Transactional
-    public Boolean userRegisterByAdmin(String email, String role){
+    public Boolean userRegisterByAdmin(String email, String role, String line){
 
         if(userRepo.findByEmail(email).isPresent()){
             return false;
         }
 
         ConfirmationToken confirmationToken = new ConfirmationToken(email, role);
+
+        if(role.equals("Amministratore")){
+            confirmationToken.setLine(line);
+        }
+
         confirmationTokenRepository.insert(confirmationToken);
         SimpleMailMessage mailMessage = new SimpleMailMessage();
         mailMessage.setTo(email);
@@ -146,7 +151,12 @@ public class UserService {
         roles.add(role);
         newUser.setRoles(roles);
         userRepo.insert(newUser);
-
+        if(role.equals("Amministratore")){
+            String line = getLineFromToken(newUser.getEmail());
+            Line updatingLine = lineRepository.findByLineName(line);
+            updatingLine.getAdmins().add(newUser.getEmail());
+            lineRepository.save(updatingLine);
+        }
 
 
         return 0;
@@ -258,9 +268,13 @@ public class UserService {
         return (myToken != null && email.equals(myToken.getEmail()));
     }
 
-    public String getRoleFromToken(String email, String token){
+    public String getRoleFromToken(String email){
         ConfirmationToken myToken = confirmationTokenRepository.findByEmail(email);
-
         return myToken.getRole();
+    }
+
+    public String getLineFromToken(String email){
+        ConfirmationToken myToken = confirmationTokenRepository.findByEmail(email);
+        return myToken.getLine();
     }
 }

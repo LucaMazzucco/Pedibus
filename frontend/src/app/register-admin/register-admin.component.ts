@@ -62,9 +62,13 @@ export class RegisterAdminComponent implements OnInit {
   }
 
   onSubmit(): void{
-    console.log(this.registrationAdminForm.controls.role.value)
+    var line = "";
+    if(this.registrationAdminForm.controls.role.value == "Amministratore"){
+      line = this.registrationAdminForm.controls.line.value.lineName;
+    }
     let response = this.authService.registerAdmin(this.registrationAdminForm.controls.email.value,
-                                                  this.registrationAdminForm.controls.role.value);
+                                                  this.registrationAdminForm.controls.role.value,
+                                                  line);
 
     response.subscribe(data => {
       this.infoMessage = data.body['result'];

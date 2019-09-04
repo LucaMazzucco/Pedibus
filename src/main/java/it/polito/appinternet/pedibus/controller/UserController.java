@@ -91,7 +91,7 @@ public class UserController {
         String password = jsonInput.getString("password");
         String email = jsonInput.getString("email");
 
-        String role = userService.getRoleFromToken(email, token);
+        String role = userService.getRoleFromToken(email);
         boolean isParent = false;
 
         if(role == null){
@@ -208,13 +208,14 @@ public class UserController {
 
         String email = jsonInput.getString("email");
         String role = jsonInput.getString("role");
+        String line = jsonInput.getString("line");
 
         if(userService.isUserPresent(email)){
             jsonOutput.put("result", "User already exists!");
             return ResponseEntity.badRequest().body(jsonOutput.toString());
         }
 
-        if(!userService.userRegisterByAdmin(email, role)){
+        if(!userService.userRegisterByAdmin(email, role, line)){
             jsonOutput.put("result", "There has been some error during registration");
             return ResponseEntity.badRequest().body(jsonOutput.toString());
         } else {

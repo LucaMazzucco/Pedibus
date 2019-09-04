@@ -84,8 +84,8 @@ export class AuthService {
     return this.http.post<UserRegistration>(REST_URL + '/register/' + token, {name, surname, registrationNumber, email, password}, {observe: 'response'})
   }
 
-  registerAdmin(email: String, role: String): Observable<HttpResponse<AdminRegistration>>{
-    return this.http.post<AdminRegistration>(REST_URL + '/registerAdmin', {email, role}, {observe: 'response'});
+  registerAdmin(email: String, role: String, line: String): Observable<HttpResponse<AdminRegistration>>{
+    return this.http.post<AdminRegistration>(REST_URL + '/registerAdmin', {email, role, line}, {observe: 'response'});
   }
 
   checkToken(email: String, token: String): Observable<Boolean>{
