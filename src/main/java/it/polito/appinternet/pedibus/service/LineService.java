@@ -470,7 +470,9 @@ public class LineService {
     }
 
     public List<Line> findNoAdminLines(){
-        return lineRepo.findByLineAdmins_Empty();
+        return lineRepo.findAll().stream()
+                .filter(l->l.getLineAdmins().isEmpty())
+                .collect(Collectors.toList());
     }
 
 
