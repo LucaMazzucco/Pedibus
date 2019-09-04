@@ -11,4 +11,5 @@ public interface LineRepository extends MongoRepository<Line, Long> {
     Line findByLineName (String line_name);
     List<Line> findByRides_Companions(String companion);
 
+    List<Line> findByLineAdmins_Empty();
 }

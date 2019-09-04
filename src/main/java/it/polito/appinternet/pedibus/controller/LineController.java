@@ -271,4 +271,14 @@ public class LineController {
             e.printStackTrace();
         }
     }
+
+    @GetMapping("/getNoAdminLines")
+    public String getNoAdminLines(){
+        List<Line> allLines = lineService.findNoAdminLines();
+        JSONArray lines = new JSONArray();
+        for(Line l:allLines){
+            lines.put(lineService.encapsulateLine(l));
+        }
+        return lines.toString();
+    }
 }

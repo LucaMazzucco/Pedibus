@@ -2,9 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { Validators, FormGroup, FormBuilder, FormControl } from '@angular/forms';
 import { AuthService } from '../services/auth.service';
 import { TitleService } from '../services/title.service';
+import { DataService} from '../services/data.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import { Observable, Subscription } from 'rxjs';
-import { first } from 'rxjs/operators';
+import { first, tap } from 'rxjs/operators';
+import { Line } from '../model/line';
 
 @Component({
   selector: 'app-register-admin',
@@ -16,12 +18,14 @@ export class RegisterAdminComponent implements OnInit {
   checkEmailTaken: Subscription;
   infoMessage: string = '';
   roles: String[] = ["Amministratore", "Accompagnatore", "Genitore"];
+  lines: Line[];
 
-  constructor(private formBuilder: FormBuilder, private authService: AuthService, private _snackBar: MatSnackBar, private titleService: TitleService) {
+  constructor(private formBuilder: FormBuilder, private dataService: DataService, private authService: AuthService, private _snackBar: MatSnackBar, private titleService: TitleService) {
     this.titleService.changeTitle("Aggiungi un nuovo utente");
     this.registrationAdminForm = this.formBuilder.group({
       email: ['', [Validators.required, Validators.email]],
-      role: ['', [Validators.required]]
+      role: ['', [Validators.required]],
+      line: ['', []]
     }, {validators: []});
   }
 
@@ -69,4 +73,14 @@ export class RegisterAdminComponent implements OnInit {
     })
   }
 
+  manageRole(role: any){
+    //let role = this.registrationAdminForm.controls.role.value;
+    if(role.value == "Amministratore"){
+      this.dataService.getNoAdminLines().subscribe(lines => {
+        this.lines = lines;
+      });
+    } else {
+      this.lines = [];
+    }
+  }
 }

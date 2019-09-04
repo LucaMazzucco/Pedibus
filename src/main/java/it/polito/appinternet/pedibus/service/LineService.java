@@ -466,6 +466,11 @@ public class LineService {
         }
 
 
+
+    }
+
+    public List<Line> findNoAdminLines(){
+        return lineRepo.findByLineAdmins_Empty();
     }
 
 

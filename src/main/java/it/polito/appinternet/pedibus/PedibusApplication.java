@@ -48,15 +48,15 @@ public class PedibusApplication {
     public void init() {
         mongoTemplate.getDb().drop();
         //Add the system-admin
-        //User u = new User("admin@admin.com", passwordEncoder.encode("admin"), true);
+        User u = new User("admin@admin.com", passwordEncoder.encode("admin"), true);
         List<Message> messages = new LinkedList<>();
         messages.add(new Message(Instant.now().getEpochSecond(), false, "Questo è il primo messaggio che ti mando"));
         messages.add(new Message(Instant.now().getEpochSecond(), false, "Questo è il secondo messaggio che ti mando"));
-        //u.setMessages(messages);
+        u.setMessages(messages);
         List<String> roles = new LinkedList<>();
         roles.add("ROLE_ADMIN");
         roles.add("ROLE_USER");
-        //u.setRoles(roles);
-        //userRepo.insert(u);
+        u.setRoles(roles);
+        userRepo.insert(u);
     }
 }
