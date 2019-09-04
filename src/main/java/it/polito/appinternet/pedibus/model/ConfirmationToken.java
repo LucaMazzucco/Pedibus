@@ -17,11 +17,11 @@ public class ConfirmationToken {
     private String id;
     private String confirmationToken;
     private Date createdDate;
-    private String user_email;
+    private String email;
     private String role;
 
     public ConfirmationToken(String email, String role) {
-        this.user_email = email;
+        this.email = email;
         this.role = role;
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());

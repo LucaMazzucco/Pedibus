@@ -81,7 +81,7 @@ export class AuthService {
   }
   
   register(name: String, surname: String, registrationNumber: String, email: String, password: String, token: String): Observable<HttpResponse<UserRegistration>>{
-    return this.http.post<UserRegistration>(REST_URL + '/register', {name, surname, registrationNumber, email, password, token}, {observe: 'response'})
+    return this.http.post<UserRegistration>(REST_URL + '/register/' + token, {name, surname, registrationNumber, email, password}, {observe: 'response'})
   }
 
   registerAdmin(email: String, role: String): Observable<HttpResponse<AdminRegistration>>{

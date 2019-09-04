@@ -13,16 +13,6 @@
             </mat-form-field>
           </div>
           <div fxLayout="row" fxLayoutAlign="center center">
-            <!--<mat-form-field  fxFlex="100">
-              <label>Scegli il ruolo da assegnare</label>
-              <mat-radio-group class="my-radio-group" formControlName="role">
-                <mat-radio-button class="my-radio-button" *ngFor="let role of roles" [value]="role">
-                  {{role}}
-                </mat-radio-button>
-              </mat-radio-group>
-              <mat-error *ngIf="registrationAdminForm.controls.role.invalid">{{getRolesErrorMessage()}}</mat-error>      
-            </mat-form-field>
-            <label>Seleziona il ruolo da assegnare</label>-->
             <mat-form-field fxFlex="100">
               <mat-select placeholder="Seleziona il ruolo da assegnare" formControlName="role" (selectionChange)="manageRole($event)" required>
                 <mat-option *ngFor="let role of roles" [value]="role">{{ role }}</mat-option>

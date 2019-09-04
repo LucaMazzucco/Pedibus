@@ -135,15 +135,15 @@ public class UserService {
     }
 
     @Transactional
-    public int userRegister(User newUser){
+    public int userRegister(User newUser, String role){
         User existingUser = userRepo.findByRegistrationNumber(newUser.getRegistrationNumber());
         if(existingUser!=null){
             return -1;
         }
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-        newUser.setEnabled(false);
+        newUser.setEnabled(true);
         List<String> roles = new LinkedList<>();
-        roles.add("ROLE_USER"); //TODO: Role deciso da chi l'ha aggiunto
+        roles.add(role);
         newUser.setRoles(roles);
         userRepo.insert(newUser);
 
@@ -187,7 +187,7 @@ public class UserService {
     public int userConfirmAccount(String randomUUID){
         ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(randomUUID);
         if(token != null) {
-            Optional<User> user = userRepo.findByEmail(token.getUser_email());
+            Optional<User> user = userRepo.findByEmail(token.getEmail());
             if(user.isPresent()) {
                 user.get().setEnabled(true);
                 userRepo.save(user.get());
@@ -255,6 +255,12 @@ public class UserService {
 
     public boolean isTokenRight(String email, String token){
         ConfirmationToken myToken = confirmationTokenRepository.findByConfirmationToken(token);
-        return (myToken != null && email.equals(myToken.getUser_email()));
+        return (myToken != null && email.equals(myToken.getEmail()));
+    }
+
+    public String getRoleFromToken(String email, String token){
+        ConfirmationToken myToken = confirmationTokenRepository.findByEmail(email);
+
+        return myToken.getRole();
     }
 }

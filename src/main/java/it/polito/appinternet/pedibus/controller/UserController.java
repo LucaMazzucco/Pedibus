@@ -70,8 +70,8 @@ public class UserController {
         return userService.userRecoverPassword(email);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<String> registerUser(@RequestBody String payload)
+    @PostMapping("/register/{token}")
+    public ResponseEntity<String> registerUser(@RequestBody String payload, @PathVariable String token)
     {
         JSONObject jsonOutput = new JSONObject();
         JSONObject jsonInput = new JSONObject(payload);
@@ -83,23 +83,33 @@ public class UserController {
             jsonOutput.put("result", "Wrong Request");
             return ResponseEntity.badRequest().body(jsonOutput.toString());
         }
-        ObjectMapper mapper = new ObjectMapper();
-        User newUser = null;
-        try {
-            newUser = mapper.readValue(payload, User.class);
-        }catch (Exception e){
-            e.printStackTrace();
+        //ObjectMapper mapper = new ObjectMapper();
+
+        String name = jsonInput.getString("name");
+        String surname = jsonInput.getString("surname");
+        String registrationNumber = jsonInput.getString("registrationNumber");
+        String password = jsonInput.getString("password");
+        String email = jsonInput.getString("email");
+
+        String role = userService.getRoleFromToken(email, token);
+        boolean isParent = false;
+
+        if(role == null){
+            return ResponseEntity.badRequest().body("No role specified");
         }
-        if(newUser == null){
-            jsonOutput.put("result", "Input Error!!");
-            return ResponseEntity.badRequest().body(jsonOutput.toString());
+
+        if(role.equals("Genitore")){
+            isParent = true;
         }
-        else if(userService.userRegister(newUser) == -1){
+
+        User newUser = new User(email, password, name, surname, registrationNumber, true, isParent);
+
+        if(userService.userRegister(newUser, role) == -1){
             jsonOutput.put("result", "User already exists!");
             return ResponseEntity.badRequest().body(jsonOutput.toString());
         }
         else{
-            jsonOutput.put("result", "You have been correctly registered! Check your email");
+            jsonOutput.put("result", "You have been correctly registered!");
         }
         return ok(jsonOutput.toString());
     }
