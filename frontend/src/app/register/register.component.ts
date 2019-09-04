@@ -50,7 +50,7 @@ export class RegisterComponent implements OnInit {
     this.authService.checkToken(this.email, this.token)
     .pipe(first())
     .subscribe(res => {
-      if(!res){ this.router.navigateByUrl('login'); }
+      if(!res){ this.router.navigateByUrl(''); }
     });
   }
 
