@@ -29,6 +29,7 @@ import javax.swing.text.html.Option;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -67,7 +68,8 @@ public class UserService {
     public User userFindById(String id){ return userRepo.findById(id).get();}
 
     public ResponseEntity userLogin(String username,String password){
-        Optional<User> userOptional= userRepo.findByEmail(username);
+        List<User> users = userRepo.findAll();
+        Optional<User> userOptional = userRepo.findByEmail(username);
         if(!userOptional.isPresent()){
             return new ResponseEntity("Invalid username/password supplied",HttpStatus.NOT_FOUND);
         }
@@ -111,27 +113,52 @@ public class UserService {
     }
 
     @Transactional
-    public int userRegister(User newUser){
+    public Boolean userRegisterByAdmin(String email, String role, String line){
+
+        if(userRepo.findByEmail(email).isPresent()){
+            return false;
+        }
+
+        ConfirmationToken confirmationToken = new ConfirmationToken(email, role);
+
+        if(role.equals("Amministratore")){
+            confirmationToken.setLine(line);
+        }
+
+        confirmationTokenRepository.insert(confirmationToken);
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        mailMessage.setTo(email);
+        mailMessage.setSubject("Complete Registration!");
+        mailMessage.setFrom("pedibus.polito1819@gmail.com");
+        mailMessage.setText("To confirm your account, please click here : "
+                + "http://localhost:4200/register/"
+                + email + "/"
+                + confirmationToken.getConfirmationToken());
+        emailSenderService.sendEmail(mailMessage);
+
+        return true;
+    }
+
+    @Transactional
+    public int userRegister(User newUser, String role){
         User existingUser = userRepo.findByRegistrationNumber(newUser.getRegistrationNumber());
         if(existingUser!=null){
             return -1;
         }
         newUser.setPassword(passwordEncoder.encode(newUser.getPassword()));
-        newUser.setEnabled(false);
+        newUser.setEnabled(true);
         List<String> roles = new LinkedList<>();
-        roles.add("ROLE_USER"); //TODO: Role deciso da chi l'ha aggiunto
+        roles.add(role);
         newUser.setRoles(roles);
         userRepo.insert(newUser);
-        ConfirmationToken confirmationToken = new ConfirmationToken(newUser);
-        confirmationTokenRepository.insert(confirmationToken);
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setTo(newUser.getEmail());
-        mailMessage.setSubject("Complete Registration!");
-        mailMessage.setFrom("pedibus.polito1819@gmail.com");
-        mailMessage.setText("To confirm your account, please click here : "
-                + "http://localhost:8080/confirm/"
-                + confirmationToken.getConfirmationToken());
-        emailSenderService.sendEmail(mailMessage);
+        if(role.equals("Amministratore")){
+            String line = getLineFromToken(newUser.getEmail());
+            Line updatingLine = lineRepository.findByLineName(line);
+            updatingLine.getAdmins().add(newUser.getEmail());
+            lineRepository.save(updatingLine);
+        }
+
+
         return 0;
     }
 
@@ -170,7 +197,7 @@ public class UserService {
     public int userConfirmAccount(String randomUUID){
         ConfirmationToken token = confirmationTokenRepository.findByConfirmationToken(randomUUID);
         if(token != null) {
-            Optional<User> user = userRepo.findByEmail(token.getUser().getEmail());
+            Optional<User> user = userRepo.findByEmail(token.getEmail());
             if(user.isPresent()) {
                 user.get().setEnabled(true);
                 userRepo.save(user.get());
@@ -234,5 +261,20 @@ public class UserService {
             lineRepository.save(line);
         }
         return 0;
+    }
+
+    public boolean isTokenRight(String email, String token){
+        ConfirmationToken myToken = confirmationTokenRepository.findByConfirmationToken(token);
+        return (myToken != null && email.equals(myToken.getEmail()));
+    }
+
+    public String getRoleFromToken(String email){
+        ConfirmationToken myToken = confirmationTokenRepository.findByEmail(email);
+        return myToken.getRole();
+    }
+
+    public String getLineFromToken(String email){
+        ConfirmationToken myToken = confirmationTokenRepository.findByEmail(email);
+        return myToken.getLine();
     }
 }

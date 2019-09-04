@@ -13,7 +13,7 @@
       </mat-menu>
       <div fxFlex="70">
         <mat-card-title>{{currentLine?.lineName}}</mat-card-title>
-        <mat-card-subtitle>{{dataSource?.date}}</mat-card-subtitle>
+        <mat-card-subtitle>{{dataSource?.date*1000 | date: 'shortDate'}}</mat-card-subtitle>
       </div>
       <mat-paginator fxFlex="20" #paginator [pageSize]="1" [length]="totalSize" [hidePageSize]="true" [pageIndex]="currentPage" (page)="pageEvent = handlePage($event)"></mat-paginator>
     </mat-card-header>
@@ -25,7 +25,7 @@
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   <mat-icon>directions_run</mat-icon>
-                    {{stop?.time}} &nbsp; &nbsp; &nbsp; {{stop.stopName}}
+                    {{stop?.time*1000 | date: 'shortTime'}} &nbsp; &nbsp; &nbsp; {{stop.stopName}}
                 </mat-panel-title>
               </mat-expansion-panel-header>
               <mat-nav-list>
@@ -79,7 +79,7 @@
               <mat-expansion-panel-header>
                 <mat-panel-title>
                   <mat-icon >directions_run</mat-icon>
-                    {{stop?.time}} &nbsp; &nbsp; &nbsp; {{stop.stopName}}
+                    {{stop?.time*1000 | date: 'shortTime'}} &nbsp; &nbsp; &nbsp; {{stop.stopName}}
                   </mat-panel-title>
                 </mat-expansion-panel-header>
               <mat-nav-list>

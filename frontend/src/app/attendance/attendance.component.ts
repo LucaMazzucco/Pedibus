@@ -113,18 +113,13 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   //   }
   //   return false;
   // }
-  private parseDate(date: any): Date {
-    let s = date.split('/');
-    return new Date(s[2], (s[1]-1), s[0], 0, 0, 0)
-  }
-
   private binarySearch(arr: Ride[], x: Date, start: number, end: number, prev: number): number {
     if (start > end) { // if no exact match found return the closest ride in the future
       return arr.length > prev+1 ? prev+1 : prev;
     }
     const mid=Math.floor((start + end)/2);
 
-    let d = this.parseDate(arr[mid].date);
+    let d = new Date(arr[mid].date)
     if (d.getDate() ===x.getDate()) { return mid; }
 
     if(d as any - (x as any)> 0) {

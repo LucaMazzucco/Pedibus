@@ -17,8 +17,7 @@ public class Ride {
     @Id
     private String id;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd")
-    private Date rideDate;
+    private long rideDate;
     private boolean flagGoing;
     private List<Stop> stops;
     private boolean confirmed;
@@ -26,7 +25,7 @@ public class Ride {
     private String officialCompanion;
 
     @JsonCreator
-    public Ride(@JsonProperty("flagGoing") boolean flagGoing, @JsonProperty("rideDate") Date rideDate) {
+    public Ride(@JsonProperty("flagGoing") boolean flagGoing, @JsonProperty("rideDate") long rideDate) {
         this.flagGoing = flagGoing;
         this.rideDate = rideDate;
     }

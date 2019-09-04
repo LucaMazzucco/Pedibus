@@ -17,10 +17,14 @@ public class ConfirmationToken {
     private String id;
     private String confirmationToken;
     private Date createdDate;
-    private User user;
+    private String email;
+    private String role;
+    String line;
 
-    public ConfirmationToken(User user) {
-        this.user = user;
+    public ConfirmationToken(String email, String role) {
+        this.email = email;
+        this.role = role;
+        this.line = line;
         Calendar cal = Calendar.getInstance();
         cal.setTime(new Date());
         cal.setTimeZone(TimeZone.getTimeZone("UTC"));

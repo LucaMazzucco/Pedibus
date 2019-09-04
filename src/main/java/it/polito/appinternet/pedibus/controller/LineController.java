@@ -13,14 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.springframework.http.ResponseEntity.ok;
-
 
 @CrossOrigin(origins = "http://localhost:4200/presenze", maxAge = 3600)
 @RestController
@@ -71,7 +66,7 @@ public class LineController {
     //Get json of a single Ride A/R (frontend format)
     @GetMapping("/getLines/{line_name}/{date}")
     public String getRideJson(@PathVariable String line_name,
-                          @PathVariable String date){
+                          @PathVariable long date){
         JSONObject returnJson = new JSONObject();
         try{
             Line line = lineService.findByLineName(line_name);
@@ -136,7 +131,7 @@ public class LineController {
         // for the same registrationNumber whatever the stop
         boolean isFlagGoing = !mainJson.getBoolean("isBack");
         boolean isPresent = userJson.getBoolean("isPresent");
-        String rideDate = mainJson.getString("rideDate");
+        long rideDate = mainJson.getLong("rideDate");
         String registrationNumber = userJson.getString("registrationNumber");
         int result = lineService.updateUserToUpdatePassengersInfo(line_name,
                 rideDate, registrationNumber, isPresent, isFlagGoing);
@@ -206,6 +201,31 @@ public class LineController {
         }
     }
 
+    @GetMapping("/getShifts/{email}")
+    public String getShifts(@PathVariable String email){
+        if(email == null){
+            return "-1";
+        }
+        List<Line> myLines = lineService.getLineShifts(email);
+        JSONArray availabilities = new JSONArray();
+        JSONObject tmp = new JSONObject();
+        myLines.forEach(l -> {
+            List<Ride> myRides = l.getRides().stream().filter(r -> !r.isConfirmed()).collect(Collectors.toList());
+            myRides.forEach(r -> {
+                r.getCompanions().forEach(c -> {
+                    tmp.put("email", c);
+                    tmp.put("lineName", l.getLineName());
+                    tmp.put("rideDate", r.getRideDate());
+                    tmp.put("confirmed", r.isConfirmed());
+                    tmp.put("flagGoing", r.isFlagGoing());
+                    availabilities.put(tmp);
+                });
+            });
+        });
+
+        return availabilities.toString();
+    }
+
     @PostMapping("/addShift")
     public ResponseEntity addShift(@RequestBody String payload){
         JSONObject mainJson = new JSONObject(payload);
@@ -270,5 +290,15 @@ public class LineController {
         } catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    @GetMapping("/getNoAdminLines")
+    public String getNoAdminLines(){
+        List<Line> allLines = lineService.findNoAdminLines();
+        JSONArray lines = new JSONArray();
+        for(Line l:allLines){
+            lines.put(lineService.encapsulateLine(l));
+        }
+        return lines.toString();
     }
 }

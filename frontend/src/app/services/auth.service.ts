@@ -19,6 +19,12 @@ interface UserRegistration {
   email: string;
   password: string;
 }
+
+interface AdminRegistration {
+  email: string;
+  role: string;
+}
+
 export const TOKEN_NAME: string = 'jwt_token';
 @Injectable({
   providedIn: 'root',
@@ -30,7 +36,7 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   login(username:string, password:string ) {
-    return this.http.post<UserLogin>(REST_URL + '/login', {username, password})
+    return this.http.post<UserLogin>(REST_URL + '/login', {username, password});
   }
   
   setSession(authResult) {
@@ -71,12 +77,18 @@ export class AuthService {
   }
 
   getEmailPresence(email: string): Observable<Boolean>{
-    // if(email === "a@a.it") return true;
-    // return false;
     return this.http.get<Boolean>(REST_URL + "/checkEmail/" + email);                            
   }
   
-  register(name: String, surname: String, registrationNumber: String, email: String, password: String): Observable<HttpResponse<UserRegistration>>{
-    return this.http.post<UserRegistration>(REST_URL + '/register', {name, surname, registrationNumber, email, password}, {observe: 'response'})
+  register(name: String, surname: String, registrationNumber: String, email: String, password: String, token: String): Observable<HttpResponse<UserRegistration>>{
+    return this.http.post<UserRegistration>(REST_URL + '/register/' + token, {name, surname, registrationNumber, email, password}, {observe: 'response'})
+  }
+
+  registerAdmin(email: String, role: String, line: String): Observable<HttpResponse<AdminRegistration>>{
+    return this.http.post<AdminRegistration>(REST_URL + '/registerAdmin', {email, role, line}, {observe: 'response'});
+  }
+
+  checkToken(email: String, token: String): Observable<Boolean>{
+    return this.http.get<Boolean>(REST_URL + '/checkToken/' + email + '/' + token);
   }
 }

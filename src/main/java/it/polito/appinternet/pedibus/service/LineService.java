@@ -1,20 +1,18 @@
 package it.polito.appinternet.pedibus.service;
 
+import it.polito.appinternet.pedibus.Utils;
 import it.polito.appinternet.pedibus.model.*;
 import it.polito.appinternet.pedibus.repository.LineRepository;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
@@ -52,13 +50,12 @@ public class LineService {
         lineRepo.save(line);
     }
 
-    public Ride getRideByLineAndDate(Line line, String date){
-        Date rDate = new Date(date);
+    public Ride getRideByLineAndDate(Line line, long rDate){
         if(line==null){
             return null;
         }
         Ride ride = line.getRides().stream()
-                .filter(r->r.getRideDate().getDate()==rDate.getDate())
+                .filter(r->Utils.myCompareUnixDate(r.getRideDate(),rDate)==0)
                 .findAny().orElse(null);
         return ride;
     }
@@ -78,14 +75,13 @@ public class LineService {
     }
 
     public JSONObject encapsulateRide(Ride r,Line line){
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
         JSONObject rideJson = new JSONObject();
         JSONArray stopsJson = new JSONArray();
         JSONArray stopsBackJson = new JSONArray();
         JSONArray notReserved = new JSONArray();
         JSONArray notReservedBack = new JSONArray();
         Ride r2 = line.getRides().stream()
-                .filter(x->x.getRideDate().getDate()==r.getRideDate().getDate())
+                .filter(x->Utils.myCompareUnixDate(x.getRideDate(),r.getRideDate())==0)
                 .filter(x->x.isFlagGoing()!=r.isFlagGoing())
                 .findFirst().orElse(null);
         if(r.isFlagGoing()){
@@ -105,7 +101,7 @@ public class LineService {
                 notReservedBack = encapsulateNotReserved(r);
             }
         }
-        rideJson.put("date",sdf.format(r.getRideDate()));
+        rideJson.put("date",r.getRideDate());
         rideJson.put("stops",stopsJson);
         rideJson.put("stopsBack",stopsBackJson);
         rideJson.put("notReserved",notReserved);
@@ -130,11 +126,10 @@ public class LineService {
 
     private JSONArray encapsulateStops(Ride ride){
         JSONArray stopsJson = new JSONArray();
-        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         ride.getStops().forEach(s->{
             JSONObject stopJson = new JSONObject();
             stopJson.put("stopName",s.getStopName());
-            stopJson.put("time",sdf.format(s.getTime()));
+            stopJson.put("time",s.getTime());
             JSONArray children = new JSONArray();
             s.getReservations().stream()
                     .map(r->reservationService.findById(r))
@@ -153,7 +148,6 @@ public class LineService {
             if(line==null){
                 return -1;
             }
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
             List<Ride> rides = line.getRides();
             JSONObject lineJson = new JSONObject(payload).getJSONObject("line");
             JSONArray ridesJson = lineJson.getJSONArray("rides");
@@ -161,12 +155,12 @@ public class LineService {
             List<Reservation> reservationsToInsert = new LinkedList<>();
             for(int i=0; i<ridesJson.length();i++){
                 JSONObject rideJson = ridesJson.getJSONObject(i);
-                Date date = sdf.parse(rideJson.getString("date"));
+                long date = rideJson.getLong("date");
                 Ride rideA = rides.stream()
-                        .filter(r->r.getRideDate().getDate()==(date.getDate()))
+                        .filter(r->Utils.myCompareUnixDate(r.getRideDate(),date)==0)
                         .filter(Ride::isFlagGoing).findAny().orElse(null);
                 Ride rideR = rides.stream()
-                        .filter(r->r.getRideDate().getDate()==(date.getDate()))
+                        .filter(r->Utils.myCompareUnixDate(r.getRideDate(),date)==0)
                         .filter(r-> !r.isFlagGoing()).findAny().orElse(null);
                 decapsulateRideToUpdatePassengersInfo(line_name,rideJson.getJSONArray("stops"),
                         rideA, reservationsToInsert, reservationsToSave);
@@ -177,7 +171,7 @@ public class LineService {
             reservationsToInsert.forEach(reservation->{
                 String resId = reservationService.insertReservation(reservation);
                 Ride ride = line.getRides().stream()
-                        .filter(r->r.getRideDate().getDate()==reservation.getReservationDate().getDate())
+                        .filter(r->Utils.myCompareUnixDate(r.getRideDate(),reservation.getReservationDate())==0)
                         .filter(r->r.isFlagGoing()==reservation.isFlagGoing())
                         .findAny().orElse(null);
                 Stop stop = ride.getStops().stream().filter(s->s.getStopName().equals(reservation.getStopName()))
@@ -195,9 +189,6 @@ public class LineService {
         } catch (NullPointerException e){
             e.printStackTrace();
             return -2;
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return -3;
         }
         return 0;
     }
@@ -205,18 +196,17 @@ public class LineService {
     @Transactional
     public int updateRideToUpdatePassengersInfo(String line_name, String payload){
         try{
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
             Line line = findByLineName(line_name);
             List<Reservation> reservationsToSave = new LinkedList<>();
             List<Reservation> reservationsToInsert = new LinkedList<>();
             JSONObject rideJson = new JSONObject(payload).getJSONObject("ride");
-            Date date = sdf.parse(rideJson.getString("date"));
+            long date = rideJson.getLong("date");
             Ride rideA = line.getRides().stream()
-                    .filter(r->r.getRideDate().getDate()==(date.getDate()))
+                    .filter(r->Utils.myCompareUnixDate(r.getRideDate(),date)==0)
                     .filter(r->r.isFlagGoing()==true)
                     .findAny().orElse(null);
             Ride rideR = line.getRides().stream()
-                    .filter(r->r.getRideDate().getDate()==(date.getDate()))
+                    .filter(r->Utils.myCompareUnixDate(r.getRideDate(),date)==0)
                     .filter(r->r.isFlagGoing()==false)
                     .findAny().orElse(null);
             decapsulateRideToUpdatePassengersInfo(line_name,rideJson.getJSONArray("stops"),
@@ -241,7 +231,7 @@ public class LineService {
                 }
             });
             lineRepo.save(line);
-        } catch (JSONException | ParseException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
             return -1;
         } catch (NullPointerException e){
@@ -256,7 +246,9 @@ public class LineService {
         try{
             //TODO: Sostituire con una query più complessa, non avevo voglia di farlo per colpa delle date
             Line line = findByLineName(availability.getLineName());
-            Ride ride = line.getRides().stream().filter(r -> r.getRideDate().equals(availability.getRideDate())).findAny().orElseThrow(NullPointerException::new);
+            Ride ride = line.getRides().stream()
+                    .filter(r->Utils.myCompareUnixDate(r.getRideDate(),availability.getRideDate())==0)
+                    .findAny().orElseThrow(NullPointerException::new);
             List<String> companions = ride.getCompanions();
             companions.add(availability.getEmail());
             ride.setCompanions(companions);
@@ -274,21 +266,19 @@ public class LineService {
     public int addNewShift(Shift shift, boolean confirmed){
         try {
             Line line = findByLineName(shift.getLineName());
-            Ride ride = line.getRides().stream().filter(r -> r.getRideDate().equals(shift.getRideDate())).findAny().orElseThrow(NullPointerException::new);
+            Ride ride = line.getRides().stream()
+                    .filter(r -> Utils.myCompareUnixDate(r.getRideDate(),shift.getRideDate())==0)
+                    .findAny().orElseThrow(NullPointerException::new);
             List<String> companions = ride.getCompanions();
-
             String user = shift.getEmail();
-
             if(ride.getOfficialCompanion().equals(user) && ride.isConfirmed()){
                 ride.setConfirmed(false);
                 ride.setOfficialCompanion("");
                 return -2;
             }
-
             if(ride.isConfirmed()){
                 return -3;
             }
-
             companions.add(shift.getEmail());
             ride.setOfficialCompanion(user);
             ride.setConfirmed(confirmed);
@@ -328,15 +318,11 @@ public class LineService {
 
 
     @Transactional
-    public int updateUserToUpdatePassengersInfo(String line_name, String dateString, String registrationNumber,
+    public int updateUserToUpdatePassengersInfo(String line_name, long dateUnix, String registrationNumber,
                                                 boolean isPresent, boolean isFlagGoing) {
         try {
-            Line line = findByLineName(line_name);
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
-            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date date = sdf.parse(dateString);
             Child child = childService.findByRegistrationNumber(registrationNumber);
-            List<Reservation> reservations = reservationService.findByLineNameAndReservationDateAndFlagAndata(line_name, date, isFlagGoing);
+            List<Reservation> reservations = reservationService.findByLineNameAndReservationDateAndFlagGoing(line_name, dateUnix, isFlagGoing);
             Reservation reservation = reservations.stream()
                     .filter(r->r.getChild().equals(child.getId()))
                     .findAny().orElse(null);
@@ -350,9 +336,6 @@ public class LineService {
         } catch (NullPointerException e){
             e.printStackTrace();
             return -2;
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return -3;
         }
         return 0;
     }
@@ -426,7 +409,9 @@ public class LineService {
         try{
             Line line = findByLineName(av.getLineName());
             Ride ride = line.getRides().stream().filter(r -> {
-                if(r.getRideDate().equals(av.getRideDate()) && r.getCompanions().contains(av.getEmail()) && r.isFlagGoing() == av.getFlagGoing()){
+                if(Utils.myCompareUnixDate(r.getRideDate(),av.getRideDate())==0
+                        && r.getCompanions().contains(av.getEmail())
+                        && r.isFlagGoing() == av.getFlagGoing()){
                     return true;
                 }
                 else{
@@ -448,24 +433,24 @@ public class LineService {
         if(!mainJson.has("email") || !mainJson.has("lineName") || !mainJson.has("rideDate") || !mainJson.has("flagGoing") || !mainJson.has("confirmed")){
             return null;
         }
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
-            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date date = sdf.parse(mainJson.getString("rideDate"));
-            Shift shift = new Shift(mainJson.getString("email"),
-                    mainJson.getString("lineName"),
-                    date,
-                    mainJson.getBoolean("flagGoing"),
-                    mainJson.getBoolean("confirmed")
-            );
-            return shift;
-        }
-        catch (ParseException pe){
-            pe.getErrorOffset();
-            return null;
-        }
+        long rideDate = mainJson.getLong("rideDate");
+        Shift shift = new Shift(mainJson.getString("email"),
+                mainJson.getString("lineName"),
+                rideDate,
+                mainJson.getBoolean("flagGoing"),
+                mainJson.getBoolean("confirmed")
+        );
+        return shift;
+    }
 
+    public List<Line> findNoAdminLines(){
+        return lineRepo.findAll().stream()
+                .filter(l->l.getLineAdmins().isEmpty())
+                .collect(Collectors.toList());
+    }
 
+    public List<Line> getLineShifts(String email){
+        return lineRepo.findByLineAdmins(email);
     }
 
 
