@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -230,7 +231,7 @@ public class LineService {
                 }
             });
             lineRepo.save(line);
-        } catch (JSONException | ParseException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
             return -1;
         } catch (NullPointerException e){
@@ -432,25 +433,14 @@ public class LineService {
         if(!mainJson.has("email") || !mainJson.has("lineName") || !mainJson.has("rideDate") || !mainJson.has("flagGoing") || !mainJson.has("confirmed")){
             return null;
         }
-        try {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
-            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date date = sdf.parse(mainJson.getString("rideDate"));
-            Shift shift = new Shift(mainJson.getString("email"),
-                    mainJson.getString("lineName"),
-                    date,
-                    mainJson.getBoolean("flagGoing"),
-                    mainJson.getBoolean("confirmed")
-            );
-            return shift;
-        }
-        catch (ParseException pe){
-            pe.getErrorOffset();
-            return null;
-        }
-
-
-
+        long rideDate = mainJson.getLong("rideDate");
+        Shift shift = new Shift(mainJson.getString("email"),
+                mainJson.getString("lineName"),
+                rideDate,
+                mainJson.getBoolean("flagGoing"),
+                mainJson.getBoolean("confirmed")
+        );
+        return shift;
     }
 
     public List<Line> findNoAdminLines(){
