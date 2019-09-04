@@ -7,14 +7,14 @@ public class Utils {
 
 
     public static int myCompareUnixDate(long longA, long longB){
-        Date a = new Date(longA);
-        Date b = new Date(longB);
+        Date a = new Date(longA*1000);
+        Date b = new Date(longB*1000);
         return myCompareDate(a,b);
     }
 
     public static int myCompareUnixTime(long longA, long longB){
-        Date a = new Date(longA);
-        Date b = new Date(longB);
+        Date a = new Date(longA*1000);
+        Date b = new Date(longB*1000);
         return myCompareTime(a,b);
     }
 
