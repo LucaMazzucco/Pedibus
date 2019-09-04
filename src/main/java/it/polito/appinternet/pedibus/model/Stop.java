@@ -13,12 +13,11 @@ import java.util.List;
 @Getter @Setter
 public class Stop {
     private String stopName;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm")
-    private Date time;
+    private long time;
     private List<String> reservations = new LinkedList<>();
 
     @JsonCreator
-    public Stop(@JsonProperty("stopName") String stopName, @JsonProperty("time") Date time) {
+    public Stop(@JsonProperty("stopName") String stopName, @JsonProperty("time") long time) {
         this.time = time;
         this.stopName = stopName;
     }

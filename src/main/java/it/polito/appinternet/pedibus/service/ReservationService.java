@@ -1,21 +1,14 @@
 package it.polito.appinternet.pedibus.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import it.polito.appinternet.pedibus.Utils;
 import it.polito.appinternet.pedibus.model.*;
 import it.polito.appinternet.pedibus.repository.ReservationRepository;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.List;
 
 @Service
 public class ReservationService {
@@ -46,39 +39,23 @@ public class ReservationService {
         reservationRepo.save(reservation);
     }
 
-    public Reservation findByDateAndLineAndId(String line_name, String date, String reservation_id){
-        try {
-            SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date tmp_date = format.parse(date);
-            Reservation reservation = reservationRepo.findByIdAndLineNameAndReservationDate(reservation_id,line_name,tmp_date);
-            if(reservation!=null){
-                return reservation;
-            }
-            else{
-                return null;
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
+    public Reservation findByDateAndLineAndId(String line_name, long date, String reservation_id){
+        Reservation reservation = reservationRepo.findByIdAndLineNameAndReservationDate(reservation_id,line_name,date);
+        if(reservation!=null){
+            return reservation;
         }
-        return null;
+        else{
+            return null;
+        }
+
     }
 
     @SuppressWarnings("Duplicates")
     @Transactional
-    public Long addReservation(String line_name, String date,
+    public Long addReservation(String line_name, long date,
                                String registrationNumber, String stopName,
                                boolean flagGoing, boolean isPresent){
         // To Test use addReservation.json
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        format.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Date tmp_date;
-        try{
-            tmp_date = format.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return new Long(-1);
-        }
         Line l = lineService.findByLineName(line_name);
         Child child = childService.findByRegistrationNumber(registrationNumber);
         if(child==null){
@@ -86,19 +63,19 @@ public class ReservationService {
         }
         User parent = userService.userFindById(child.getParentId());
         Stop s;
-        if(reservationRepo.findByLineNameAndReservationDateAndFlagGoingAndChild(line_name, tmp_date, flagGoing, child.getId())!=null){
+        if(reservationRepo.findByLineNameAndReservationDateAndFlagGoingAndChild(line_name, date, flagGoing, child.getId())!=null){
             return new Long(-3);
         }
         if(flagGoing){
             s = l.getRides().stream().filter(r->r.isFlagGoing())
-                    .filter(r->r.getRideDate().getDate()==tmp_date.getDate())
+                    .filter(r-> Utils.myCompareUnixDate(r.getRideDate(),date)==0)
                     .flatMap(r->r.getStops().stream())
                     .filter(x->x.getStopName().equals(stopName))
                     .findAny().orElse(null);
         }
         else{
             s = l.getRides().stream().filter(r->!r.isFlagGoing())
-                    .filter(r->r.getRideDate().getDate()==tmp_date.getDate())
+                    .filter(r-> Utils.myCompareUnixDate(r.getRideDate(),date)==0)
                     .flatMap(r->r.getStops().stream())
                     .filter(x->x.getStopName().equals(stopName))
                     .findAny().orElse(null);
@@ -106,7 +83,7 @@ public class ReservationService {
         if(s==null || parent==null || l==null){
             return new Long(-4);
         }
-        Reservation r = new Reservation(line_name, stopName, child.getId(), child.getParentId(), tmp_date, flagGoing, isPresent);
+        Reservation r = new Reservation(line_name, stopName, child.getId(), child.getParentId(), date, flagGoing, isPresent);
         r = reservationRepo.insert(r); //insert crea un nuovo id
         s.getReservations().add(r.getId());
         parent.getReservations().add(r.getId());
@@ -117,16 +94,7 @@ public class ReservationService {
 
     @SuppressWarnings("Duplicates")
     @Transactional
-    public Long updateReservation(String line_name, String date, String reservation_id, Reservation newRes){
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        format.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Date d;
-        try{
-            d = format.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return new Long(-1);
-        }
+    public Long updateReservation(String line_name, long date, String reservation_id, Reservation newRes){
         Reservation r = reservationRepo.findById(reservation_id);
         Line line = lineService.findByLineName(line_name);
         if (r == null || line == null || newRes == null) {
@@ -140,7 +108,7 @@ public class ReservationService {
         }
         boolean flag = newRes.isFlagGoing();
         Stop stop = line.getRides().stream()
-                .filter(ride->ride.getRideDate().getDate()==d.getDate())
+                .filter(ride -> Utils.myCompareUnixDate(ride.getRideDate(),date)==0)
                 .filter(ride->ride.isFlagGoing()==flag)
                 .flatMap(ride->ride.getStops().stream())
                 .filter(s->s.getStopName().equals(r.getStopName()))
@@ -155,21 +123,13 @@ public class ReservationService {
 
     @SuppressWarnings("Duplicates")
     @Transactional
-    public Long deleteReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable String reservation_id){
+    public Long deleteReservation(@PathVariable String line_name, @PathVariable long date, @PathVariable String reservation_id){
         Reservation reservation = reservationRepo.findById(reservation_id);
         if (reservation == null){
             return new Long(-1);
         }
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd");
-        format.setTimeZone(TimeZone.getTimeZone("UTC"));
-        Date d;
-        try{
-            d = format.parse(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return new Long(-2);
-        }
-        if(!reservation.getLineName().equals(line_name) || !reservation.getReservationDate().equals(d)){
+        if(!reservation.getLineName().equals(line_name)
+                || Utils.myCompareUnixDate(reservation.getReservationDate(),date)!=0){
             return new Long(-3);
         }
         Line line = lineService.findByLineName(reservation.getLineName());
@@ -177,7 +137,7 @@ public class ReservationService {
             return new Long(-4);
         }
         Stop stop = line.getRides().stream()
-                .filter(ride->ride.getRideDate().getDate()==d.getDate())
+                .filter(ride -> Utils.myCompareUnixDate(ride.getRideDate(),date)==0)
                 .filter(ride->ride.isFlagGoing()==reservation.isFlagGoing())
                 .flatMap(ride->ride.getStops().stream())
                 .filter(s->s.getStopName().equals(reservation.getStopName()))
@@ -194,7 +154,7 @@ public class ReservationService {
         return new Long(0);
     }
 
-    public List<Reservation> findByLineNameAndReservationDateAndFlagAndata(String line_name, Date date, boolean isFlagGoing) {
+    public List<Reservation> findByLineNameAndReservationDateAndFlagGoing(String line_name, long date, boolean isFlagGoing) {
         return reservationRepo.findByLineNameAndReservationDateAndFlagGoing(line_name,date,isFlagGoing);
     }
 

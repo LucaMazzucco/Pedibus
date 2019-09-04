@@ -13,14 +13,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.springframework.http.ResponseEntity.ok;
-
 
 @CrossOrigin(origins = "http://localhost:4200/presenze", maxAge = 3600)
 @RestController
@@ -71,7 +66,7 @@ public class LineController {
     //Get json of a single Ride A/R (frontend format)
     @GetMapping("/getLines/{line_name}/{date}")
     public String getRideJson(@PathVariable String line_name,
-                          @PathVariable String date){
+                          @PathVariable long date){
         JSONObject returnJson = new JSONObject();
         try{
             Line line = lineService.findByLineName(line_name);
@@ -136,7 +131,7 @@ public class LineController {
         // for the same registrationNumber whatever the stop
         boolean isFlagGoing = !mainJson.getBoolean("isBack");
         boolean isPresent = userJson.getBoolean("isPresent");
-        String rideDate = mainJson.getString("rideDate");
+        long rideDate = mainJson.getLong("rideDate");
         String registrationNumber = userJson.getString("registrationNumber");
         int result = lineService.updateUserToUpdatePassengersInfo(line_name,
                 rideDate, registrationNumber, isPresent, isFlagGoing);

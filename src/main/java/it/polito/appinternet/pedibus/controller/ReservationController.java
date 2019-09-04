@@ -54,7 +54,7 @@ public class ReservationController {
 //        return "Reservation inserted correctly";
 //    }
     @GetMapping("reservations/{line_name}/{date}/{reservation_id}")
-    public ResponseEntity<String> findByDateAndLineAndId(@PathVariable String line_name, @PathVariable String date, @PathVariable String reservation_id){
+    public ResponseEntity<String> findByDateAndLineAndId(@PathVariable String line_name, @PathVariable long date, @PathVariable String reservation_id){
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             Reservation reservation = reservationService.findByDateAndLineAndId(line_name, date, reservation_id);
@@ -77,7 +77,7 @@ public class ReservationController {
 
     @SuppressWarnings("Duplicates")
     @PostMapping("/reservations/{line_name}/{date}")
-    public ResponseEntity addReservation(@PathVariable String line_name, @PathVariable String date, @RequestBody String payload){
+    public ResponseEntity addReservation(@PathVariable String line_name, @PathVariable long date, @RequestBody String payload){
         JSONObject main_json = new JSONObject(payload);
         if(!main_json.has("flagGoing") ||
             !main_json.has("stopName") ||
@@ -111,7 +111,7 @@ public class ReservationController {
     @SuppressWarnings("Duplicates")
     @PutMapping("/reservations/{line_name}/{date}/{reservation_id}")
     @Transactional
-    public ResponseEntity updateReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable String reservation_id, @RequestBody String payload){
+    public ResponseEntity updateReservation(@PathVariable String line_name, @PathVariable long date, @PathVariable String reservation_id, @RequestBody String payload){
         Reservation newRes = null;
         ObjectMapper mapper = new ObjectMapper();
         try {
@@ -130,7 +130,7 @@ public class ReservationController {
 
     @SuppressWarnings("Duplicates")
     @DeleteMapping("/reservations/{line_name}/{date}/{reservation_id}")
-    public ResponseEntity deleteReservation(@PathVariable String line_name, @PathVariable String date, @PathVariable String reservation_id){
+    public ResponseEntity deleteReservation(@PathVariable String line_name, @PathVariable long date, @PathVariable String reservation_id){
         if(reservationService.deleteReservation(line_name,date,reservation_id)<0){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }

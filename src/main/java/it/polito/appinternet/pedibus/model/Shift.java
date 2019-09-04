@@ -14,7 +14,7 @@ import java.util.Date;
 public class Shift {
     private String email;
     private String lineName;
-    private Date rideDate;
+    private long rideDate;
     private Boolean flagGoing;
     private Boolean confirmed;
 

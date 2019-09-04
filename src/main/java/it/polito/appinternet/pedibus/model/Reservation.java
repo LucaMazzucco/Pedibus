@@ -22,13 +22,12 @@ public class Reservation {
     private String stopName;
     private String child;
     private String parent;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy/MM/dd HH:mm")
-    private Date reservationDate;
+    private long reservationDate;
     //true = da stopName a scuola; false = da scuola a stopName
     private boolean flagGoing;
     private boolean isPresent;
 
-    public Reservation(String lineName, String stopName, String child, String parent, Date reservationDate, boolean flagGoing, boolean isPresent) {
+    public Reservation(String lineName, String stopName, String child, String parent, long reservationDate, boolean flagGoing, boolean isPresent) {
         this.lineName = lineName;
         this.stopName = stopName;
         this.child = child;
