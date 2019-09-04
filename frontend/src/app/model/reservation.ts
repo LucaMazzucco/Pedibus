@@ -3,13 +3,13 @@ import {Stop} from "./stop";
 export class Reservation {
 
     linename: string;
-    date: Date;
+    date: number;
     stopsA: Stop[];
     selectedA: Stop;
     stopsR: Stop[];
     selectedR: Stop;
 
-    constructor(linename: string, date: Date, stopsA: Stop[], stopsR: Stop[], selectedA: Stop, selectedR: Stop) {
+    constructor(linename: string, date: number, stopsA: Stop[], stopsR: Stop[], selectedA: Stop, selectedR: Stop) {
         this.linename = linename;
         this.date = date;
         this.stopsA = stopsA;

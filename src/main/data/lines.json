@@ -5,23 +5,23 @@
     "rides": [
       {
         "flagGoing":"true",
-        "rideDate":"2019/04/15",
+        "rideDate":"1567603642",
         "confirmed": false,
         "companions": [],
         "stops": [
           {
             "stopName":"Stop1",
-            "time": "08:30",
+            "time": "1567603642",
             "reservations": []
           },
           {
             "stopName":"Stop2",
-            "time": "08:45",
+            "time": "1567603742",
             "reservations": []
           },
           {
             "stopName":"Stop3",
-            "time": "09:00",
+            "time": "1567603842",
             "reservations": []
           }
         ]
@@ -34,23 +34,23 @@
     "rides": [
       {
         "flagGoing":"true",
-        "rideDate":"2019/04/15",
+        "rideDate":"1573547400",
         "confirmed": false,
         "companions": ["admin@admin.com"],
         "stops": [
           {
             "stopName":"Stop1",
-            "time": "08:30",
+            "time": "1573547400",
             "reservations": []
           },
           {
             "stopName":"Stop2",
-            "time": "08:45",
+            "time": "1573549200",
             "reservations": []
           },
           {
             "stopName":"Stop3",
-            "time": "09:00",
+            "time": "1573550000",
             "reservations": []
           }
         ]
