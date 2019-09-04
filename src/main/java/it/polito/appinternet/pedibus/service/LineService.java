@@ -230,7 +230,7 @@ public class LineService {
                 }
             });
             lineRepo.save(line);
-        } catch (JSONException e) {
+        } catch (JSONException | ParseException e) {
             e.printStackTrace();
             return -1;
         } catch (NullPointerException e){
@@ -432,14 +432,31 @@ public class LineService {
         if(!mainJson.has("email") || !mainJson.has("lineName") || !mainJson.has("rideDate") || !mainJson.has("flagGoing") || !mainJson.has("confirmed")){
             return null;
         }
-        long date = mainJson.getLong("rideDate");
-        Shift shift = new Shift(mainJson.getString("email"),
-                mainJson.getString("lineName"),
-                date,
-                mainJson.getBoolean("flagGoing"),
-                mainJson.getBoolean("confirmed")
-        );
-        return shift;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MMM/yyyy");
+            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            Date date = sdf.parse(mainJson.getString("rideDate"));
+            Shift shift = new Shift(mainJson.getString("email"),
+                    mainJson.getString("lineName"),
+                    date,
+                    mainJson.getBoolean("flagGoing"),
+                    mainJson.getBoolean("confirmed")
+            );
+            return shift;
+        }
+        catch (ParseException pe){
+            pe.getErrorOffset();
+            return null;
+        }
+
+
+
+    }
+
+    public List<Line> findNoAdminLines(){
+        return lineRepo.findAll().stream()
+                .filter(l->l.getLineAdmins().isEmpty())
+                .collect(Collectors.toList());
     }
 
 

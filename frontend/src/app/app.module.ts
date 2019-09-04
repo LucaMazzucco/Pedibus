@@ -33,6 +33,7 @@ import { MessagesComponent } from './messages/messages.component';
 import { AvailabilityComponent } from './availability/availability.component';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatRadioModule} from '@angular/material/radio';
+import { RegisterAdminComponent } from './register-admin/register-admin.component';
 
 
 //import { AdministrationComponent } from './administration/administration.component';
@@ -42,12 +43,10 @@ const routes: Routes = [
     component: AttendanceComponent,
     canActivate:[AuthGuard]
   },
-  { path: 'login',
-    component: LoginComponent},
-  { path: 'prenotazioni',
-    component: BookingComponent
-  },
-  { path: 'register', component: RegisterComponent},
+  { path: 'login', component: LoginComponent},
+  { path: 'prenotazioni', component: BookingComponent},
+  { path: 'register/:email/:UUID', component: RegisterComponent },
+  { path: 'registerAdmin', component: RegisterAdminComponent},
   { path: 'disponibilita', component: AvailabilityComponent},
   { path: 'messaggi', component: MessagesComponent},
   { path: '', component: LoginComponent },
@@ -62,7 +61,8 @@ const routes: Routes = [
     RegisterComponent,
     BookingComponent,
     MessagesComponent,
-    AvailabilityComponent
+    AvailabilityComponent,
+    RegisterAdminComponent
   ],
   imports: [
     BrowserModule,

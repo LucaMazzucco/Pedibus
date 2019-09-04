@@ -30,7 +30,7 @@
   },
   {
     "lineName":"Linea Viola",
-    "lineAdmins": [ "admin@admin.com"],
+    "lineAdmins": [],
     "rides": [
       {
         "flagGoing":"true",

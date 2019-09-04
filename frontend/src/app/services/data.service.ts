@@ -61,5 +61,8 @@ export class DataService {
     return this.http.post<Availability>(REST_URL + '/deleteAvailability', av);
   }
 
+  getNoAdminLines(): Observable<Line[]>{
+    return this.http.get<Line[]>(REST_URL + "/getNoAdminLines");
+  }
 
 }
