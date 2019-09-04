@@ -449,6 +449,10 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    public List<Line> getLineShifts(String email){
+        return lineRepo.findByLineAdmins(email);
+    }
+
 
 
 }

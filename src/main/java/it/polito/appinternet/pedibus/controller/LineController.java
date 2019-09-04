@@ -201,6 +201,31 @@ public class LineController {
         }
     }
 
+    @GetMapping("/getShifts/{email}")
+    public String getShifts(@PathVariable String email){
+        if(email == null){
+            return "-1";
+        }
+        List<Line> myLines = lineService.getLineShifts(email);
+        JSONArray availabilities = new JSONArray();
+        JSONObject tmp = new JSONObject();
+        myLines.forEach(l -> {
+            List<Ride> myRides = l.getRides().stream().filter(r -> !r.isConfirmed()).collect(Collectors.toList());
+            myRides.forEach(r -> {
+                r.getCompanions().forEach(c -> {
+                    tmp.put("email", c);
+                    tmp.put("lineName", l.getLineName());
+                    tmp.put("rideDate", r.getRideDate());
+                    tmp.put("confirmed", r.isConfirmed());
+                    tmp.put("flagGoing", r.isFlagGoing());
+                    availabilities.put(tmp);
+                });
+            });
+        });
+
+        return availabilities.toString();
+    }
+
     @PostMapping("/addShift")
     public ResponseEntity addShift(@RequestBody String payload){
         JSONObject mainJson = new JSONObject(payload);

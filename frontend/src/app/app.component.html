@@ -19,6 +19,7 @@
           <a mat-list-item routerLink="/presenze" routerLinkActive="active" [hidden]="!isLogged()">Presenze</a>
           <a mat-list-item routerLink="/prenotazioni" routerLinkActive="active" [hidden]="!isLogged()">Prenotazioni</a>
             <a mat-list-item routerLink="/disponibilita" routerLinkActive="active" [hidden]="!isLogged()">Disponibilità</a>
+            <a mat-list-item routerLink="/turni" routerLinkActive="active" [hidden]="!isLogged()">Gestione Turni</a>
           <a mat-list-item routerLink="/gestione" routerLinkActive="active" [hidden]="!isLogged()">Gestione</a>
           <a mat-list-item (click)="logout()" [hidden]="!isLogged()">Logout</a>
           </mat-nav-list>
