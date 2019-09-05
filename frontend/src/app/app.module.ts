@@ -35,9 +35,7 @@ import {MatStepperModule} from '@angular/material/stepper';
 import {MatRadioModule} from '@angular/material/radio';
 import { ShiftComponent } from './shift/shift.component';
 import { RegisterAdminComponent } from './register-admin/register-admin.component';
-
-
-//import { AdministrationComponent } from './administration/administration.component';
+import { RoleAdministrationComponent } from './role-administration/role-administration.component';
 
 const routes: Routes = [
   { path: 'presenze',
@@ -49,6 +47,7 @@ const routes: Routes = [
   { path: 'register/:email/:UUID', component: RegisterComponent },
   { path: 'registerAdmin', component: RegisterAdminComponent},
   { path: 'disponibilita', component: AvailabilityComponent},
+  { path: 'rolesManagement', component: RoleAdministrationComponent}
   { path: 'turni', component: ShiftComponent},
   { path: 'messaggi', component: MessagesComponent},
   { path: '', component: LoginComponent },
@@ -65,7 +64,8 @@ const routes: Routes = [
     MessagesComponent,
     AvailabilityComponent,
     RegisterAdminComponent,
-      ShiftComponent
+    ShiftComponent,
+    RoleAdministrationComponent
   ],
   imports: [
     BrowserModule,
