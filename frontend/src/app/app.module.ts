@@ -47,7 +47,7 @@ const routes: Routes = [
   { path: 'register/:email/:UUID', component: RegisterComponent },
   { path: 'registerAdmin', component: RegisterAdminComponent},
   { path: 'disponibilita', component: AvailabilityComponent},
-  { path: 'rolesManagement', component: RoleAdministrationComponent}
+  { path: 'rolesManagement', component: RoleAdministrationComponent},
   { path: 'turni', component: ShiftComponent},
   { path: 'messaggi', component: MessagesComponent},
   { path: '', component: LoginComponent },
