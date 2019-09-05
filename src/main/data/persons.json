@@ -21,6 +21,8 @@
     "registrationNumber": "lrt",
     "email": "a@a.com",
     "password": "12_zwRHIPKA",
-    "isEnabled": "true"
+    "isEnabled": "true",
+    "roles": ["Amministratore"],
+    "adminLines": ["Linea Viola"]
   }
 ]

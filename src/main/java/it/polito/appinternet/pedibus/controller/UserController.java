@@ -180,6 +180,22 @@ public class UserController {
         return new JSONArray(usernames).toString();
     }
 
+    @GetMapping("/getUsersRoles")
+    public ResponseEntity getUsersRoles(){
+        JSONObject jsonOutput = new JSONObject();
+
+        List<User> users = userService.getUsers();
+        users.forEach(user -> {
+            if(user.getRoles().contains("Amministratore") || user.getRoles().contains("Accompagnatore")){
+                jsonOutput.put("role", user.getRoles());
+            }
+            jsonOutput.put("email", user.getEmail());
+            jsonOutput.put("line", user.getAdminLines());
+        });
+
+        return ok(jsonOutput.toString());
+    }
+
     @PutMapping("/users/{user_id}")
     public void enableUserAdmin(@PathVariable String user_id, @RequestBody String payload, ServletRequest req){
         JSONObject jsonInput = new JSONObject(payload);

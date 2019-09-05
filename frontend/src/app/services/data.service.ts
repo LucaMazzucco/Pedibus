@@ -3,6 +3,7 @@ import { Line } from '../model/line';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { Ride } from '../model/ride';
+import { User } from '../model/user';
 import {catchError, first} from 'rxjs/operators';
 import { Person } from '../model/person';
 import { Reservation } from "../model/reservation";
@@ -78,4 +79,7 @@ export class DataService {
     return this.http.post<Shift>(REST_URL + '/deleteShift', sh);
   }
 
+  getRoles(): Observable<User[]>{
+    return this.http.get<User[]>(REST_URL + '/getUsersRoles');
+  }
 }
