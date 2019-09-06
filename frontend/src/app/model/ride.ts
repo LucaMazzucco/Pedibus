@@ -1,14 +1,14 @@
 import { Stop } from './stop';
-import {Person} from "./person";
+import {Child} from "./child";
 
 export class Ride {
     date: number;
     stops: Stop[];
     stopsBack: Stop[];
-    notReserved: Person[];
-    notReservedBack: Person[];
+    notReserved: Child[];
+    notReservedBack: Child[];
 
-    constructor(date: number, stops: Stop[], stopsBack: Stop[], notReserved: Person[], notReservedBack: Person[]) {
+    constructor(date: number, stops: Stop[], stopsBack: Stop[], notReserved: Child[], notReservedBack: Child[]) {
         this.date = date;
         this.stops = stops;
         this.stopsBack = stopsBack;

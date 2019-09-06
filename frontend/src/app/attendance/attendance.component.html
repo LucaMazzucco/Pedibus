@@ -1,16 +1,11 @@
 <div fxLayout="row" fxLayoutAlign="center center" fxFlexFill>
   <mat-card fxFlex="40" fxFlex.xs="100" class="mat-elevation-z6 mat-card-style">
     <mat-card-header fxLayout="row">
-      <div fxFlex="10" fxLayoutAlign="center start">
+      <div fxFlex="10" mat-card-avatar>
         <button mat-icon-button [matMenuTriggerFor]="menu">
           <mat-icon>menu</mat-icon>
         </button>
       </div>
-      <mat-menu #menu="matMenu" yPosition="above" xPosition="before">
-        <button mat-menu-item *ngFor="let line of lines" (click)="handleLine(line)">
-          <span>{{line.lineName}}</span>
-        </button>
-      </mat-menu>
       <div fxFlex="70">
         <mat-card-title>{{currentLine?.lineName}}</mat-card-title>
         <mat-card-subtitle>{{dataSource?.date*1000 | date: 'shortDate'}}</mat-card-subtitle>
@@ -125,7 +120,6 @@
                 </div>
               </div>
             </ng-template>
-            
           </div>
         </mat-tab>
       </mat-tab-group>
@@ -133,6 +127,8 @@
   </mat-card>
 </div>
 
-
-
-
+<mat-menu #menu="matMenu" yPosition="above" xPosition="before">
+  <button mat-menu-item *ngFor="let line of lines" (click)="handleLine(line)">
+    <span>{{line.lineName}}</span>
+  </button>
+</mat-menu>

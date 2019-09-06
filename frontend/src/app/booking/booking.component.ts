@@ -6,7 +6,7 @@ import {MatDialog, MatDialogConfig, MatTableDataSource} from "@angular/material"
 import {Line} from "../model/line";
 import {Stop} from "../model/stop";
 import {Ride} from "../model/ride";
-import {collectExternalReferences} from "@angular/compiler";
+import {Child} from "../model/child";
 
 
 @Component({
@@ -26,16 +26,31 @@ export class BookingComponent implements OnInit {
   selectedRide: Ride;
   selectedStopA: Stop;
   selectedStopR: Stop;
+  children: Child[];
+  currentChild: Child;
 
 
   ngOnInit() {
-    this.getReservations();
+    this.getChildren();
     this.titleservice.changeTitle('Le mie prenotazioni')
     this.isDisabled = []
   }
 
-  getReservations() : void{
-    this.subscription = this.dataService.getReservations().subscribe(reservations => {
+  getChildren(): void{
+    this.subscription = this.dataService.getChildren(localStorage.getItem('email')).subscribe( children => {
+      this.children = children;
+      this.currentChild = this.children[0]
+      this.getReservations(this.currentChild.registrationNumber)
+    })
+  }
+
+  selectChild(c: Child){
+    this.currentChild = c;
+  }
+
+  getReservations(c_id: string) : void{
+    console.log('Reservation per bambino' + c_id)
+    this.subscription = this.dataService.getReservations(c_id).subscribe(reservations => {
       this.reservations = reservations;
       this.initializeArray();
     })
@@ -64,6 +79,7 @@ export class BookingComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
     });
   }
+
   enableEditing(index): void{
     console.log(index);
     if(this.isDisabled[index]){
@@ -75,11 +91,13 @@ export class BookingComponent implements OnInit {
   }
 
   addReservation(): void{
-    this.reservations.push(new Reservation(this.selectedLine.lineName, this.selectedRide.date, this.selectedRide.stops, this.selectedRide.stopsBack, this.selectedStopA, this.selectedStopR));
+    //this.reservations.push(new Reservation(this.selectedLine.lineName, this.selectedRide.date, this.selectedRide.stops, this.selectedRide.stopsBack, this.selectedStopA, this.selectedStopR));
     this.isDisabled.push(true)
   }
 
   deleteReservation(i): void{
     this.reservations.splice(i,1)
   }
+
+
 }

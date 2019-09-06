@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
-import { Person } from '../model/person';
+import { Child } from '../model/child';
 import { Line } from '../model/line';
 import { Ride } from '../model/ride';
 import { DataService } from '../services/data.service';
@@ -31,7 +31,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   isBackTab: boolean;
   tableDatasource: any;
   displayedColumns: string[] = ['seleziona', 'nome', 'cognome'];
-  selection = new SelectionModel<Person>(true, []);
+  selection = new SelectionModel<Child>(true, []);
 
   ngOnInit() {
     this.titleservice.changeTitle('Registro presenze');
@@ -51,7 +51,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  addPerson(person: Person) {
+  addPerson(person: Child) {
 
     if(person.isPresent) {
       person.isPresent = false;
@@ -61,7 +61,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     this.dataService.putPersonAttendance(this.dataSource.date, this.currentLine.lineName, this.isBackTab, person)
   }
 
-  isPresent(person: Person): boolean {
+  isPresent(person: Child): boolean {
     return person.isPresent;
   }
 
@@ -159,10 +159,10 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 
   openDialog(templateRef) {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {
-      id: 1,
-      title: 'Angular For Beginners'
-    };
+    // dialogConfig.data = {
+    //   id: 1,
+    //   title: 'Angular For Beginners'
+    // };
     if(this.isBackTab){
       this.tableDatasource = new MatTableDataSource(this.dataSource.notReservedBack);
     }

@@ -22,7 +22,7 @@ public class Reservation {
     private String stopName;
     private String child;
     private String parent;
-    private long reservationDate;
+    private long reservationDate; //Non mandare a backend
     //true = da stopName a scuola; false = da scuola a stopName
     private boolean flagGoing;
     private boolean isPresent;

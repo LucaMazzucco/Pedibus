@@ -11,3 +11,17 @@
 .readonly-wrapper .readonly-block {
   pointer-events: none;
 }
+
+::ng-deep.mat-card-header-text {
+  color: black !important;
+}
+
+.booking-card-header-click{
+  padding-bottom: 50px;
+}
+
+.floating-button{
+  position: absolute;
+  right: 50px;
+  bottom: 30px;
+}

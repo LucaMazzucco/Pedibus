@@ -1,70 +1,47 @@
 {
   "reservations": [
     {
-      "linename": "Linea1",
-      "date": "11/dec/2019",
-      "stopsA": [
-        {
-          "stopName": "Fermata azzurra",
-          "time": "11:00"
-        },
-        {
-          "stopName": "Fermata rossa",
-          "time": "12:00"
-        }
-      ],
-      "selectedA": {
-        "stopName": "Fermata rossa",
-        "time": "12:00"
+      "linename": "Linea Azzurra",
+      "rideDate": "1573547400",
+      "stopA": {
+        "stopName": "Fermata 1",
+        "time": "1573547400"
       },
-      "stopsR": [
-        {
-          "stopName": "Fermata indaco",
-          "time": "16:00"
-        },
-        {
-          "stopName": "Fermata viola",
-          "time": "17:00"
-        }
-      ],
-      "selectedR": {
-        "stopName": "Fermata indaco",
-        "time": "16:00"
-      }
+      "stopR": {
+        "stopName": "Fermata 2",
+        "time": "1573547400"
+      },
+      "child": "123",
+      "parent": "admin@admin.com"
     },
     {
-      "linename": "Linea2",
-      "date": "15/dec/2019",
-      "stopsA": [
-        {
-          "stopName": "Fermata azzurra",
-          "time": "11:00"
-        },
-        {
-          "stopName": "Fermata rossa",
-          "time": "12:00"
-        }
-      ],
-      "selectedA": {
-        "stopName": "Fermata azzurra",
-        "time": "11:00"
+      "linename": "Linea Azzurra",
+      "rideDate": "1573547400",
+      "stopA": {
+        "stopName": "Fermata 1",
+        "time": "1573547400"
       },
-      "stopsR": [
-        {
-          "stopName": "Fermata indaco",
-          "time": "16:00"
-        },
-        {
-          "stopName": "Fermata viola",
-          "time": "17:00"
-        }
-      ],
-      "selectedR": [
-        {
-          "stopName": "Fermata indaco",
-          "time": "16:00"
-        }
-      ]
+      "stopR": {
+        "stopName": "Fermata 2",
+        "time": "1573547400"
+      },
+      "child": "123",
+      "parent": "admin@admin.com"
+    },
+    {
+      "linename": "Linea Azzurra",
+      "rideDate": "1573547400",
+      "stopA": {
+        "stopName": "Fermata 1",
+        "time": "1573547400"
+      },
+      "stopR": {
+        "stopName": "Fermata 2",
+        "time": "1573547400"
+      },
+      "child": "123",
+      "parent": "admin@admin.com"
     }
+
   ]
 }
