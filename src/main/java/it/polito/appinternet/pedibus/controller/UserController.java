@@ -20,6 +20,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -183,17 +184,23 @@ public class UserController {
     @GetMapping("/getUsersRoles")
     public ResponseEntity getUsersRoles(){
         JSONObject jsonOutput = new JSONObject();
+        JSONArray returnMap = new JSONArray();
 
-        List<User> users = userService.getUsers();
+        List<User> users = userService.getUsers().stream().collect(Collectors.toList());
         users.forEach(user -> {
-            if(user.getRoles().contains("Amministratore") || user.getRoles().contains("Accompagnatore")){
-                jsonOutput.put("role", user.getRoles());
+            if(user.getRoles().contains("Accompagnatore")){
+                if(user.getRoles().contains("Amministratore")){
+                    jsonOutput.put("role", "Amministratore");
+                    jsonOutput.put("line", user.getAdminLines().get(0));
+                } else {
+                    jsonOutput.put("role", "Accompagnatore");
+                }
+                jsonOutput.put("email", user.getEmail());
+                returnMap.put(jsonOutput);
             }
-            jsonOutput.put("email", user.getEmail());
-            jsonOutput.put("line", user.getAdminLines());
         });
 
-        return ok(jsonOutput.toString());
+        return ok(returnMap.toString());
     }
 
     @PutMapping("/users/{user_id}")

@@ -20,9 +20,7 @@ export class RoleAdministrationComponent implements OnInit {
   ngOnInit() {
     this.titleService.changeTitle("Gestione amministratori");
     this.dataService.getRoles().subscribe(user => {
-      user["line"] = user["line"][0];
-      user["role"].includes("Amministratore") ? user["role"] = "Amministatore" : user["role"] = "Accompagnatore";
-      //var a = new User(user["email"], user["role"], user["line"]);
+      console.log(user);
       this.tableDataSource.data = user;      
     });
   }

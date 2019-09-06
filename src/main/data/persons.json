@@ -10,21 +10,13 @@
     "adminLines": ["Linea Azzurra"]
   },
   {
-    "name": "luca",
-    "surname": "mazzucco",
-    "registrationNumber": "lmz",
-    "email": "l@l.com",
-    "password": "12_zwRHIPKA",
-    "isEnabled": "true"
-  },
-  {
     "name": "alberto",
     "surname": "benincasa",
     "registrationNumber": "lrt",
     "email": "a@a.com",
     "password": "12_zwRHIPKA",
     "isEnabled": "true",
-    "roles": ["Amministratore"],
-    "adminLines": ["Linea Viola"]
+    "roles": ["Accompagnatore"],
+    "adminLines": []
   }
 ]
