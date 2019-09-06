@@ -34,7 +34,6 @@ export class LoginComponent implements OnInit {
   get f() { return this.loginForm.controls; }
 
   onSubmit(): void{
-    console.log(this.f.email.value, this.f.password.value)
     let response = this.authService.login(this.f.email.value, this.f.password.value);
     response.subscribe(data => {
       this.authService.setSession(data);

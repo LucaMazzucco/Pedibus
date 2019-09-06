@@ -5,7 +5,9 @@
     "registrationNumber": "jpf",
     "email": "j@j.com",
     "password": "12_zwRHIPKA",
-    "isEnabled": "true"
+    "isEnabled": "true",
+    "roles": ["Amministratore", "Accompagnatore"],
+    "adminLines": ["Linea Azzurra"]
   },
   {
     "name": "luca",

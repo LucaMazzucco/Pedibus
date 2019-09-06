@@ -281,4 +281,47 @@ public class UserService {
         ConfirmationToken myToken = confirmationTokenRepository.findByEmail(email);
         return myToken.getLine();
     }
+
+    @Transactional
+    public boolean addRoleAndLine(String email, String linename){
+        Optional<User> userOptional = userRepo.findByEmail(email);
+        Line line = lineRepository.findByLineName(linename);
+
+        if(!userOptional.isPresent() || line == null || !line.getAdmins().isEmpty()){
+            return false;
+        }
+
+        User user = userOptional.get();
+
+        user.getRoles().add("Amministratore");
+        line.getAdmins().add(user.getEmail());
+
+        userRepo.save(user);
+        lineRepository.save(line);
+
+        return true;
+    }
+
+    @Transactional
+    public boolean removeRoleAndLine(String email, String linename){
+        Optional<User> userOptional = userRepo.findByEmail(email);
+        Line line = lineRepository.findByLineName(linename);
+
+        if(!userOptional.isPresent() || line == null || !line.getAdmins().contains(email)){
+            return false;
+        }
+
+        User user = userOptional.get();
+        if(!user.getRoles().contains("Amministratore")){
+            return false;
+        }
+
+        user.getRoles().remove("Amministratore");
+        line.getAdmins().remove(user.getEmail());
+
+        userRepo.save(user);
+        lineRepository.save(line);
+
+        return true;
+    }
 }

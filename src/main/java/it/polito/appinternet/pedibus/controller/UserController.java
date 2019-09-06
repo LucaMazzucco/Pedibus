@@ -245,4 +245,44 @@ public class UserController {
     public ResponseEntity<Boolean> checkUserToken(@PathVariable String email, @PathVariable String token){
         return new ResponseEntity<>(userService.isTokenRight(email, token), HttpStatus.OK);
     }
+
+    @PostMapping("/deleteRole")
+    public ResponseEntity deleteRole(@RequestBody String payload){
+        JSONObject jsonOutput = new JSONObject();
+        JSONObject jsonInput = new JSONObject(payload);
+        if(!jsonInput.has("email") ||
+                !jsonInput.has("line")){
+            jsonOutput.put("result", "Wrong Request");
+            return ResponseEntity.badRequest().body(jsonOutput.toString());
+        }
+
+        String email = jsonInput.getString("email");
+        String linename = jsonInput.getString("line");
+
+        if(!userService.removeRoleAndLine(email, linename)){
+            return ResponseEntity.badRequest().body("L'operazione non è andata a buon fine");
+        }
+
+        return ok("Ruolo rimosso con successo");
+    }
+
+    @PostMapping("/addRole")
+    public ResponseEntity addRole(@RequestBody String payload){
+        JSONObject jsonOutput = new JSONObject();
+        JSONObject jsonInput = new JSONObject(payload);
+        if(!jsonInput.has("email") ||
+                !jsonInput.has("line")){
+            jsonOutput.put("result", "Wrong Request");
+            return ResponseEntity.badRequest().body(jsonOutput.toString());
+        }
+
+        String email = jsonInput.getString("email");
+        String linename = jsonInput.getString("line");
+
+        if(!userService.addRoleAndLine(email, linename)){
+            return ResponseEntity.badRequest().body("La promozione non è andata a buon fine");
+        }
+
+        return ok("La promozione è riuscita con successo");
+    }
 }

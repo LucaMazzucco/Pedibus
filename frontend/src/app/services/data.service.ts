@@ -14,6 +14,11 @@ import {Shift} from "../model/shift";
 const REST_URL = 'http://localhost:8080';
 const FAKE_URL = 'http://localhost:3000';
 
+interface AdminRole {
+  email: string;
+  line: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -63,9 +68,9 @@ export class DataService {
     return this.http.post<Availability>(REST_URL + '/deleteAvailability', av);
   }
 
-    getNoAdminLines(): Observable<Line[]>{
-        return this.http.get<Line[]>(REST_URL + "/getNoAdminLines");
-    }
+  getNoAdminLines(): Observable<Line[]>{
+    return this.http.get<Line[]>(REST_URL + "/getNoAdminLines");
+  }
 
   getShifts(email: String): Observable<Shift[]>{
     return this.http.get<Shift[]>(REST_URL + '/getShifts/' + email);
@@ -82,4 +87,14 @@ export class DataService {
   getRoles(): Observable<User[]>{
     return this.http.get<User[]>(REST_URL + '/getUsersRoles');
   }
+
+  addRole(email: String, line: String){
+    return this.http.post<AdminRole>(REST_URL + '/addRole', {email, line});
+  }
+
+  deleteRole(email: String, line: String){
+    return this.http.post<AdminRole>(REST_URL + '/addRole', {email, line});
+  }
+
+
 }

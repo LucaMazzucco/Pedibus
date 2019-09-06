@@ -40,8 +40,4 @@ export class ShiftComponent implements OnInit {
     })
   }
 
-  addShiftDebug(i: number){
-    console.log(this.tableDataSource.data[i])
-  }
-
 }
