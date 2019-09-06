@@ -183,11 +183,11 @@ public class UserController {
 
     @GetMapping("/getUsersRoles")
     public ResponseEntity getUsersRoles(){
-        JSONObject jsonOutput = new JSONObject();
         JSONArray returnMap = new JSONArray();
 
         List<User> users = userService.getUsers().stream().collect(Collectors.toList());
         users.forEach(user -> {
+            JSONObject jsonOutput = new JSONObject();
             if(user.getRoles().contains("Accompagnatore")){
                 if(user.getRoles().contains("Amministratore")){
                     jsonOutput.put("role", "Amministratore");
@@ -269,8 +269,10 @@ public class UserController {
         if(!userService.removeRoleAndLine(email, linename)){
             return ResponseEntity.badRequest().body("L'operazione non è andata a buon fine");
         }
+        jsonOutput.put("email", email);
+        jsonOutput.put("role", "Accompagnatore");
 
-        return ok("Ruolo rimosso con successo");
+        return ResponseEntity.ok(jsonOutput.toString());
     }
 
     @PostMapping("/addRole")

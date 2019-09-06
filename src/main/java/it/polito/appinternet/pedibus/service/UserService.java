@@ -307,7 +307,7 @@ public class UserService {
         Optional<User> userOptional = userRepo.findByEmail(email);
         Line line = lineRepository.findByLineName(linename);
 
-        if(!userOptional.isPresent() || line == null || !line.getAdmins().contains(email)){
+        if(!userOptional.isPresent() || line == null || line.getAdmins().contains(email)){
             return false;
         }
 

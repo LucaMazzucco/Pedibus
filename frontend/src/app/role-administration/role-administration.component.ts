@@ -28,7 +28,7 @@ export class RoleAdministrationComponent implements OnInit {
   deleteRole(i: number){
     //console.log(this.tableDataSource.data[i])
       let response =  this.dataService.deleteRole(this.tableDataSource.data[i].email, this.tableDataSource.data[i].line);
-      this.tableDataSource.data.splice(i,1);
+      //this.tableDataSource.data.splice(i,1);
       this.tableDataSource._updateChangeSubscription()
       response.subscribe(data => {
         this.infoMessage = "Rimosso ruolo di amministrazione!";
