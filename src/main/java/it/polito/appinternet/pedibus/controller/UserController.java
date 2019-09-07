@@ -229,4 +229,16 @@ public class UserController {
     public ResponseEntity<Boolean> checkUserToken(@PathVariable String email, @PathVariable String token){
         return new ResponseEntity<>(userService.isTokenRight(email, token), HttpStatus.OK);
     }
+
+    @GetMapping("/getChildren/{userEmail}")
+    public ResponseEntity<JSONObject> getChildren(@PathVariable String email){
+        if(email.length()==0){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+        JSONObject jsonObject = userService.userGetChildren(email);
+        if(jsonObject==null){
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(jsonObject,HttpStatus.OK);
+    }
 }

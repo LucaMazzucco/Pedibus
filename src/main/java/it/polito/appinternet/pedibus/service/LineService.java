@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -58,6 +57,17 @@ public class LineService {
                 .filter(r->Utils.myCompareUnixDate(r.getRideDate(),rDate)==0)
                 .findAny().orElse(null);
         return ride;
+    }
+
+    public Stop getStopByLineNameAndRideDateAndStopName(String lineName,long rDate,String stopName){
+        Line line = findByLineName(lineName);
+        if(line==null) return null;
+        Ride ride = getRideByLineAndDate(line,rDate);
+        if(ride==null) return null;
+        Stop stop = ride.getStops().stream()
+                .filter(s->s.getStopName().equals(stopName))
+                .findAny().get();
+        return stop;
     }
 
     public JSONObject encapsulateLine(Line line) {
@@ -117,7 +127,7 @@ public class LineService {
                 .collect(toList());
         childService.findAll().stream()
                 .filter(c-> !childrenOnRide.contains(c.getId()))
-                .map(c->childService.encapsulateChild(c,false))
+                .map(c->childService.encapsulateChildOnRide(c,false))
                 .forEach(cJson->{
                     notReserved.put(cJson);
                 });
@@ -133,7 +143,7 @@ public class LineService {
             JSONArray children = new JSONArray();
             s.getReservations().stream()
                     .map(r->reservationService.findById(r))
-                    .map(r->childService.encapsulateChild(childService.findById(r.getChild()),r.isPresent()))
+                    .map(r->childService.encapsulateChildOnRide(childService.findById(r.getChild()),r.isPresent()))
                     .forEach(children::put);
             stopJson.put("children",children);
             stopsJson.put(stopJson);

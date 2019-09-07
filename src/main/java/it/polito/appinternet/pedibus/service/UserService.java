@@ -8,6 +8,7 @@ import it.polito.appinternet.pedibus.repository.LineRepository;
 import it.polito.appinternet.pedibus.repository.PwdChangeRequestRepository;
 import it.polito.appinternet.pedibus.repository.UserRepository;
 import it.polito.appinternet.pedibus.security.JwtTokenProvider;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -50,6 +51,8 @@ public class UserService {
     PasswordEncoder passwordEncoder;
     @Autowired
     private PwdChangeRequestRepository pwdChangeRequestRepo;
+    @Autowired
+    private ChildService childService;
 
     @Transactional
     public void userInsert(User user){
@@ -276,5 +279,23 @@ public class UserService {
     public String getLineFromToken(String email){
         ConfirmationToken myToken = confirmationTokenRepository.findByEmail(email);
         return myToken.getLine();
+    }
+
+    public JSONObject userGetChildren(String email){
+        User user = userGet(email);
+        if(user == null){
+            return null;
+        }
+        JSONObject jsonObject = new JSONObject();
+        JSONArray children = new JSONArray();
+        if(!user.isParent()){
+            return null;
+        }
+        user.getChildren().stream()
+                .map(child->childService.findById(child))
+                .map(child->childService.encapsulateChildInfo(child))
+                .forEach(children::put);
+        jsonObject.put("children",children);
+        return jsonObject;
     }
 }
