@@ -89,7 +89,7 @@ export class DataService {
   }
 
   addRole(email: String, line: String){
-    return this.http.post<AdminRole>(REST_URL + '/addRole', {email, line});
+    return this.http.post<User>(REST_URL + '/addRole', {email, line});
   }
 
   deleteRole(email: String, line: String){

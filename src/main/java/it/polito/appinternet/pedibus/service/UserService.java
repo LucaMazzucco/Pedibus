@@ -294,6 +294,7 @@ public class UserService {
         User user = userOptional.get();
 
         user.getRoles().add("Amministratore");
+        user.getAdminLines().add(linename);
         line.getAdmins().add(user.getEmail());
 
         userRepo.save(user);
@@ -307,7 +308,7 @@ public class UserService {
         Optional<User> userOptional = userRepo.findByEmail(email);
         Line line = lineRepository.findByLineName(linename);
 
-        if(!userOptional.isPresent() || line == null || line.getAdmins().contains(email)){
+        if(!userOptional.isPresent() || line == null || !(line.getAdmins().contains(email))){
             return false;
         }
 
@@ -317,6 +318,7 @@ public class UserService {
         }
 
         user.getRoles().remove("Amministratore");
+        user.getAdminLines().remove(linename);
         line.getAdmins().remove(user.getEmail());
 
         userRepo.save(user);

@@ -186,7 +186,7 @@ public class UserController {
         JSONArray returnMap = new JSONArray();
 
         List<User> users = userService.getUsers().stream().collect(Collectors.toList());
-        users.forEach(user -> {
+        for (User user : users){
             JSONObject jsonOutput = new JSONObject();
             if(user.getRoles().contains("Accompagnatore")){
                 if(user.getRoles().contains("Amministratore")){
@@ -198,7 +198,7 @@ public class UserController {
                 jsonOutput.put("email", user.getEmail());
                 returnMap.put(jsonOutput);
             }
-        });
+        };
 
         return ok(returnMap.toString());
     }
@@ -271,6 +271,7 @@ public class UserController {
         }
         jsonOutput.put("email", email);
         jsonOutput.put("role", "Accompagnatore");
+        jsonOutput.put("line", "");
 
         return ResponseEntity.ok(jsonOutput.toString());
     }
@@ -291,7 +292,10 @@ public class UserController {
         if(!userService.addRoleAndLine(email, linename)){
             return ResponseEntity.badRequest().body("La promozione non è andata a buon fine");
         }
+        jsonOutput.put("email", email);
+        jsonOutput.put("line", linename);
+        jsonOutput.put("role", "Amministratore");
 
-        return ok("La promozione è riuscita con successo");
+        return ResponseEntity.ok(jsonOutput.toString());
     }
 }
