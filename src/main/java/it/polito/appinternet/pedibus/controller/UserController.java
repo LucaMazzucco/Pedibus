@@ -241,4 +241,23 @@ public class UserController {
         }
         return new ResponseEntity<>(jsonObject,HttpStatus.OK);
     }
+
+    @PostMapping("/addChild/{userEmail}")
+    public ResponseEntity addChild(@PathVariable String email, @RequestBody String payload){
+        if(payload.length()==0) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        if(userService.userAddChild(email,payload)) return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+    @PutMapping("/editChild/{userEmail}")
+    public ResponseEntity editChild(@PathVariable String email, @RequestBody String payload){
+        if(payload.length()==0) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        if(userService.userEditChild(email, payload)) return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+    @PostMapping("/deleteChild/{userEmail}")
+    public ResponseEntity deleteChild(@PathVariable String email, @RequestBody String payload){
+        if(payload.length()==0) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        if(userService.userDeleteChild(email, payload)) return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
 }

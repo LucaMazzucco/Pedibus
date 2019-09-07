@@ -309,7 +309,7 @@ public class LineService {
         }
 
         admins.forEach(a -> {
-            User u = userService.userGet(a);
+            User u = userService.userFindByEmail(a);
             u.getMessages().add(m);
             userService.userSave(u);
         });
@@ -317,7 +317,7 @@ public class LineService {
     }
 
     public int sendMessageToUser(String email, Message m){
-        User u = userService.userGet(email);
+        User u = userService.userFindByEmail(email);
         if(u == null){
             return -1;
         }

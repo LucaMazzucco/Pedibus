@@ -11,6 +11,7 @@ import java.util.List;
 public interface ReservationRepository extends MongoRepository<Reservation, Long> {
     //Reservation findByIdAndLineAndReservation_date (Reservation reservation, Line lineName, Date reservation_date);
     List<Reservation> findAll();
+    List<Reservation> findByChild(String childId);
     //List<Reservation> findByLineAndReservationDate(String a, Date b);
     List<Reservation> findByLineNameAndReservationDateAndFlagGoingIsTrue(String a, long b);
     List<Reservation> findByLineNameAndReservationDateAndFlagGoingIsFalse(String a, long b);

@@ -1,8 +1,6 @@
 package it.polito.appinternet.pedibus.controller;
 
-import com.mongodb.util.JSON;
 import it.polito.appinternet.pedibus.service.ChildService;
-import org.json.HTTP;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

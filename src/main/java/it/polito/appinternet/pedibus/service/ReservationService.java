@@ -18,17 +18,18 @@ import java.util.stream.Collectors;
 public class ReservationService {
 
     @Autowired
-    ReservationRepository reservationRepo;
+    private ReservationRepository reservationRepo;
     @Autowired
-    LineService lineService;
+    private LineService lineService;
     @Autowired
-    ChildService childService;
+    private ChildService childService;
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     public Reservation findById(String reservation_id){
         return reservationRepo.findById(reservation_id);
     }
+    public List<Reservation> findByChildId(String childId){return reservationRepo.findByChild(childId);}
 
     /**
      * Manual insert to repo: no insert on parent or stop is done here.
@@ -51,7 +52,6 @@ public class ReservationService {
         else{
             return null;
         }
-
     }
 
     @SuppressWarnings("Duplicates")
@@ -137,9 +137,9 @@ public class ReservationService {
 
     @Transactional
     public Long deleteReservation(Reservation reservation){
-        Reservation res = findByLineNameAndReservationDateAndFlagGoingAndChild(reservation.getLineName(),reservation.getReservationDate(),reservation.isFlagGoing(),reservation.getId());
-        if(res == null) return new Long(-1);
-        return deleteReservation(res.getLineName(), res.getReservationDate(), res.getId());
+        // Reservation res = findByLineNameAndReservationDateAndFlagGoingAndChild(reservation.getLineName(),reservation.getReservationDate(),reservation.isFlagGoing(),reservation.getChild());
+        // if(res == null) return new Long(-1);
+        return deleteReservation(reservation.getLineName(), reservation.getReservationDate(), reservation.getId());
     }
 
     @SuppressWarnings("Duplicates")

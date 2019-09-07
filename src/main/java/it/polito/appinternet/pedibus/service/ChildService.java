@@ -1,6 +1,5 @@
 package it.polito.appinternet.pedibus.service;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.mongodb.util.JSON;
 import it.polito.appinternet.pedibus.model.Child;
 import it.polito.appinternet.pedibus.model.Reservation;
@@ -19,11 +18,13 @@ import java.util.stream.Collectors;
 @Service
 public class ChildService {
     @Autowired
-    ChildRepository childRepo;
+    private ChildRepository childRepo;
     @Autowired
     private UserService userService;
     @Autowired
     private ReservationService reservationService;
+    @Autowired
+    private LineService lineService;
 
 
     public Child findByRegistrationNumber(String registrationNumber) {
@@ -36,6 +37,40 @@ public class ChildService {
 
     public List<Child> findAll(){
         return childRepo.findAll();
+    }
+
+    @Transactional
+    public Child insertChild(Child child){
+        if(child==null) return null;
+        if(findByRegistrationNumber(child.getRegistrationNumber())!=null) return null;
+        return childRepo.insert(child);
+    }
+
+    @Transactional
+    public boolean saveChild(Child child){
+        if(findById(child.getId())==null) return false;
+        childRepo.save(child);
+        return true;
+    }
+
+    @Transactional
+    public boolean deleteChild(Child child){
+        if(findById(child.getId())==null) return false;
+        User parent = userService.userFindById(child.getParentId());
+        if(parent != null){
+            parent.getReservations().stream()
+                    .map(reservationService::findById)
+                    .filter(r->r.getChild().equals(child.getId()))
+                    .forEach(reservationService::deleteReservation);
+            parent.getChildren().remove(child.getId());
+            userService.userSave(parent);
+        }
+        else{
+            reservationService.findByChildId(child.getId())
+                    .forEach(reservationService::deleteReservation);
+        }
+        childRepo.delete(child);
+        return true;
     }
 
     public JSONObject encapsulateChildOnRide(Child child, Boolean isPresent){
@@ -53,6 +88,25 @@ public class ChildService {
         jsonChild.put("surname", child.getSurname());
         jsonChild.put("registrationNumber", child.getRegistrationNumber());
         return jsonChild;
+    }
+
+    /**
+     * returns child in db if present, creates a child if not found in db (it does not insert it), returns null if json is wrong
+     * @param jChild
+     * @return
+     */
+    public Child decapsulateChildInfo(JSONObject jChild){
+        if(!jChild.has("name")
+                || !jChild.has("surname")
+                || !jChild.has("registrationNumber")
+        ) return null;
+        Child child = findByRegistrationNumber(jChild.getString("registrationNumber"));
+        if(child!=null) return child;
+        child = new Child(jChild.getString("name"),
+                jChild.getString("surname"),
+                jChild.getString("registrationNumber"),
+                "");
+        return child;
     }
 
     public JSONObject encapsulateReservations(String ssn){
@@ -186,7 +240,7 @@ public class ChildService {
         ) return null;
         if(!reservation.has("stopA")
                 && !reservation.has("stopR")) return null;
-        User parent = userService.userGet(reservation.getString("parent"));
+        User parent = userService.userFindByEmail(reservation.getString("parent"));
         if(parent == null) return null;
         if(reservation.has("stopA")){
             jStop = reservation.getJSONObject("stopA");
