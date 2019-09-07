@@ -96,6 +96,16 @@ public class ReservationService {
         return Long.getLong(r.getId());
     }
 
+    public Long addReservation(Reservation reservation){
+        Child child = childService.findById(reservation.getChild());
+        return addReservation(reservation.getLineName(),
+                reservation.getReservationDate(),
+                child.getRegistrationNumber(),
+                reservation.getStopName(),
+                reservation.isFlagGoing(),
+                reservation.isPresent());
+    }
+
     @SuppressWarnings("Duplicates")
     @Transactional
     public Long updateReservation(String line_name, long date, String reservation_id, Reservation newRes){
@@ -125,9 +135,16 @@ public class ReservationService {
         return Long.valueOf(1);
     }
 
+    @Transactional
+    public Long deleteReservation(Reservation reservation){
+        Reservation res = findByLineNameAndReservationDateAndFlagGoingAndChild(reservation.getLineName(),reservation.getReservationDate(),reservation.isFlagGoing(),reservation.getId());
+        if(res == null) return new Long(-1);
+        return deleteReservation(res.getLineName(), res.getReservationDate(), res.getId());
+    }
+
     @SuppressWarnings("Duplicates")
     @Transactional
-    public Long deleteReservation(@PathVariable String line_name, @PathVariable long date, @PathVariable String reservation_id){
+    public Long deleteReservation(String line_name, long date, String reservation_id){
         Reservation reservation = reservationRepo.findById(reservation_id);
         if (reservation == null){
             return new Long(-1);
@@ -160,6 +177,10 @@ public class ReservationService {
 
     public List<Reservation> findByLineNameAndReservationDateAndFlagGoing(String line_name, long date, boolean isFlagGoing) {
         return reservationRepo.findByLineNameAndReservationDateAndFlagGoing(line_name,date,isFlagGoing);
+    }
+
+    public Reservation findByLineNameAndReservationDateAndFlagGoingAndChild(String lineName, long date, boolean isFlagGoing, String childId){
+        return reservationRepo.findByLineNameAndReservationDateAndFlagGoingAndChild(lineName,date,isFlagGoing,childId);
     }
 
     @SuppressWarnings("Duplicates")

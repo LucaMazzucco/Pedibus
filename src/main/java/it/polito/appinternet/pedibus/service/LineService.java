@@ -332,10 +332,7 @@ public class LineService {
                                                 boolean isPresent, boolean isFlagGoing) {
         try {
             Child child = childService.findByRegistrationNumber(registrationNumber);
-            List<Reservation> reservations = reservationService.findByLineNameAndReservationDateAndFlagGoing(line_name, dateUnix, isFlagGoing);
-            Reservation reservation = reservations.stream()
-                    .filter(r->r.getChild().equals(child.getId()))
-                    .findAny().orElse(null);
+            Reservation reservation = reservationService.findByLineNameAndReservationDateAndFlagGoingAndChild(line_name, dateUnix, isFlagGoing, child.getId());;
             if(reservation==null){
                 return -1;
             }
