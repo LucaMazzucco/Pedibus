@@ -301,4 +301,12 @@ public class LineController {
         }
         return lines.toString();
     }
+
+    @GetMapping("/getStopNames/{lineName}")
+    public ResponseEntity<JSONObject> getStopNamesByLineName(@PathVariable String lineName){
+        if(lineName.length()==0) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        JSONObject stopNames = lineService.getStopNamesByLineName(lineName);
+        if(stopNames== null) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(stopNames,HttpStatus.OK);
+    }
 }

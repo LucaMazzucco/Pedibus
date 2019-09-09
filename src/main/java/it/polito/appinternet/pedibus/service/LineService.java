@@ -460,6 +460,18 @@ public class LineService {
         return lineRepo.findByLineAdmins(email);
     }
 
-
+    public JSONObject getStopNamesByLineName(String lineName){
+        Line line = findByLineName(lineName);
+        JSONArray jsonArray = new JSONArray();
+        JSONObject jsonObject = new JSONObject();
+        if(line==null) return null;
+        line.getRides().stream()
+                .flatMap(r->r.getStops().stream())
+                .map(Stop::getStopName)
+                .distinct()
+                .forEach(jsonArray::put);
+        jsonObject.put("stopNames",jsonArray);
+        return jsonObject;
+    }
 
 }
