@@ -35,7 +35,7 @@ public class Child {
         this.defaultStop = defaultStop;
     }
 //    @JsonCreator
-//    public Child(@JsonProperty("name") String name,
+//    public Passenger(@JsonProperty("name") String name,
 //                 @JsonProperty("surname") String surname,
 //                 @JsonProperty("registrationNumber") String registrationNumber,
 //                 @JsonProperty("parentId") String parentId){

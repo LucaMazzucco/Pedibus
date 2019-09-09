@@ -25,3 +25,8 @@
   right: 50px;
   bottom: 30px;
 }
+
+::ng-deep.mat-dialog-container{
+  padding: 0 !important;
+}
+

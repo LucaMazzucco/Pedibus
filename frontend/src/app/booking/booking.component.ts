@@ -6,7 +6,9 @@ import {MatDialog, MatDialogConfig, MatTableDataSource} from "@angular/material"
 import {Line} from "../model/line";
 import {Stop} from "../model/stop";
 import {Ride} from "../model/ride";
-import {Child} from "../model/child";
+import {Passenger} from "../model/passenger";
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+
 
 
 @Component({
@@ -16,24 +18,37 @@ import {Child} from "../model/child";
 })
 export class BookingComponent implements OnInit {
 
-  constructor(private dataService: DataService, private titleservice: TitleService, private dialog: MatDialog) { }
+  constructor(private dataService: DataService, private titleservice: TitleService, private dialog: MatDialog, private _formBuilder: FormBuilder) { }
 
   reservations: Reservation[];
   subscription: any;
   isDisabled: Boolean[];
   lines: Line[];
-  selectedLine: Line;
-  selectedRide: Ride;
-  selectedStopA: Stop;
-  selectedStopR: Stop;
-  children: Child[];
-  currentChild: Child;
+  selectLineForm: FormGroup;
+  selectRideForm: FormGroup;
+  selectGoingForm: FormGroup;
+  selectBackForm: FormGroup;
+  isLinear: boolean;
+  children: Passenger[];
+  currentChild: Passenger;
 
 
   ngOnInit() {
     this.getChildren();
     this.titleservice.changeTitle('Le mie prenotazioni')
     this.isDisabled = []
+    this.selectLineForm = this._formBuilder.group({
+      selectedLine: ['', Validators.required]
+    });
+    this.selectRideForm = this._formBuilder.group({
+      selectedRide: ['', Validators.required]
+    });
+    this.selectGoingForm = this._formBuilder.group({
+      selectedGoing: ['', Validators.required]
+    });
+    this.selectBackForm = this._formBuilder.group({
+      selectedBack: ['', Validators.required]
+    });
   }
 
   getChildren(): void{
@@ -44,7 +59,7 @@ export class BookingComponent implements OnInit {
     })
   }
 
-  selectChild(c: Child){
+  selectChild(c: Passenger){
     this.currentChild = c;
   }
 
@@ -66,12 +81,6 @@ export class BookingComponent implements OnInit {
   openDialog(templateRef) {
     const dialogConfig = new MatDialogConfig();
     this.dataService.getLines().subscribe(lines => this.lines=lines);
-    /*
-    dialogConfig.data = {
-      id: 1,
-      title: 'Angular For Beginners'
-    };
-    */
     let dialogRef = this.dialog.open(templateRef, {
       width: '500px',
     });
@@ -81,7 +90,6 @@ export class BookingComponent implements OnInit {
   }
 
   enableEditing(index): void{
-    console.log(index);
     if(this.isDisabled[index]){
       this.isDisabled[index] = false;
     }

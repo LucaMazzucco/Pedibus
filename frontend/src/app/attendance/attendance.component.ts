@@ -1,5 +1,5 @@
 import {Component, OnInit, OnDestroy, Input} from '@angular/core';
-import { Child } from '../model/child';
+import { Passenger } from '../model/passenger';
 import { Line } from '../model/line';
 import { Ride } from '../model/ride';
 import { DataService } from '../services/data.service';
@@ -31,7 +31,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   isBackTab: boolean;
   tableDatasource: any;
   displayedColumns: string[] = ['seleziona', 'nome', 'cognome'];
-  selection = new SelectionModel<Child>(true, []);
+  selection = new SelectionModel<Passenger>(true, []);
 
   ngOnInit() {
     this.titleservice.changeTitle('Registro presenze');
@@ -51,7 +51,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  addPerson(person: Child) {
+  addPerson(person: Passenger) {
 
     if(person.isPresent) {
       person.isPresent = false;
@@ -61,7 +61,7 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     this.dataService.putPersonAttendance(this.dataSource.date, this.currentLine.lineName, this.isBackTab, person)
   }
 
-  isPresent(person: Child): boolean {
+  isPresent(person: Passenger): boolean {
     return person.isPresent;
   }
 

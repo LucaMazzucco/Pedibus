@@ -18,6 +18,8 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.ResponseEntity.ok;
+
 @CrossOrigin(origins = "http://localhost:4200/presenze", maxAge = 3600)
 @RestController
 public class LineController {
