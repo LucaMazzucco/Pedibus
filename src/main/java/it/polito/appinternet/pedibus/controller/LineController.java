@@ -1,5 +1,6 @@
 package it.polito.appinternet.pedibus.controller;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polito.appinternet.pedibus.model.*;
 import it.polito.appinternet.pedibus.service.LineService;
@@ -303,10 +304,10 @@ public class LineController {
     }
 
     @GetMapping("/getStopNames/{lineName}")
-    public ResponseEntity<JSONObject> getStopNamesByLineName(@PathVariable String lineName){
+    public ResponseEntity<String> getStopNamesByLineName(@PathVariable String lineName){
         if(lineName.length()==0) return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        JSONObject stopNames = lineService.getStopNamesByLineName(lineName);
+        JSONArray stopNames = lineService.getStopNamesByLineName(lineName);
         if(stopNames== null) return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        return new ResponseEntity<>(stopNames,HttpStatus.OK);
+        return new ResponseEntity<>(stopNames.toString(),HttpStatus.OK);
     }
 }
