@@ -149,29 +149,10 @@ $custom-theme: map_merge($custom-theme, (background: $background));
     $primary: map-get($custom-theme, primary);
     $accent: map-get($custom-theme, accent); // Use mat-color to extract individual colors from a palette as necessary.
 
-    .template-style {
-        background-color: mat-color($primary, 300) !important;
+    .card-content{
+        padding-top: 10px;
     }
-    .mat-card-light-style{
-        background-color: mat-color($primary,200);
-        border-color: mat-color($accent, 400);
-    }
-    .mat-card-content-style{
-        background-color: mat-color($primary, 200);
-    }
-    .expansion-panel{
-        background: mat-color($primary, 200);
-    }
-    mat-list-item.selected {
-        background-color: mat-color($accent, 700);
-    }
-    mat-list-item.selected:hover {
-        background-color: mat-color($accent, 700) !important;
-    }
-    mat-expansion-panel.isFull{
-        background-color: mat-color($accent, 700);
 
-    }
 
 }
 

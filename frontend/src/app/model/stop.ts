@@ -1,12 +1,12 @@
-import { Person } from './person';
+import { Child } from './child';
 
 export class Stop {
 
     stopName: string;
     time: number;
-    children: Person[];
+    children: Child[];
 
-    constructor(name: string, time: number, children: Person[]) {
+    constructor(name: string, time: number, children: Child[]) {
         this.stopName = name;
         this.time = time;
         this.children = children;

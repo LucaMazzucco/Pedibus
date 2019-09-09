@@ -3,19 +3,19 @@ import {Stop} from "./stop";
 export class Reservation {
 
     linename: string;
-    date: number;
-    stopsA: Stop[];
-    selectedA: Stop;
-    stopsR: Stop[];
-    selectedR: Stop;
+    rideDate: number;
+    stopA: Stop;
+    stopR: Stop;
+    child: string;
+    parent: string;
 
-    constructor(linename: string, date: number, stopsA: Stop[], stopsR: Stop[], selectedA: Stop, selectedR: Stop) {
+
+    constructor(linename: string, stopA: Stop, stopR: Stop, child: string, parent: string, flagGoing: boolean) {
         this.linename = linename;
-        this.date = date;
-        this.stopsA = stopsA;
-        this.stopsR = stopsR;
-        this.selectedA = selectedA;
-        this.selectedR = selectedR;
+        this.stopA = stopA;
+        this.stopR = stopR
+        this.child = child;
+        this.parent = parent;
     }
 
 }

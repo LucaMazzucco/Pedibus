@@ -1,13 +1,12 @@
 package it.polito.appinternet.pedibus.service;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.mongodb.lang.Nullable;
 import it.polito.appinternet.pedibus.model.*;
 import it.polito.appinternet.pedibus.repository.ConfirmationTokenRepository;
 import it.polito.appinternet.pedibus.repository.LineRepository;
 import it.polito.appinternet.pedibus.repository.PwdChangeRequestRepository;
 import it.polito.appinternet.pedibus.repository.UserRepository;
 import it.polito.appinternet.pedibus.security.JwtTokenProvider;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,14 +21,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.Servlet;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-import javax.swing.text.html.Option;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -50,6 +46,8 @@ public class UserService {
     PasswordEncoder passwordEncoder;
     @Autowired
     private PwdChangeRequestRepository pwdChangeRequestRepo;
+    @Autowired
+    private ChildService childService;
 
     @Transactional
     public void userInsert(User user){
@@ -62,7 +60,7 @@ public class UserService {
     @Transactional
     public void userRemove(User user){ userRepo.delete(user); }
 
-    public User userGet(String email){
+    public User userFindByEmail(String email){
         return userRepo.findByEmail(email).get();
     }
     public User userFindById(String id){ return userRepo.findById(id).get();}
@@ -276,5 +274,70 @@ public class UserService {
     public String getLineFromToken(String email){
         ConfirmationToken myToken = confirmationTokenRepository.findByEmail(email);
         return myToken.getLine();
+    }
+
+    public JSONObject userGetChildren(String email){
+        User user = userFindByEmail(email);
+        if(user == null){
+            return null;
+        }
+        JSONObject jsonObject = new JSONObject();
+        JSONArray children = new JSONArray();
+        if(!user.isParent()){
+            return null;
+        }
+        user.getChildren().stream()
+                .map(child->childService.findById(child))
+                .map(child->childService.encapsulateChildInfo(child))
+                .forEach(children::put);
+        jsonObject.put("children",children);
+        return jsonObject;
+    }
+
+    @Transactional
+    public boolean userAddChild(String email, String payload){
+        User parent = userFindByEmail(email);
+        if(parent == null) return false;
+        //TODO: control if is a user with role user.
+        JSONObject jChild = new JSONObject(payload);
+        Child child = childService.decapsulateChildInfo(jChild);
+        if(child == null) return false; //Bad Json
+        if(child.getId().length()>0 || child.getParentId().length()>0) return false; //Already exist
+        child.setParentId(parent.getId());
+        child = childService.insertChild(child);
+        parent.getChildren().add(child.getId());
+        userSave(parent);
+        return true;
+    }
+
+    /**
+     * No parent or ssn change admitted
+     * @param email
+     * @param payload
+     * @return
+     */
+    @SuppressWarnings("Duplicates")
+    @Transactional
+    public boolean userEditChild(String email, String payload){
+        User parent = userFindByEmail(email);
+        if(parent == null) return false;
+        JSONObject jChild = new JSONObject(payload);
+        Child child = childService.decapsulateChildInfo(jChild);
+        if(child == null) return false;
+        if(child.getId().length()==0 || !child.getParentId().equals(parent.getId())) return false; //if the user is not the parent fail
+        childService.saveChild(child);
+        return true;
+    }
+
+    @SuppressWarnings("Duplicates")
+    @Transactional
+    public boolean userDeleteChild(String email, String payload){
+        User parent = userFindByEmail(email);
+        if(parent==null) return false;
+        JSONObject jChild = new JSONObject(payload);
+        Child child = childService.decapsulateChildInfo(jChild);
+        if(child == null) return false;
+        if(child.getId().length()==0 || !child.getParentId().equals(parent.getId())) return false; //if i'm the user is not the parent fail
+        return childService.deleteChild(child);
     }
 }

@@ -1,30 +1,35 @@
 package it.polito.appinternet.pedibus.service;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import it.polito.appinternet.pedibus.Utils;
 import it.polito.appinternet.pedibus.model.*;
 import it.polito.appinternet.pedibus.repository.ReservationRepository;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ReservationService {
 
     @Autowired
-    ReservationRepository reservationRepo;
+    private ReservationRepository reservationRepo;
     @Autowired
-    LineService lineService;
+    private LineService lineService;
     @Autowired
-    ChildService childService;
+    private ChildService childService;
     @Autowired
-    UserService userService;
+    private UserService userService;
 
     public Reservation findById(String reservation_id){
         return reservationRepo.findById(reservation_id);
     }
+    public List<Reservation> findByChildId(String childId){return reservationRepo.findByChild(childId);}
 
     /**
      * Manual insert to repo: no insert on parent or stop is done here.
@@ -47,7 +52,6 @@ public class ReservationService {
         else{
             return null;
         }
-
     }
 
     @SuppressWarnings("Duplicates")
@@ -92,6 +96,16 @@ public class ReservationService {
         return Long.getLong(r.getId());
     }
 
+    public Long addReservation(Reservation reservation){
+        Child child = childService.findById(reservation.getChild());
+        return addReservation(reservation.getLineName(),
+                reservation.getReservationDate(),
+                child.getRegistrationNumber(),
+                reservation.getStopName(),
+                reservation.isFlagGoing(),
+                reservation.isPresent());
+    }
+
     @SuppressWarnings("Duplicates")
     @Transactional
     public Long updateReservation(String line_name, long date, String reservation_id, Reservation newRes){
@@ -121,9 +135,16 @@ public class ReservationService {
         return Long.valueOf(1);
     }
 
+    @Transactional
+    public Long deleteReservation(Reservation reservation){
+        // Reservation res = findByLineNameAndReservationDateAndFlagGoingAndChild(reservation.getLineName(),reservation.getReservationDate(),reservation.isFlagGoing(),reservation.getChild());
+        // if(res == null) return new Long(-1);
+        return deleteReservation(reservation.getLineName(), reservation.getReservationDate(), reservation.getId());
+    }
+
     @SuppressWarnings("Duplicates")
     @Transactional
-    public Long deleteReservation(@PathVariable String line_name, @PathVariable long date, @PathVariable String reservation_id){
+    public Long deleteReservation(String line_name, long date, String reservation_id){
         Reservation reservation = reservationRepo.findById(reservation_id);
         if (reservation == null){
             return new Long(-1);
@@ -156,6 +177,61 @@ public class ReservationService {
 
     public List<Reservation> findByLineNameAndReservationDateAndFlagGoing(String line_name, long date, boolean isFlagGoing) {
         return reservationRepo.findByLineNameAndReservationDateAndFlagGoing(line_name,date,isFlagGoing);
+    }
+
+    public Reservation findByLineNameAndReservationDateAndFlagGoingAndChild(String lineName, long date, boolean isFlagGoing, String childId){
+        return reservationRepo.findByLineNameAndReservationDateAndFlagGoingAndChild(lineName,date,isFlagGoing,childId);
+    }
+
+    @SuppressWarnings("Duplicates")
+    public JSONObject encapsulateChildReservations(List<Reservation> resList,Child child, User parent) {
+        JSONObject resJson = new JSONObject();
+        JSONArray resArray = new JSONArray();
+        List<Reservation> backRes = resList.stream()
+                .filter(r->!r.isFlagGoing())
+                .collect(Collectors.toList());
+        resList.stream()
+                .filter(res->res.isFlagGoing())
+                .forEach(res->{
+                    JSONObject tmpJson = new JSONObject();
+                    Stop stop = lineService.getStopByLineNameAndRideDateAndStopName(res.getLineName(),res.getReservationDate(),res.getStopName());
+                    tmpJson.put("lineName",res.getLineName());
+                    tmpJson.put("child",child.getRegistrationNumber());
+                    tmpJson.put("parent",parent.getEmail());
+                    tmpJson.put("rideDate",res.getReservationDate());
+                    JSONObject stopA = new JSONObject();
+                    stopA.put("stopName",res.getStopName());
+                    stopA.put("time",stop.getTime());
+                    tmpJson.put("stopA",stopA);
+                    Reservation resB = backRes.stream()
+                            .filter(r->Utils.myCompareUnixDate(r.getReservationDate(),res.getReservationDate())==0)
+                            .findAny().get();
+                    if(resB!=null){
+                        JSONObject stopR = new JSONObject();
+                        stop = lineService.getStopByLineNameAndRideDateAndStopName(res.getLineName(),res.getReservationDate(),resB.getStopName());
+                        stopR.put("stopName",resB.getStopName());
+                        stopR.put("time",stop.getTime());
+                        tmpJson.put("stopR",stopR);
+                        backRes.remove(resB);
+                    }
+                    resArray.put(tmpJson);
+                });
+        backRes.stream()
+                .forEach(res->{
+                    JSONObject tmpJson = new JSONObject();
+                    Stop stop = lineService.getStopByLineNameAndRideDateAndStopName(res.getLineName(),res.getReservationDate(),res.getStopName());
+                    JSONObject stopR = new JSONObject();
+                    tmpJson.put("lineName",res.getLineName());
+                    tmpJson.put("child",child.getRegistrationNumber());
+                    tmpJson.put("parent",parent.getEmail());
+                    tmpJson.put("rideDate",res.getReservationDate());
+                    stopR.put("stopName",res.getStopName());
+                    stopR.put("time",stop.getTime());
+                    tmpJson.put("stopR",stopR);
+                    resArray.put(tmpJson);
+                });
+        resJson.put("reservations",resArray);
+        return resJson;
     }
 
 //    @SuppressWarnings("Duplicates")

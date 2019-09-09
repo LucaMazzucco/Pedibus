@@ -1,46 +1,68 @@
-<div fxLayoutAlign="center center" fxLayout="column" fxLayoutGap="10px" fxFlexFill>
-  <mat-card *ngFor="let res of reservations; let i = index" class="mat-card-style">
-    <mat-card-header>
-      <div mat-card-avatar class="booking-card-header"></div>
-      <mat-card-title>{{res.linename}}</mat-card-title>
-      <mat-card-subtitle>{{res.date}}</mat-card-subtitle>
+<div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px" fxFlexFill>
+  <mat-card fxFlex="40" fxFlex.xs="100" class="mat-elevation-z6 mat-card-style" >
+    <mat-card-header fxLayout="row">
+      <div fxFlex="30" mat-card-avatar>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+          <mat-icon>menu</mat-icon>
+        </button>
+      </div>
+      <mat-card-title fxFlex="70">
+            {{ 'Prossime corse di ' + currentChild.name}}
+      </mat-card-title>
     </mat-card-header>
-    <mat-card-content fxLayout="column">
-      <mat-form-field>
-        <mat-label>Fermata di andata</mat-label>
-        <mat-select [disabled]="isDisabled[i]" [(value)]="res.selectedA.stopName">
-          <mat-option *ngFor="let stop of res.stopsA" [value]="stop.stopName">
-            {{stop.stopName}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>Fermata di ritorno</mat-label>
-        <mat-select [disabled]="isDisabled[i]" [(value)]="res.selectedR.stopName">
-          <mat-option *ngFor="let stop of res.stopsR" [value]="stop.stopName">
-            {{stop.stopName}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+    <mat-divider></mat-divider>
+    <mat-card-content class="card-content" [style.overflow]="'auto'" [style.height.px]="'600'">
+        <mat-card *ngFor="let res of reservations; let i = index" class="mat-card-style mat-elevation-z1">
+          <mat-card-header>
+            <div mat-card-avatar class="booking-card-header"></div>
+            <mat-card-title>{{res.linename}}</mat-card-title>
+            <mat-card-subtitle>{{res.rideDate*1000 | date: 'shortDate'}}</mat-card-subtitle>
+          </mat-card-header>
+            <mat-divider></mat-divider>
+          <mat-card-content fxLayout="column">
+            <mat-form-field>
+              <mat-label>Fermata di andata</mat-label>
+              <mat-select [disabled]="isDisabled[i]" [(value)]="res.stopA.stopName">
+                <mat-option *ngFor="let stop of res.stopA" [value]="stopA.stopName">
+                  {{stop.stopName}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field>
+              <mat-label>Fermata di ritorno</mat-label>
+              <mat-select [disabled]="isDisabled[i]" [(value)]="res.stopR.stopName">
+                <mat-option *ngFor="let stop of res.stopsR" [value]="stop.stopName">
+                  {{stop.stopName}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </mat-card-content>
+          <mat-card-actions fxLayout="row">
+            <button mat-button fxFlex="30" (click)="enableEditing(i)">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-button fxFlex="30">
+              <mat-icon>save</mat-icon>
+            </button>
+            <button mat-button fxFlex="30" (click)="deleteReservation(i)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-card-actions>
+        </mat-card>
+        <div fxLayout="row" fxLayoutAlign="end start">
+          <button class="floating-button" mat-fab aria-label="Add reservation" (click)="openDialog(newReservation)">
+            <mat-icon>add</mat-icon>
+          </button>
+        </div>
     </mat-card-content>
-    <mat-card-actions fxLayout="row">
-      <button mat-button fxFlex="30" (click)="enableEditing(i)">
-        <mat-icon>edit</mat-icon>
-      </button>
-      <button mat-button fxFlex="30">
-        <mat-icon>save</mat-icon>
-      </button>
-      <button mat-button fxFlex="30" (click)="deleteReservation(i)">
-        <mat-icon>delete</mat-icon>
-      </button>
-    </mat-card-actions>
   </mat-card>
-  <div fxLayout="row" fxLayoutAlign="start start">
-    <button mat-fab aria-label="Add reservation" (click)="openDialog(newReservation)">
-      <mat-icon>add</mat-icon>
-    </button>
-  </div>
 </div>
+
+<mat-menu #menu="matMenu" yPosition="above" xPosition="before">
+  <button mat-menu-item *ngFor="let child of children" (click)="selectChild(child)">
+    <span>{{child.name + child.surname}}</span>
+  </button>
+</mat-menu>
 
 <ng-template #newReservation>
     <mat-card class="mat-card-light-style" fxLayout="column" fxLayoutGap="20px">

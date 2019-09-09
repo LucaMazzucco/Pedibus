@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { Ride } from '../model/ride';
 import {catchError, first} from 'rxjs/operators';
-import { Person } from '../model/person';
+import { Child } from '../model/child';
 import { Reservation } from "../model/reservation";
 import {Message} from "../model/message";
 import {Availability} from "../model/availability";
@@ -32,14 +32,14 @@ export class DataService {
     return this.http.put<Ride>(REST_URL + "/putLineAttendance/" + lineName + "/ride", {ride}).pipe(first()).subscribe(data => console.log(data));
   }
 
-  putPersonAttendance(rideDate: Date, lineName: String, isBack: boolean, person: Person){
+  putPersonAttendance(rideDate: Date, lineName: String, isBack: boolean, person: Child){
     return this.http.put(REST_URL + "/putLineAttendance/" + lineName + "/ride/user", {rideDate, isBack, person}).pipe(first()).subscribe(data => console.log(data))
   }
 
   //TODO: Da implementare Backend
 
-  getReservations(): Observable<Reservation[]>{
-    return this.http.get<Reservation[]>(FAKE_URL + '/reservations');
+  getReservations(id: string): Observable<Reservation[]>{
+    return this.http.get<Reservation[]>('http://localhost:3004' + '/reservations');
   }
 
   getMessages(email: String): Observable<Message[]>{
@@ -78,4 +78,7 @@ export class DataService {
     return this.http.post<Shift>(REST_URL + '/deleteShift', sh);
   }
 
+  getChildren(email: String){
+    return this.http.get<Child[]>(FAKE_URL + '/children');
+  }
 }

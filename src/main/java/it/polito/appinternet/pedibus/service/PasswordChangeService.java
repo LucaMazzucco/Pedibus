@@ -41,7 +41,7 @@ public class PasswordChangeService {
             if(!pcr.getExpirationDate().before(utcDate)){
                 return 1;
             }
-            User user = userService.userGet(pcr.getUser().getEmail());
+            User user = userService.userFindByEmail(pcr.getUser().getEmail());
             if(user==null){
                 return -2;
             }

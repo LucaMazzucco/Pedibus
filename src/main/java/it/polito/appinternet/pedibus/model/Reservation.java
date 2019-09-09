@@ -1,14 +1,10 @@
 package it.polito.appinternet.pedibus.model;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.Date;
 
 @Document(collection = "reservations")
 @NoArgsConstructor
@@ -22,7 +18,7 @@ public class Reservation {
     private String stopName;
     private String child;
     private String parent;
-    private long reservationDate;
+    private long reservationDate; //Non mandare a backend
     //true = da stopName a scuola; false = da scuola a stopName
     private boolean flagGoing;
     private boolean isPresent;
