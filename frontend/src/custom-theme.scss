@@ -183,8 +183,21 @@ $custom-theme: map_merge($custom-theme, (background: $background));
     }
 }
 
+@mixin children-component-style($custom-theme){
+    $primary: map-get($custom-theme, primary);
+    .mat-card-inner-style{
+        background-color:  mat-color($primary,100);
+    }
+    .mat-card-light-style{
+        background-color: mat-color($primary,100);
+
+    }
+
+}
+
 @include angular-material-theme($custom-theme)
 @include attendance-component-style($custom-theme)
 @include booking-component-style($custom-theme)
 @include messages-component-style($custom-theme)
 @include availability-component-style($custom-theme)
+@include children-component-style($custom-theme)

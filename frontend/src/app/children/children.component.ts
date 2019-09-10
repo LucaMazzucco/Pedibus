@@ -3,10 +3,9 @@ import {DataService} from "../services/data.service";
 import {TitleService} from "../services/title.service";
 import {MatDialog, MatDialogConfig, MatSnackBar} from "@angular/material";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {Passenger} from "../model/passenger";
 import {Line} from "../model/line";
-import {Stop} from "../model/stop";
 import {Child} from "../model/child";
+import {filter} from "rxjs/operators";
 
 @Component({
   selector: 'app-children',
@@ -32,7 +31,17 @@ export class ChildrenComponent implements OnInit {
   ngOnInit() {
     this.titleservice.changeTitle('I tuoi bambini');
     this.isDisabled = []
-    this.children = []
+    this.dataService.getChildren(localStorage.getItem('current_user')).pipe(filter(result => !!result))
+        .subscribe(result => {
+          this.children = result
+          console.log(this.children)
+        },
+        error => {
+          console.log('Sono in errore')
+          console.log(error)
+          this.children = []
+        }
+    )
     this.selectNameForm = this._formBuilder.group({
       selectedName: ['', Validators.required],
       selectedSurname: ['', Validators.required],

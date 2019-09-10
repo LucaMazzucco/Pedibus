@@ -83,6 +83,7 @@ const routes: Routes = [
     ReactiveFormsModule,
     MatStepperModule,
     MatIconModule,
+    FormsModule,
     MatExpansionModule,
     LayoutModule,
     MatBadgeModule,
