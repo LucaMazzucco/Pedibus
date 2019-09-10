@@ -19,14 +19,13 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class LineService {
     @Autowired
-    LineRepository lineRepo;
+    private LineRepository lineRepo;
     @Autowired
-    ChildService childService;
+    private ChildService childService;
     @Autowired
-    ReservationService reservationService;
+    private ReservationService reservationService;
     @Autowired
-    UserService userService;
-
+    private UserService userService;
 
     public String insertLine(Line l) {
         //TO DO: Controlli sulle stop della line da inserire e persone se presenti

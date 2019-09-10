@@ -33,7 +33,7 @@ public class UserService {
     @Autowired
     private UserRepository userRepo;
     @Autowired
-    private LineRepository lineRepository;
+    private LineService lineService;
     @Autowired
     private ConfirmationTokenRepository confirmationTokenRepository;
     @Autowired
@@ -66,7 +66,6 @@ public class UserService {
     public User userFindById(String id){ return userRepo.findById(id).get();}
 
     public ResponseEntity userLogin(String username,String password){
-        List<User> users = userRepo.findAll();
         Optional<User> userOptional = userRepo.findByEmail(username);
         if(!userOptional.isPresent()){
             return new ResponseEntity("Invalid username/password supplied",HttpStatus.NOT_FOUND);
@@ -84,6 +83,7 @@ public class UserService {
         JSONObject res = new JSONObject();
         res.put("token", token);
         res.put("email", user.getEmail());
+        res.put("roles", user.getRoles().toString());
         return new ResponseEntity<>(res.toString(),HttpStatus.OK);
     }
 
@@ -151,9 +151,9 @@ public class UserService {
         userRepo.insert(newUser);
         if(role.equals("Amministratore")){
             String line = getLineFromToken(newUser.getEmail());
-            Line updatingLine = lineRepository.findByLineName(line);
+            Line updatingLine = lineService.findByLineName(line);
             updatingLine.getAdmins().add(newUser.getEmail());
-            lineRepository.save(updatingLine);
+            lineService.saveLine(updatingLine);
         }
 
 
@@ -229,7 +229,7 @@ public class UserService {
         if(username == null)
             return -2;
 
-        Line line = lineRepository.findByLineName(line_name);
+        Line line = lineService.findByLineName(line_name);
 
         if(line == null)
             return -3;
@@ -245,7 +245,7 @@ public class UserService {
             user.getAdminLines().add(line_name);
             line.getAdmins().add(user.getEmail());
             userRepo.save(user);
-            lineRepository.save(line);
+            lineService.saveLine(line);
 
         }
         else if(user.getAdminLines().contains(line_name) && line.getAdmins().contains(user.getEmail())){
@@ -256,7 +256,7 @@ public class UserService {
                 user.getRoles().add("ROLE_USER");
             }
             userRepo.save(user);
-            lineRepository.save(line);
+            lineService.saveLine(line);
         }
         return 0;
     }
@@ -283,9 +283,9 @@ public class UserService {
         }
         JSONObject jsonObject = new JSONObject();
         JSONArray children = new JSONArray();
-        if(!user.isParent()){
+        /*if(!user.isParent()){
             return null;
-        }
+        }*/
         user.getChildren().stream()
                 .map(child->childService.findById(child))
                 .map(child->childService.encapsulateChildInfo(child))
@@ -302,9 +302,10 @@ public class UserService {
         JSONObject jChild = new JSONObject(payload);
         Child child = childService.decapsulateChildInfo(jChild);
         if(child == null) return false; //Bad Json
-        if(child.getId().length()>0 || child.getParentId().length()>0) return false; //Already exist
+        if(child.getId() != null || child.getParentId().length()>0) return false; //Already exist
         child.setParentId(parent.getId());
         child = childService.insertChild(child);
+        if(child == null) return false;
         parent.getChildren().add(child.getId());
         userSave(parent);
         return true;

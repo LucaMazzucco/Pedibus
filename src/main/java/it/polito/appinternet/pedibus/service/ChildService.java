@@ -101,7 +101,13 @@ public class ChildService {
                 || !jChild.has("registrationNumber")
         ) return null;
         Child child = findByRegistrationNumber(jChild.getString("registrationNumber"));
-        if(child!=null) return child;
+        if(child!=null){
+            child.setName(jChild.getString("name"));
+            child.setSurname(jChild.getString("surname"));
+            if(jChild.has("defaultLine")) child.setDefaultLine(jChild.getString("defaultLine"));
+            if(jChild.has("defaultStop")) child.setDefaultStop(jChild.getString("defaultStop"));
+            return child;
+        }
         child = new Child(jChild.getString("name"),
                 jChild.getString("surname"),
                 jChild.getString("registrationNumber"),
