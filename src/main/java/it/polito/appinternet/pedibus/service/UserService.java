@@ -283,9 +283,9 @@ public class UserService {
         }
         JSONObject jsonObject = new JSONObject();
         JSONArray children = new JSONArray();
-        if(!user.isParent()){
+        /*if(!user.isParent()){
             return null;
-        }
+        }*/
         user.getChildren().stream()
                 .map(child->childService.findById(child))
                 .map(child->childService.encapsulateChildInfo(child))
