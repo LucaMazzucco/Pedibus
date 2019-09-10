@@ -24,9 +24,6 @@ public class Child {
         this.surname = surname;
         this.registrationNumber = registrationNumber;
         this.parentId = parentId;
-        this.id = "";
-        this.defaultStop = "";
-        this.defaultLine = "";
     }
     public Child(String name, String surname, String registrationNumber, String parentId,
                  String defaultLine, String defaultStop) {
@@ -34,7 +31,6 @@ public class Child {
         this.surname = surname;
         this.registrationNumber = registrationNumber;
         this.parentId = parentId;
-        this.id = "";
         this.defaultLine = defaultLine;
         this.defaultStop = defaultStop;
     }
