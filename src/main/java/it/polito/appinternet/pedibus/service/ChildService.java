@@ -23,8 +23,6 @@ public class ChildService {
     private UserService userService;
     @Autowired
     private ReservationService reservationService;
-    @Autowired
-    private LineService lineService;
 
 
     public Child findByRegistrationNumber(String registrationNumber) {
@@ -87,6 +85,8 @@ public class ChildService {
         jsonChild.put("name",child.getName());
         jsonChild.put("surname", child.getSurname());
         jsonChild.put("registrationNumber", child.getRegistrationNumber());
+        jsonChild.put("defaultLine", child.getDefaultLine());
+        jsonChild.put("defaultStop", child.getDefaultStop());
         return jsonChild;
     }
 
@@ -106,6 +106,8 @@ public class ChildService {
                 jChild.getString("surname"),
                 jChild.getString("registrationNumber"),
                 "");
+        if(jChild.has("defaultLine")) child.setDefaultLine(jChild.getString("defaultLine"));
+        if(jChild.has("defaultStop")) child.setDefaultStop(jChild.getString("defaultStop"));
         return child;
     }
 

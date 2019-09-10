@@ -35,6 +35,7 @@ import {MatStepperModule} from '@angular/material/stepper';
 import {MatRadioModule} from '@angular/material/radio';
 import { ShiftComponent } from './shift/shift.component';
 import { RegisterAdminComponent } from './register-admin/register-admin.component';
+import { ChildrenComponent } from './children/children.component';
 
 
 //import { AdministrationComponent } from './administration/administration.component';
@@ -51,6 +52,7 @@ const routes: Routes = [
   { path: 'disponibilita', component: AvailabilityComponent},
   { path: 'turni', component: ShiftComponent},
   { path: 'messaggi', component: MessagesComponent},
+  { path: 'bambini', component: ChildrenComponent},
   { path: '', component: LoginComponent },
   { path: '**', redirectTo: '' }
 ];
@@ -65,7 +67,8 @@ const routes: Routes = [
     MessagesComponent,
     AvailabilityComponent,
     RegisterAdminComponent,
-      ShiftComponent
+      ShiftComponent,
+      ChildrenComponent
   ],
   imports: [
     BrowserModule,

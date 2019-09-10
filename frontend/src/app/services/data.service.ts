@@ -4,11 +4,12 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { Ride } from '../model/ride';
 import {catchError, first} from 'rxjs/operators';
-import { Child } from '../model/child';
+import { Passenger } from '../model/passenger';
 import { Reservation } from "../model/reservation";
 import {Message} from "../model/message";
 import {Availability} from "../model/availability";
 import {Shift} from "../model/shift";
+import {Child} from "../model/child";
 
 const REST_URL = 'http://localhost:8080';
 const FAKE_URL = 'http://localhost:3000';
@@ -32,7 +33,7 @@ export class DataService {
     return this.http.put<Ride>(REST_URL + "/putLineAttendance/" + lineName + "/ride", {ride}).pipe(first()).subscribe(data => console.log(data));
   }
 
-  putPersonAttendance(rideDate: Date, lineName: String, isBack: boolean, person: Child){
+  putPersonAttendance(rideDate: Date, lineName: String, isBack: boolean, person: Passenger){
     return this.http.put(REST_URL + "/putLineAttendance/" + lineName + "/ride/user", {rideDate, isBack, person}).pipe(first()).subscribe(data => console.log(data))
   }
 
@@ -79,6 +80,14 @@ export class DataService {
   }
 
   getChildren(email: String){
-    return this.http.get<Child[]>(FAKE_URL + '/children');
+    return this.http.get<Passenger[]>(FAKE_URL + '/children');
+  }
+
+  addChild(email: String, ch: Child){
+    return this.http.post<Child>(REST_URL + '/addChild/' + email, ch);
+  }
+
+  getStopsOfLine(lineName: String){
+    return this.http.get<string[]>(REST_URL + '/getStopNames/' + lineName);
   }
 }

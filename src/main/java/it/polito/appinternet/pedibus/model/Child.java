@@ -17,15 +17,29 @@ public class Child {
 
     private String name,surname,registrationNumber;
     private String parentId;
+    private String defaultLine, defaultStop;
 
     public Child(String name, String surname, String registrationNumber, String parentId) {
         this.name = name;
         this.surname = surname;
         this.registrationNumber = registrationNumber;
         this.parentId = parentId;
+        this.id = "";
+        this.defaultStop = "";
+        this.defaultLine = "";
+    }
+    public Child(String name, String surname, String registrationNumber, String parentId,
+                 String defaultLine, String defaultStop) {
+        this.name = name;
+        this.surname = surname;
+        this.registrationNumber = registrationNumber;
+        this.parentId = parentId;
+        this.id = "";
+        this.defaultLine = defaultLine;
+        this.defaultStop = defaultStop;
     }
 //    @JsonCreator
-//    public Child(@JsonProperty("name") String name,
+//    public Passenger(@JsonProperty("name") String name,
 //                 @JsonProperty("surname") String surname,
 //                 @JsonProperty("registrationNumber") String registrationNumber,
 //                 @JsonProperty("parentId") String parentId){

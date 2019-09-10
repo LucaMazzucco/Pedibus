@@ -1,5 +1,6 @@
 package it.polito.appinternet.pedibus.controller;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polito.appinternet.pedibus.model.*;
 import it.polito.appinternet.pedibus.service.LineService;
@@ -16,6 +17,8 @@ import java.io.*;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.springframework.http.ResponseEntity.ok;
 
 @CrossOrigin(origins = "http://localhost:4200/presenze", maxAge = 3600)
 @RestController
@@ -300,5 +303,13 @@ public class LineController {
             lines.put(lineService.encapsulateLine(l));
         }
         return lines.toString();
+    }
+
+    @GetMapping("/getStopNames/{lineName}")
+    public ResponseEntity<String> getStopNamesByLineName(@PathVariable String lineName){
+        if(lineName.length()==0) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        JSONArray stopNames = lineService.getStopNamesByLineName(lineName);
+        if(stopNames== null) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(stopNames.toString(),HttpStatus.OK);
     }
 }

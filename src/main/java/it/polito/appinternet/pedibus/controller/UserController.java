@@ -230,8 +230,8 @@ public class UserController {
         return new ResponseEntity<>(userService.isTokenRight(email, token), HttpStatus.OK);
     }
 
-    @GetMapping("/getChildren/{userEmail}")
-    public ResponseEntity<JSONObject> getChildren(@PathVariable String email){
+    @GetMapping("/getChildren/{email}")
+    public ResponseEntity<String> getChildren(@PathVariable String email){
         if(email.length()==0){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
@@ -239,22 +239,22 @@ public class UserController {
         if(jsonObject==null){
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(jsonObject,HttpStatus.OK);
+        return new ResponseEntity<String>(jsonObject.toString(),HttpStatus.OK);
     }
 
-    @PostMapping("/addChild/{userEmail}")
+    @PostMapping("/addChild/{email}")
     public ResponseEntity addChild(@PathVariable String email, @RequestBody String payload){
         if(payload.length()==0) return new ResponseEntity(HttpStatus.BAD_REQUEST);
         if(userService.userAddChild(email,payload)) return new ResponseEntity(HttpStatus.OK);
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
-    @PutMapping("/editChild/{userEmail}")
+    @PutMapping("/editChild/{email}")
     public ResponseEntity editChild(@PathVariable String email, @RequestBody String payload){
         if(payload.length()==0) return new ResponseEntity(HttpStatus.BAD_REQUEST);
         if(userService.userEditChild(email, payload)) return new ResponseEntity(HttpStatus.OK);
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
-    @PostMapping("/deleteChild/{userEmail}")
+    @PostMapping("/deleteChild/{email}")
     public ResponseEntity deleteChild(@PathVariable String email, @RequestBody String payload){
         if(payload.length()==0) return new ResponseEntity(HttpStatus.BAD_REQUEST);
         if(userService.userDeleteChild(email, payload)) return new ResponseEntity(HttpStatus.OK);

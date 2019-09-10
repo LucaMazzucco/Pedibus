@@ -14,7 +14,7 @@ public class ChildController {
     ChildService childService;
 
     @GetMapping("/getChildReservations/{ssn}")
-    public ResponseEntity<JSONObject> getChildren(@PathVariable String ssn){
+    public ResponseEntity<String> getChildren(@PathVariable String ssn){
         if(ssn.length()==0){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -22,7 +22,7 @@ public class ChildController {
         if(jsonObject==null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(jsonObject,HttpStatus.OK);
+        return new ResponseEntity<String>(jsonObject.toString(),HttpStatus.OK);
     }
 
     @PostMapping("/addChildReservations/{ssn}")
