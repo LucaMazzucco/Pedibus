@@ -235,11 +235,11 @@ public class UserController {
         if(email.length()==0){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        JSONObject jsonObject = userService.userGetChildren(email);
-        if(jsonObject==null){
+        JSONArray jArray = userService.userGetChildren(email);
+        if(jArray==null){
             return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(jsonObject.toString(),HttpStatus.OK);
+        return new ResponseEntity<String>(jArray.toString(),HttpStatus.OK);
     }
 
     @PostMapping("/addChild/{email}")
