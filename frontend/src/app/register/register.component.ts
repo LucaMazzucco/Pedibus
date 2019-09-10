@@ -23,8 +23,8 @@ function checkPasswords(group: FormGroup){
 })
 
 export class RegisterComponent implements OnInit {
-  email: String = '';
-  token: String = '';
+  email: string = '';
+  token: string = '';
   registrationForm: FormGroup;
   checkEmailTaken: Subscription;
   infoMessage: string = '';

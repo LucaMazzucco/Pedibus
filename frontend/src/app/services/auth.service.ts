@@ -69,6 +69,20 @@ export class AuthService {
     return (date.valueOf() > new Date().valueOf());
   }
 
+  isParent(): boolean{
+    return this.getRoles().includes("ROLE_USER");
+  }
+
+  isAdmin() : boolean{
+    return this.getRoles().includes("ROLE_ADMIN");
+  }
+
+  isConductor() : boolean{
+    return this.getRoles().includes("ROLE_CONDUCTOR");
+  }
+
+
+
   getTokenExpirationDate(token: string): Date {
     const decoded = jwt_decode(token);
     if (decoded.exp === undefined) { return null; }

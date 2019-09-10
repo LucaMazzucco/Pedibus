@@ -32,6 +32,17 @@ export class AppComponent implements OnDestroy, OnInit{
   isLogged(): Boolean{
     return this.authService.isLoggedIn();
   }
+  isParent() : Boolean{
+    return this.authService.isParent();
+  }
+
+  isAdmin() : Boolean{
+    return this.authService.isAdmin();
+  }
+
+  isConductor() : Boolean{
+    return this.authService.isConductor();
+  }
 
   logout(): void{
     this.authService.logout();
