@@ -79,8 +79,8 @@ export class DataService {
     return this.http.post<Shift>(REST_URL + '/deleteShift', sh);
   }
 
-  getChildren(email: String){
-    return this.http.get<Passenger[]>(FAKE_URL + '/children');
+  getChildren(email: String): Observable<Child[]>{
+    return this.http.get<Child[]>(REST_URL +'/getChildren/' + email);
   }
 
   addChild(email: String, ch: Child){

@@ -276,12 +276,11 @@ public class UserService {
         return myToken.getLine();
     }
 
-    public JSONObject userGetChildren(String email){
+    public JSONArray userGetChildren(String email){
         User user = userFindByEmail(email);
         if(user == null){
             return null;
         }
-        JSONObject jsonObject = new JSONObject();
         JSONArray children = new JSONArray();
         /*if(!user.isParent()){
             return null;
@@ -290,8 +289,7 @@ public class UserService {
                 .map(child->childService.findById(child))
                 .map(child->childService.encapsulateChildInfo(child))
                 .forEach(children::put);
-        jsonObject.put("children",children);
-        return jsonObject;
+        return children;
     }
 
     @Transactional

@@ -6,20 +6,19 @@
       </mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
-    <mat-card-content class="card-content" [style.overflow]="'auto'" [style.height.px]="'600'">
-      <mat-card *ngFor="let child of children; let i = index" class="mat-card-style mat-elevation-z1">
-        <mat-card-header>
-          <div mat-card-avatar class="booking-card-header"></div>
+    <mat-card-content fxLayoutGap="10px" class="card-content" fxLayout="column" [style.overflow]="'auto'" [style.height.px]="'500'">
+      <mat-card fxFlex="40" *ngFor="let child of children; let i = index" class="mat-card-inner-style mat-elevation-z1">
+        <mat-card-header fxLayout="row">
+          <div mat-card-avatar class="children-card-header"></div>
           <mat-card-title>{{child.name}}</mat-card-title>
           <mat-card-subtitle>{{child.surname}}</mat-card-subtitle>
         </mat-card-header>
-        <mat-divider></mat-divider>
-        <mat-card-content fxLayout="column">
-          <mat-form-field>
+        <mat-card-content fxLayout="row" fxLayoutGap="10px">
+          <mat-form-field fxFlex="30">
             <mat-label>Codice Fiscale</mat-label>
-            <input [disabled]="isDisabled[i]" value="child.registrationNumber" matInput placeholder="Input">
+            <input matInput  [(ngModel)]="children[i].registrationNumber" [disabled]="isDisabled[i]" >
           </mat-form-field>
-          <mat-form-field>
+          <mat-form-field fxFlex="30">
             <mat-label>Linea del Pedibus</mat-label>
             <mat-select [disabled]="isDisabled[i]" [(value)]="child.defaultLine">
               <mat-option *ngFor="let line of lines" [value]="line.lineName">
@@ -27,7 +26,7 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
-          <mat-form-field>
+          <mat-form-field fxFlex="30">
             <mat-label>Fermata più vicina a casa</mat-label>
             <mat-select [disabled]="isDisabled[i]" [(value)]="child.defaultStop">
               <mat-option *ngFor="let stop of stopOfLine" [value]="stop.stopName">
@@ -63,7 +62,7 @@
       Aggiungi tuo figlio al pedibus!
     </mat-card-header>
     <mat-card-content fxFlex="80" fxLayout="column" fxLayoutGap="10px">
-      <mat-vertical-stepper [linear]="isLinear" #stepper>
+      <mat-vertical-stepper class="stepper-layout" [linear]="isLinear" #stepper>
         <mat-step [stepControl]="selectNameForm">
           <form [formGroup]="selectNameForm">
             <ng-template matStepLabel>Inserisci Nome, Cognome e Codice fiscale </ng-template>
