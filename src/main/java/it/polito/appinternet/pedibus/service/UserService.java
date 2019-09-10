@@ -66,7 +66,6 @@ public class UserService {
     public User userFindById(String id){ return userRepo.findById(id).get();}
 
     public ResponseEntity userLogin(String username,String password){
-        List<User> users = userRepo.findAll();
         Optional<User> userOptional = userRepo.findByEmail(username);
         if(!userOptional.isPresent()){
             return new ResponseEntity("Invalid username/password supplied",HttpStatus.NOT_FOUND);
@@ -84,6 +83,7 @@ public class UserService {
         JSONObject res = new JSONObject();
         res.put("token", token);
         res.put("email", user.getEmail());
+        res.put("roles", user.getRoles().toString());
         return new ResponseEntity<>(res.toString(),HttpStatus.OK);
     }
 
