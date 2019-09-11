@@ -14,15 +14,21 @@ export class RoleGuardService implements CanActivate {
     console.log(this.auth.isLoggedIn())
     const expectedRole = route.data.expectedRole;
     var flag = false;
+    console.log(expectedRole)
+    console.log(this.auth.getRoles())
     expectedRole.toString().split(' ')
         .forEach(s=> {
+          console.log(s.toString())
           if(this.auth.getRoles().includes(s.toString())){
             flag = true;
           }
         });
     if (!flag || !this.auth.isLoggedIn()) {
       this.router.navigate(['login']);
+      console.log("false")
       return false;
+
     }
+    console.log("true")
     return true;
   }}

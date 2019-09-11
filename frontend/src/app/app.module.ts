@@ -44,7 +44,7 @@ import { ChildrenComponent } from './children/children.component';
 const routes: Routes = [
   { path: 'presenze',
     component: AttendanceComponent,
-    canActivate: [RoleGuard],
+    canActivate: [AuthGuard],
     data: {
       expectedRole: 'ROLE_ADMIN ROLE_CONDUCTOR'
     }
@@ -59,31 +59,31 @@ const routes: Routes = [
     canActivate:[AuthGuard] },
   { path: 'registerAdmin',
     component: RegisterAdminComponent,
-    canActivate: [RoleGuard],
+    canActivate: [AuthGuard],
     data: {
       expectedRole: 'ROLE_ADMIN'
     }},
   { path: 'disponibilita',
     component: AvailabilityComponent,
-    canActivate: [RoleGuard],
+    canActivate: [AuthGuard],
     data: {
       expectedRole: 'ROLE_ADMIN ROLE_CONDUCTOR'
     }},
   { path: 'turni',
     component: ShiftComponent,
-    canActivate: [RoleGuard],
+    canActivate: [AuthGuard],
     data: {
       expectedRole: 'ROLE_ADMIN ROLE_CONDUCTOR'
     }},
   { path: 'messaggi',
     component: MessagesComponent,
-    canActivate: [RoleGuard],
+    canActivate: [AuthGuard],
     data: {
-      expectedRole: 'ROLE_ADMIN ROLE_CONDUCTOR ROLE_USER'
+      expectedRole: 'ROLE_ADMIN ROLE_CONDUCTOR'
     }},
   { path: 'bambini',
     component: ChildrenComponent,
-    canActivate: [RoleGuard],
+    canActivate: [AuthGuard],
     data: {
       expectedRole: 'ROLE_ADMIN ROLE_USER'
     }},
