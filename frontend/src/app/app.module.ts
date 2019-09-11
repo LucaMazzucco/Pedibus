@@ -27,6 +27,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatCheckboxModule} from "@angular/material";
 import {AuthguardService as AuthGuard} from "./services/authguard.service";
+import {RoleGuardService as RoleGuard} from "./services/roleguard.service";
 import { BookingComponent } from './booking/booking.component';
 import {MatBadgeModule} from '@angular/material/badge';
 import { MessagesComponent } from './messages/messages.component';
@@ -43,30 +44,49 @@ import { ChildrenComponent } from './children/children.component';
 const routes: Routes = [
   { path: 'presenze',
     component: AttendanceComponent,
-    canActivate:[AuthGuard]
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: 'ROLE_ADMIN ROLE_CONDUCTOR'
+    }
   },
   { path: 'login', component: LoginComponent},
   { path: 'prenotazioni',
     component: BookingComponent,
-    canActivate:[AuthGuard]},
+
+  },
   { path: 'register/:email/:UUID',
     component: RegisterComponent,
     canActivate:[AuthGuard] },
   { path: 'registerAdmin',
     component: RegisterAdminComponent,
-    canActivate:[AuthGuard]},
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: 'ROLE_ADMIN'
+    }},
   { path: 'disponibilita',
     component: AvailabilityComponent,
-    canActivate:[AuthGuard]},
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: 'ROLE_ADMIN ROLE_CONDUCTOR'
+    }},
   { path: 'turni',
     component: ShiftComponent,
-    canActivate:[AuthGuard]},
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: 'ROLE_ADMIN ROLE_CONDUCTOR'
+    }},
   { path: 'messaggi',
     component: MessagesComponent,
-    canActivate:[AuthGuard]},
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: 'ROLE_ADMIN ROLE_CONDUCTOR ROLE_USER'
+    }},
   { path: 'bambini',
     component: ChildrenComponent,
-    canActivate:[AuthGuard]},
+    canActivate: [RoleGuard],
+    data: {
+      expectedRole: 'ROLE_ADMIN ROLE_USER'
+    }},
   { path: '', component: LoginComponent },
   { path: '**', redirectTo: '' }
 ];
