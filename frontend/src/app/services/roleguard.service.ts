@@ -1,0 +1,28 @@
+import { Injectable } from '@angular/core';
+import {
+  Router,
+  CanActivate,
+  ActivatedRouteSnapshot
+} from '@angular/router';
+import { AuthService } from './auth.service';
+import decode from 'jwt-decode';@Injectable()
+export class RoleGuardService implements CanActivate {
+  constructor(public auth: AuthService, public router: Router) {}
+
+  canActivate(route: ActivatedRouteSnapshot): boolean {    // this will be passed from the route config
+    // on the data property
+    console.log(this.auth.isLoggedIn())
+    const expectedRole = route.data.expectedRole;
+    var flag = false;
+    expectedRole.toString().split(' ')
+        .forEach(s=> {
+          if(this.auth.getRoles().includes(s.toString())){
+            flag = true;
+          }
+        });
+    if (!flag || !this.auth.isLoggedIn()) {
+      this.router.navigate(['login']);
+      return false;
+    }
+    return true;
+  }}
