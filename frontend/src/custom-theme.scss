@@ -195,8 +195,16 @@ $custom-theme: map_merge($custom-theme, (background: $background));
 
 }
 
+@mixin app-component-style($custom-theme){
+    $primary: map-get($custom-theme, primary);
+    .second-navbar{
+        background-color: mat-color($primary, 400);
+    }
+}
+
 @include angular-material-theme($custom-theme)
 @include attendance-component-style($custom-theme)
+@include app-component-style($custom-theme)
 @include booking-component-style($custom-theme)
 @include messages-component-style($custom-theme)
 @include availability-component-style($custom-theme)

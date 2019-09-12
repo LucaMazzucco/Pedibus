@@ -1,3 +1,5 @@
+@import '~@angular/material/theming';
+
 [hidden] { display: none !important;}
 .full-container{
     display: flex;
@@ -31,3 +33,4 @@
        `<body>` to be our scrolling element for mobile layouts. */
     flex: 1 0 auto;
   }
+

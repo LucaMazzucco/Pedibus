@@ -7,27 +7,91 @@
             <mat-icon [matBadge]="unreadMessages" matBadgeColor="warn" fxLayoutAlign="center center">notification_important</mat-icon>
           </button>
         </mat-toolbar-row>
-        <mat-toolbar-row fxLayoutAlign="center center">
-              <h1 class="app-name">{{subtitle}}</h1>
-        </mat-toolbar-row>
       </mat-toolbar>
       <mat-sidenav-container class="fixed-sidenav-container">
         <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
           <mat-nav-list>
-            <a mat-list-item routerLink="/registerAdmin" routerLinkActive="active" [hidden]="!isLogged()">Aggiungi Utente</a>
+            <a mat-list-item routerLink="/registerAdmin" routerLinkActive="active" [hidden]="!isLogged()">
+              <div fxFlex="10">
+                <mat-icon>add</mat-icon>
+              </div>
+              <div fxFlex="10">
+              </div>
+              <div>
+                Aggiungi Utente
+              </div>
+              </a>
             <a mat-list-item routerLink="/login" routerLinkActive="active" [hidden]="isLogged()">Login</a>
-            <a mat-list-item routerLink="/presenze" routerLinkActive="active" [hidden]="!isLogged()">Presenze</a>
-            <a mat-list-item routerLink="/prenotazioni" routerLinkActive="active" [hidden]="!isLogged()">Prenotazioni</a>
-            <a mat-list-item routerLink="/disponibilita" routerLinkActive="active" [hidden]="!isLogged()">Disponibilità</a>
-            <a mat-list-item routerLink="/turni" routerLinkActive="active" [hidden]="!isLogged()">Gestione Turni</a>
-            <a mat-list-item routerLink="/rolesManagement" routerLinkActive="active" [hidden]="!isLogged()">Promuovi accompagnatori</a>
-            <a mat-list-item routerLink="/bambini" routerLinkActive="active" [hidden]="!isLogged()">Aggiungi Bambino</a>
-            <a mat-list-item (click)="logout()" [hidden]="!isLogged()">Logout</a>
+            <a mat-list-item routerLink="/presenze" routerLinkActive="active" [hidden]="!isLogged()">
+              <div fxFlex="10">
+                <mat-icon>check_circle</mat-icon>
+              </div>
+              <div fxFlex="10"></div>
+              <div fxFlex="80">Presenze</div>
+              </a>
+            <a mat-list-item routerLink="/prenotazioni" routerLinkActive="active" [hidden]="!isLogged()">
+              <div fxFlex="10">
+                <mat-icon>pan_tool</mat-icon>
+              </div>
+              <div fxFlex="10"></div>
+              <div fxFlex="80">Prenotazioni</div>
+              </a>
+            <a mat-list-item routerLink="/disponibilita" routerLinkActive="active" [hidden]="!isLogged()">
+              <div fxFlex="10">
+                <mat-icon>event_available</mat-icon>
+              </div>
+              <div fxFlex="10">
+              </div>
+              <div fxFlex="80">
+                Disponibilità
+              </div>
+              </a>
+            <a mat-list-item routerLink="/turni" routerLinkActive="active" [hidden]="!isLogged()">
+              <div fxFlex="10">
+                <mat-icon>watch_later</mat-icon>
+              </div>
+              <div fxFlex="10"></div>
+              <div fxFlex="80">
+                Gestione Turni
+              </div>
+              </a>
+            <a mat-list-item routerLink="/rolesManagement" routerLinkActive="active" [hidden]="!isLogged()">
+              <div fxFlex="10">
+                <mat-icon>thumb_up_alt</mat-icon>
+              </div>
+              <div fxFlex="10"></div>
+              <div fxFlex="80">
+                Promuovi accompagnatori
+              </div>
+              </a>
+            <a mat-list-item routerLink="/bambini" routerLinkActive="active" [hidden]="!isLogged()">
+              <div fxFlex="10">
+                <mat-icon>child_care</mat-icon>
+              </div>
+              <div fxFlex="10"></div>
+              <div fxFlex="80">
+                Aggiungi Bambino
+              </div>
+              </a>
+            <a mat-list-item (click)="logout()" [hidden]="!isLogged()">
+              <div fxFlex="10">
+                <mat-icon>exit_to_app</mat-icon>
+              </div>
+              <div fxFlex="10"></div>
+              <div fxFlex="80">
+                Logout
+              </div>
+              </a>
           </mat-nav-list>
         </mat-sidenav>
 
-        <mat-sidenav-content fxLayoutGap="10px">
-          <router-outlet (activate)="updateNotifications()"> </router-outlet>
+        <mat-sidenav-content fxLayout="column" fxLayoutGap="10px">
+          <mat-toolbar fxFlex="15" class="second-navbar">
+            <mat-toolbar-row fxLayoutAlign="center center" >
+              <h1 class="app-name">{{subtitle}}</h1>
+            </mat-toolbar-row>
+          </mat-toolbar>
+          <router-outlet fxFlex="75" (activate)="updateNotifications()"> </router-outlet>
         </mat-sidenav-content>
       </mat-sidenav-container>
 </div>
