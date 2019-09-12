@@ -73,7 +73,7 @@
                 Aggiungi Bambino
               </div>
               </a>
-            <a mat-list-item (click)="logout()" [hidden]="!isLogged()">
+            <a mat-list-item (click)="logout(); snav.toggle()" [hidden]="!isLogged()">
               <div fxFlex="10">
                 <mat-icon>exit_to_app</mat-icon>
               </div>
@@ -86,12 +86,12 @@
         </mat-sidenav>
 
         <mat-sidenav-content fxLayout="column" fxLayoutGap="10px">
-          <mat-toolbar fxFlex="15" class="second-navbar">
-            <mat-toolbar-row fxLayoutAlign="center center" >
+          <div fxFlex="10" class="second-navbar">
+            <div fxLayoutAlign="center center" >
               <h1 class="app-name">{{subtitle}}</h1>
-            </mat-toolbar-row>
-          </mat-toolbar>
-          <router-outlet fxFlex="75" (activate)="updateNotifications()"> </router-outlet>
+            </div>
+          </div>
+          <router-outlet (activate)="updateNotifications()"> </router-outlet>
         </mat-sidenav-content>
       </mat-sidenav-container>
 </div>
