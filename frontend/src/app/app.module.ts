@@ -58,6 +58,7 @@ const routes: Routes = [
   { path: 'register/:email/:UUID',
     component: RegisterComponent,
     canActivate:[AuthGuard] },
+
   { path: 'registerAdmin',
     component: RegisterAdminComponent,
     canActivate: [AuthGuard],
