@@ -25,6 +25,29 @@
             "reservations": []
           }
         ]
+      },
+      {
+        "flagGoing":"false",
+        "rideDate":"1567603642",
+        "confirmed": false,
+        "companions": [],
+        "stops": [
+          {
+            "stopName":"Stop1",
+            "time": "1567603642",
+            "reservations": []
+          },
+          {
+            "stopName":"Stop2",
+            "time": "1567603742",
+            "reservations": []
+          },
+          {
+            "stopName":"Stop3",
+            "time": "1567603842",
+            "reservations": []
+          }
+        ]
       }
     ]
   },
@@ -34,27 +57,51 @@
     "rides": [
       {
         "flagGoing":"true",
-        "rideDate":"1573547400",
+        "rideDate":"1567603642",
         "confirmed": false,
-        "companions": ["admin@admin.com"],
+        "companions": [],
         "stops": [
           {
             "stopName":"Stop1",
-            "time": "1573547400",
+            "time": "1567603642",
             "reservations": []
           },
           {
             "stopName":"Stop2",
-            "time": "1573549200",
+            "time": "1567603742",
             "reservations": []
           },
           {
             "stopName":"Stop3",
-            "time": "1573550000",
+            "time": "1567603842",
+            "reservations": []
+          }
+        ]
+      },
+      {
+        "flagGoing":"false",
+        "rideDate":"1567603642",
+        "confirmed": false,
+        "companions": [],
+        "stops": [
+          {
+            "stopName":"Stop1",
+            "time": "1567603642",
+            "reservations": []
+          },
+          {
+            "stopName":"Stop2",
+            "time": "1567603742",
+            "reservations": []
+          },
+          {
+            "stopName":"Stop3",
+            "time": "1567603842",
             "reservations": []
           }
         ]
       }
+
     ]
   }
 ]
