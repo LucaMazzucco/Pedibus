@@ -32,6 +32,7 @@ export class BookingComponent implements OnInit {
 
 
   ngOnInit() {
+    this.isLinear = true;
     this.getChildren();
     this.titleservice.changeTitle('Le mie prenotazioni')
     this.isDisabled = []
