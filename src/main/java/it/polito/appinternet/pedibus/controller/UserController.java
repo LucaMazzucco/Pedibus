@@ -20,6 +20,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -180,6 +181,28 @@ public class UserController {
         return new JSONArray(usernames).toString();
     }
 
+    @GetMapping("/getUsersRoles")
+    public ResponseEntity getUsersRoles(){
+        JSONArray returnMap = new JSONArray();
+
+        List<User> users = userService.getUsers().stream().collect(Collectors.toList());
+        for (User user : users){
+            JSONObject jsonOutput = new JSONObject();
+            if(user.getRoles().contains("Accompagnatore")){
+                if(user.getRoles().contains("Amministratore")){
+                    jsonOutput.put("role", "Amministratore");
+                    jsonOutput.put("line", user.getAdminLines().get(0));
+                } else {
+                    jsonOutput.put("role", "Accompagnatore");
+                }
+                jsonOutput.put("email", user.getEmail());
+                returnMap.put(jsonOutput);
+            }
+        };
+
+        return ok(returnMap.toString());
+    }
+
     @PutMapping("/users/{user_id}")
     public void enableUserAdmin(@PathVariable String user_id, @RequestBody String payload, ServletRequest req){
         JSONObject jsonInput = new JSONObject(payload);
@@ -259,5 +282,51 @@ public class UserController {
         if(payload.length()==0) return new ResponseEntity(HttpStatus.BAD_REQUEST);
         if(userService.userDeleteChild(email, payload)) return new ResponseEntity(HttpStatus.OK);
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/deleteRole")
+    public ResponseEntity deleteRole(@RequestBody String payload){
+        JSONObject jsonOutput = new JSONObject();
+        JSONObject jsonInput = new JSONObject(payload);
+        if(!jsonInput.has("email") ||
+                !jsonInput.has("line")){
+            jsonOutput.put("result", "Wrong Request");
+            return ResponseEntity.badRequest().body(jsonOutput.toString());
+        }
+
+        String email = jsonInput.getString("email");
+        String linename = jsonInput.getString("line");
+
+        if(!userService.removeRoleAndLine(email, linename)){
+            return ResponseEntity.badRequest().body("L'operazione non è andata a buon fine");
+        }
+        jsonOutput.put("email", email);
+        jsonOutput.put("role", "Accompagnatore");
+        jsonOutput.put("line", "");
+
+        return ResponseEntity.ok(jsonOutput.toString());
+    }
+
+    @PostMapping("/addRole")
+    public ResponseEntity addRole(@RequestBody String payload){
+        JSONObject jsonOutput = new JSONObject();
+        JSONObject jsonInput = new JSONObject(payload);
+        if(!jsonInput.has("email") ||
+                !jsonInput.has("line")){
+            jsonOutput.put("result", "Wrong Request");
+            return ResponseEntity.badRequest().body(jsonOutput.toString());
+        }
+
+        String email = jsonInput.getString("email");
+        String linename = jsonInput.getString("line");
+
+        if(!userService.addRoleAndLine(email, linename)){
+            return ResponseEntity.badRequest().body("La promozione non è andata a buon fine");
+        }
+        jsonOutput.put("email", email);
+        jsonOutput.put("line", linename);
+        jsonOutput.put("role", "Amministratore");
+
+        return ResponseEntity.ok(jsonOutput.toString());
     }
 }

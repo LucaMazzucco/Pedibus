@@ -5,15 +5,9 @@
     "registrationNumber": "jpf",
     "email": "j@j.com",
     "password": "12_zwRHIPKA",
-    "isEnabled": "true"
-  },
-  {
-    "name": "luca",
-    "surname": "mazzucco",
-    "registrationNumber": "lmz",
-    "email": "l@l.com",
-    "password": "12_zwRHIPKA",
-    "isEnabled": "true"
+    "isEnabled": "true",
+    "roles": ["Amministratore", "Accompagnatore"],
+    "adminLines": ["Linea Azzurra"]
   },
   {
     "name": "alberto",
@@ -21,6 +15,8 @@
     "registrationNumber": "lrt",
     "email": "a@a.com",
     "password": "12_zwRHIPKA",
-    "isEnabled": "true"
+    "isEnabled": "true",
+    "roles": ["Accompagnatore"],
+    "adminLines": []
   }
 ]

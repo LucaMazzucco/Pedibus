@@ -60,12 +60,21 @@ public class UserService {
     @Transactional
     public void userRemove(User user){ userRepo.delete(user); }
 
+    public List<User> getUsers(){
+        return userRepo.findAll();
+    }
+
+    public User userGet(String email){
+        return userRepo.findByEmail(email).get();
+    }
+
     public User userFindByEmail(String email){
         return userRepo.findByEmail(email).get();
     }
     public User userFindById(String id){ return userRepo.findById(id).get();}
 
     public ResponseEntity userLogin(String username,String password){
+        List<User> users = userRepo.findAll();
         Optional<User> userOptional = userRepo.findByEmail(username);
         if(!userOptional.isPresent()){
             return new ResponseEntity("Invalid username/password supplied",HttpStatus.NOT_FOUND);
@@ -338,5 +347,50 @@ public class UserService {
         if(child == null) return false;
         if(child.getId().length()==0 || !child.getParentId().equals(parent.getId())) return false; //if i'm the user is not the parent fail
         return childService.deleteChild(child);
+    }
+
+    @Transactional
+    public boolean addRoleAndLine(String email, String linename){
+        Optional<User> userOptional = userRepo.findByEmail(email);
+        Line line = lineRepository.findByLineName(linename);
+
+        if(!userOptional.isPresent() || line == null || !line.getAdmins().isEmpty()){
+            return false;
+        }
+
+        User user = userOptional.get();
+
+        user.getRoles().add("Amministratore");
+        user.getAdminLines().add(linename);
+        line.getAdmins().add(user.getEmail());
+
+        userRepo.save(user);
+        lineRepository.save(line);
+
+        return true;
+    }
+
+    @Transactional
+    public boolean removeRoleAndLine(String email, String linename){
+        Optional<User> userOptional = userRepo.findByEmail(email);
+        Line line = lineRepository.findByLineName(linename);
+
+        if(!userOptional.isPresent() || line == null || !(line.getAdmins().contains(email))){
+            return false;
+        }
+
+        User user = userOptional.get();
+        if(!user.getRoles().contains("Amministratore")){
+            return false;
+        }
+
+        user.getRoles().remove("Amministratore");
+        user.getAdminLines().remove(linename);
+        line.getAdmins().remove(user.getEmail());
+
+        userRepo.save(user);
+        lineRepository.save(line);
+
+        return true;
     }
 }

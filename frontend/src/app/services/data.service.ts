@@ -3,6 +3,7 @@ import { Line } from '../model/line';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { Ride } from '../model/ride';
+import { User } from '../model/user';
 import {catchError, first} from 'rxjs/operators';
 import { Passenger } from '../model/passenger';
 import { Reservation } from "../model/reservation";
@@ -13,6 +14,11 @@ import {Child} from "../model/child";
 
 const REST_URL = 'http://localhost:8080';
 const FAKE_URL = 'http://localhost:3000';
+
+interface AdminRole {
+  email: string;
+  line: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -63,9 +69,9 @@ export class DataService {
     return this.http.post<Availability>(REST_URL + '/deleteAvailability', av);
   }
 
-    getNoAdminLines(): Observable<Line[]>{
-        return this.http.get<Line[]>(REST_URL + "/getNoAdminLines");
-    }
+  getNoAdminLines(): Observable<Line[]>{
+    return this.http.get<Line[]>(REST_URL + "/getNoAdminLines");
+  }
 
   getShifts(email: String): Observable<Shift[]>{
     return this.http.get<Shift[]>(REST_URL + '/getShifts/' + email);
@@ -90,4 +96,17 @@ export class DataService {
   getStopsOfLine(lineName: String){
     return this.http.get<string[]>(REST_URL + '/getStopNames/' + lineName);
   }
+  getRoles(): Observable<User[]>{
+    return this.http.get<User[]>(REST_URL + '/getUsersRoles');
+  }
+
+  addRole(email: String, line: String){
+    return this.http.post<User>(REST_URL + '/addRole', {email, line});
+  }
+
+  deleteRole(email: String, line: String){
+    return this.http.post<User>(REST_URL + '/deleteRole', {email, line});
+  }
+
+
 }

@@ -15,7 +15,7 @@ export class JwtInterceptor implements HttpInterceptor {
                 headers: req.headers.set("Authorization",
                     "Bearer " + idToken)
             });
-            console.log(cloned);
+            //console.log(cloned);
             return next.handle(cloned);
         }
         else {

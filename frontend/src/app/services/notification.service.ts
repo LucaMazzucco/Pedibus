@@ -17,9 +17,7 @@ export class NotificationService {
   public updateMessageCount(email: String){
     this.getUnreadMessages(email).subscribe(n => {
       let newMess = ""+ n;
-      console.log(newMess)
       this.unreadMessageSource.next(newMess);
-      console.log(this.unreadMessage);
     })
   }
   getUnreadMessages(email: String){

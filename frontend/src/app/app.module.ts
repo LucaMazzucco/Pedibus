@@ -36,6 +36,7 @@ import {MatStepperModule} from '@angular/material/stepper';
 import {MatRadioModule} from '@angular/material/radio';
 import { ShiftComponent } from './shift/shift.component';
 import { RegisterAdminComponent } from './register-admin/register-admin.component';
+import { RoleAdministrationComponent } from './role-administration/role-administration.component';
 import { ChildrenComponent } from './children/children.component';
 
 
@@ -87,6 +88,13 @@ const routes: Routes = [
     data: {
       expectedRole: 'ROLE_ADMIN ROLE_USER'
     }},
+  { path: 'prenotazioni', component: BookingComponent},
+  { path: 'register/:email/:UUID', component: RegisterComponent },
+  { path: 'registerAdmin', component: RegisterAdminComponent},
+  { path: 'disponibilita', component: AvailabilityComponent},
+  { path: 'rolesManagement', component: RoleAdministrationComponent},
+  { path: 'turni', component: ShiftComponent},
+  { path: 'messaggi', component: MessagesComponent},
   { path: '', component: LoginComponent },
   { path: '**', redirectTo: '' }
 ];
@@ -101,6 +109,8 @@ const routes: Routes = [
     MessagesComponent,
     AvailabilityComponent,
     RegisterAdminComponent,
+    ShiftComponent,
+    RoleAdministrationComponent
       ShiftComponent,
       ChildrenComponent
   ],
