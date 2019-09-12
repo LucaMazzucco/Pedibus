@@ -4,10 +4,8 @@ import {Reservation} from "../model/reservation";
 import {TitleService} from "../services/title.service";
 import {MatDialog, MatDialogConfig, MatTableDataSource} from "@angular/material";
 import {Line} from "../model/line";
-import {Stop} from "../model/stop";
-import {Ride} from "../model/ride";
-import {Passenger} from "../model/passenger";
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Child} from "../model/child";
 
 
 
@@ -29,8 +27,8 @@ export class BookingComponent implements OnInit {
   selectGoingForm: FormGroup;
   selectBackForm: FormGroup;
   isLinear: boolean;
-  children: Passenger[];
-  currentChild: Passenger;
+  children: Child[];
+  currentChild: Child;
 
 
   ngOnInit() {
@@ -59,7 +57,7 @@ export class BookingComponent implements OnInit {
     })
   }
 
-  selectChild(c: Passenger){
+  selectChild(c: Child){
     this.currentChild = c;
   }
 

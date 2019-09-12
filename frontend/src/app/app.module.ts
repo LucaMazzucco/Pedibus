@@ -110,7 +110,7 @@ const routes: Routes = [
     AvailabilityComponent,
     RegisterAdminComponent,
     ShiftComponent,
-    RoleAdministrationComponent
+    RoleAdministrationComponent,
       ShiftComponent,
       ChildrenComponent
   ],

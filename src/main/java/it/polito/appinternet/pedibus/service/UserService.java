@@ -352,7 +352,7 @@ public class UserService {
     @Transactional
     public boolean addRoleAndLine(String email, String linename){
         Optional<User> userOptional = userRepo.findByEmail(email);
-        Line line = lineRepository.findByLineName(linename);
+        Line line = lineService.findByLineName(linename);
 
         if(!userOptional.isPresent() || line == null || !line.getAdmins().isEmpty()){
             return false;
@@ -365,7 +365,7 @@ public class UserService {
         line.getAdmins().add(user.getEmail());
 
         userRepo.save(user);
-        lineRepository.save(line);
+        lineService.insertLine(line);
 
         return true;
     }
@@ -373,7 +373,7 @@ public class UserService {
     @Transactional
     public boolean removeRoleAndLine(String email, String linename){
         Optional<User> userOptional = userRepo.findByEmail(email);
-        Line line = lineRepository.findByLineName(linename);
+        Line line = lineService.findByLineName(linename);
 
         if(!userOptional.isPresent() || line == null || !(line.getAdmins().contains(email))){
             return false;
@@ -389,7 +389,7 @@ public class UserService {
         line.getAdmins().remove(user.getEmail());
 
         userRepo.save(user);
-        lineRepository.save(line);
+        lineService.insertLine(line);
 
         return true;
     }
