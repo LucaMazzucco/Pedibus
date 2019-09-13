@@ -203,6 +203,12 @@ public class UserController {
         return ok(returnMap.toString());
     }
 
+    @GetMapping("/getUsersByRole/{role}")
+    public ResponseEntity<String> getUsersByRole(@PathVariable String role){
+        if(role.length()==0) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(userService.usersGetByRole(role).toString(),HttpStatus.OK);
+    }
+
     @PutMapping("/users/{user_id}")
     public void enableUserAdmin(@PathVariable String user_id, @RequestBody String payload, ServletRequest req){
         JSONObject jsonInput = new JSONObject(payload);

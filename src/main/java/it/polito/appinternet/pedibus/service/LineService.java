@@ -145,6 +145,9 @@ public class LineService {
                     .map(r->childService.encapsulateChildOnRide(childService.findById(r.getChild()),r.isPresent()))
                     .forEach(children::put);
             stopJson.put("children",children);
+            if(s.getGeoJsonPoint() != null){
+                stopJson.put("coordinates",s.getGeoJsonPoint().getCoordinates().toString());
+            }
             stopsJson.put(stopJson);
         });
         return stopsJson;

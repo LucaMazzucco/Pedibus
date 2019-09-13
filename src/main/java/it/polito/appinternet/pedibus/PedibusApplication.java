@@ -84,13 +84,13 @@ public class PedibusApplication {
 
         u.getChildren().add(c1.getId());
         p.getChildren().add(c2.getId());
-        c.getChildren().add(c3.getId());
+        u.getChildren().add(c3.getId());
         u = userService.userInsert(u); //Before insert the user has no ID
         p = userService.userInsert(p);
         c = userService.userInsert(c);
         c1.setParentId(u.getId());
         c2.setParentId(p.getId());
-        c3.setParentId(c.getId());
+        c3.setParentId(u.getId());
         childService.saveChild(c1);
         childService.saveChild(c2);
         childService.saveChild(c3);

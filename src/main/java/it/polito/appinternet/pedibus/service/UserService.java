@@ -1,5 +1,6 @@
 package it.polito.appinternet.pedibus.service;
 
+import com.mongodb.util.JSON;
 import it.polito.appinternet.pedibus.model.*;
 import it.polito.appinternet.pedibus.repository.ConfirmationTokenRepository;
 import it.polito.appinternet.pedibus.repository.LineRepository;
@@ -222,6 +223,14 @@ public class UserService {
         return userRepo.findAll().stream()
                 .map(User::getName)
                 .collect(Collectors.toList());
+    }
+
+    public JSONArray usersGetByRole(String role){
+        JSONArray jsonArray = new JSONArray();
+        userRepo.findByRolesContains(role).stream()
+                .map(User::getEmail)
+                .forEach(jsonArray::put);
+        return jsonArray;
     }
 
     @SuppressWarnings("Duplicates")

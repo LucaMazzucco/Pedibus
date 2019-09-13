@@ -1,7 +1,7 @@
 [
   {
     "lineName":"Linea Azzurra",
-    "lineAdmins": [ "j@j.com"],
+    "lineAdmins": [],
     "rides": [
       {
         "flagGoing":"true",
