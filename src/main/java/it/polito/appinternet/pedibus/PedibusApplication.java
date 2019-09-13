@@ -75,9 +75,9 @@ public class PedibusApplication {
         List<String> rolesp = new LinkedList<>();
         List<String> rolesc = new LinkedList<>();
 
-        chRegs.add(c1.getRegistrationNumber());
-        chRegs.add(c2.getRegistrationNumber());
-        chRegs.add(c3.getRegistrationNumber());
+        chRegs.add(c1.getId());
+        chRegs.add(c2.getId());
+        chRegs.add(c3.getId());
 
         roles.add("ROLE_ADMIN");
         roles.add("ROLE_USER");

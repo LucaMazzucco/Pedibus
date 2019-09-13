@@ -108,5 +108,9 @@ export class DataService {
     return this.http.post<User>(REST_URL + '/deleteRole', {email, line});
   }
 
+  deleteChildren(email: String, ch: Child){
+    return this.http.post<Child>(REST_URL + '/deleteChild/' + email, ch);
+  }
+
 
 }

@@ -51,7 +51,7 @@ export class BookingComponent implements OnInit {
   }
 
   getChildren(): void{
-    this.subscription = this.dataService.getChildren(localStorage.getItem('email')).subscribe( children => {
+    this.subscription = this.dataService.getChildren(localStorage.getItem('current_user')).subscribe( children => {
       this.children = children;
       this.currentChild = this.children[0]
       this.getReservations(this.currentChild.registrationNumber)

@@ -34,7 +34,7 @@ export class ChildrenComponent implements OnInit {
     this.dataService.getChildren(localStorage.getItem('current_user')).pipe(filter(result => !!result))
         .subscribe(result => {
           this.children = result
-          console.log(this.children)
+          this.initializeArray();
         },
         error => {
           console.log('Sono in errore')
@@ -83,17 +83,15 @@ export class ChildrenComponent implements OnInit {
 
 
   addChild(): void{
-    console.log('Sono in addChild');
-    this.isDisabled.push(true);
     let ch = new Child(this.selectNameForm.controls.selectedName.value,
                         this.selectNameForm.controls.selectedSurname.value,
                         this.selectNameForm.controls.selectedSsn.value,
                         this.selectDefaultLineForm.controls.selectedDefaultLine.value.lineName,
                         this.selectDefaultStopForm.controls.selectedDefaultStop.value);
-    console.log(ch)
-    this.children.push(ch);
     let response =  this.dataService.addChild(localStorage.getItem('current_user'), ch);
     response.subscribe(data => {
+      this.isDisabled.push(true);
+      this.children.push(ch);
       this.infoMessage = "Aggiunto!";
       this._snackBar.open(this.infoMessage, '', {duration: 2000});
       this.infoMessage = ''
@@ -104,8 +102,17 @@ export class ChildrenComponent implements OnInit {
     })
   }
   deleteChild(i): void{
-    this.children.splice(i,1);
-    //TODO: chiamata al DB
+    this.dataService.deleteChildren(localStorage.getItem('current_user'),this.children[i]).subscribe(res => {
+        this.children.splice(i,1);
+        this.infoMessage = "Eliminato!";
+        this._snackBar.open(this.infoMessage, '', {duration: 2000});
+        this.infoMessage = ''
+        },
+      error =>{
+        this.infoMessage = "Non è stato possibile elminare il bambino!";
+        this._snackBar.open(this.infoMessage, '', {duration: 2000});
+        this.infoMessage = '';
+      })
   }
 
   updateStops(): void{
