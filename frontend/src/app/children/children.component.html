@@ -28,18 +28,18 @@
           </mat-form-field>
           <mat-form-field fxFlex="30">
             <mat-label>Fermata più vicina a casa</mat-label>
-            <mat-select [disabled]="isDisabled[i]" [(value)]="child.defaultStop">
-              <mat-option *ngFor="let stop of stopOfLine" [value]="stop.stopName">
-                {{stop.stopName}}
+            <mat-select [disabled]="isDisabled[i]" [(value)]="child.defaultStop" (selectionChange)="updateStopsOfLine(i)">
+              <mat-option *ngFor="let stop of stopOfLine" [value]="stop">
+                {{stop}}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </mat-card-content>
         <mat-card-actions fxLayout="row">
-          <button mat-button fxFlex="30" (click)="enableEditing(i)">
+          <button mat-button fxFlex="30" [disabled]="editMode" (click)="enableEditing(i)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-button fxFlex="30">
+          <button mat-button fxFlex="30" (click)="saveChild(i)">
             <mat-icon>save</mat-icon>
           </button>
           <button mat-button fxFlex="30" (click)="deleteChild(i)">
