@@ -17,7 +17,7 @@ public class Child {
 
     private String name,surname,registrationNumber;
     private String parentId;
-    private String defaultLine="", defaultStop = "";
+    private String defaultLine = "", defaultStop = "";
 
     public Child(String name, String surname, String registrationNumber, String parentId) {
         this.name = name;

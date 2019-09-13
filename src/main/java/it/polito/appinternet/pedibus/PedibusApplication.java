@@ -7,6 +7,8 @@ import it.polito.appinternet.pedibus.model.Child;
 import it.polito.appinternet.pedibus.repository.UserRepository;
 import it.polito.appinternet.pedibus.repository.ChildRepository;
 
+import it.polito.appinternet.pedibus.service.ChildService;
+import it.polito.appinternet.pedibus.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +31,9 @@ public class PedibusApplication {
 
 
     @Autowired
-    UserRepository userRepo;
+    private UserService userService;
     @Autowired
-    ChildRepository childRepository;
+    private ChildService childService;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -56,44 +58,43 @@ public class PedibusApplication {
         User u = new User("admin@admin.com", passwordEncoder.encode("admin"), true);
         User p = new User("parent@parent.com", passwordEncoder.encode("parent"), true);
         User c = new User("conductor@conductor.com", passwordEncoder.encode("conductor"), true);
-        Child c1 = new Child("Ginevra", "Rossi", "RSSGNV04R20E290Z", u.getId());
-        Child c2 = new Child("Francesco", "Neri", "NRIFRN05R20E291Z", p.getId());
-        Child c3 = new Child("Michele", "Verdi", "VRDMCH07R20E290Z", c.getId());
-
-        childRepository.save(c1);
-        childRepository.save(c2);
-        childRepository.save(c3);
-
+        Child c1 = new Child("Ginevra", "Rossi", "RSSGNV04R20E290Z", "");
+        Child c2 = new Child("Francesco", "Neri", "NRIFRN05R20E291Z", "");
+        Child c3 = new Child("Michele", "Verdi", "VRDMCH07R20E290Z", "");
+        c1 = childService.insertChild(c1); //before insert child has no ID
+        c2 = childService.insertChild(c2);
+        c3 = childService.insertChild(c3);
         List<Message> messages = new LinkedList<>();
         messages.add(new Message(Instant.now().getEpochSecond(), false, "Questo è il primo messaggio che ti mando"));
         messages.add(new Message(Instant.now().getEpochSecond(), false, "Questo è il secondo messaggio che ti mando"));
         u.setMessages(messages);
         p.setMessages(messages);
         c.setMessages(messages);
-        List<String> chRegs = new LinkedList<>();
         List<String> roles = new LinkedList<>();
         List<String> rolesp = new LinkedList<>();
         List<String> rolesc = new LinkedList<>();
-
-        chRegs.add(c1.getId());
-        chRegs.add(c2.getId());
-        chRegs.add(c3.getId());
 
         roles.add("ROLE_ADMIN");
         roles.add("ROLE_USER");
         rolesp.add("ROLE_USER");
         rolesc.add("ROLE_CONDUCTOR");
-
         u.setRoles(roles);
         p.setRoles(rolesp);
         c.setRoles(rolesc);
 
-        u.setChildren(chRegs);
-        p.setChildren(chRegs);
-        c.setChildren(chRegs);
-
-        userRepo.insert(u);
-        userRepo.insert(p);
-        userRepo.insert(c);
+        u.getChildren().add(c1.getId());
+        p.getChildren().add(c2.getId());
+        c.getChildren().add(c3.getId());
+        u = userService.userInsert(u); //Before insert the user has no ID
+        p = userService.userInsert(p);
+        c = userService.userInsert(c);
+        c1.setParentId(u.getId());
+        c2.setParentId(p.getId());
+        c3.setParentId(c.getId());
+        childService.saveChild(c1);
+        childService.saveChild(c2);
+        childService.saveChild(c3);
+        //Insert and save have different meaning.
+        //Use the mostly services instead of direct repo!
     }
 }

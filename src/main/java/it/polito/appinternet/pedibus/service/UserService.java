@@ -25,6 +25,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -50,8 +51,8 @@ public class UserService {
     private ChildService childService;
 
     @Transactional
-    public void userInsert(User user){
-        userRepo.insert(user);
+    public User userInsert(User user){
+        return userRepo.insert(user);
     }
 
     @Transactional
@@ -295,7 +296,8 @@ public class UserService {
             return null;
         }*/
         user.getChildren().stream()
-                .map(child->childService.findById(child))
+                .map(childId->childService.findById(childId))
+                .filter(Objects::nonNull)
                 .map(child->childService.encapsulateChildInfo(child))
                 .forEach(children::put);
         return children;
@@ -345,6 +347,14 @@ public class UserService {
         JSONObject jChild = new JSONObject(payload);
         Child child = childService.decapsulateChildInfo(jChild);
         if(child == null) return false;
+        if(child.getParentId() == null) {
+            if(childService.deleteChild(child)){
+                parent.getChildren().remove(child.getId());
+                userSave(parent);
+                return true;
+            }
+            return false;
+        }
         if(child.getId().length()==0 || !child.getParentId().equals(parent.getId())) return false; //if i'm the user is not the parent fail
         return childService.deleteChild(child);
     }
