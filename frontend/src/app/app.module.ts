@@ -75,7 +75,7 @@ const routes: Routes = [
     component: ShiftComponent,
     canActivate: [AuthGuard],
     data: {
-      expectedRole: 'ROLE_ADMIN ROLE_CONDUCTOR'
+      expectedRole: 'ROLE_ADMIN'
     }},
   { path: 'messaggi',
     component: MessagesComponent,
