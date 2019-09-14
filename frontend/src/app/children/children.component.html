@@ -28,18 +28,18 @@
           </mat-form-field>
           <mat-form-field fxFlex="30">
             <mat-label>Fermata più vicina a casa</mat-label>
-            <mat-select [disabled]="isDisabled[i]" [(value)]="child.defaultStop">
-              <mat-option *ngFor="let stop of stopOfLine" [value]="stop.stopName">
-                {{stop.stopName}}
+            <mat-select [disabled]="isDisabled[i]" [(value)]="child.defaultStop" (selectionChange)="updateStopsOfLine(i)">
+              <mat-option *ngFor="let stop of stopOfLine" [value]="stop">
+                {{stop}}
               </mat-option>
             </mat-select>
           </mat-form-field>
         </mat-card-content>
         <mat-card-actions fxLayout="row">
-          <button mat-button fxFlex="30" (click)="enableEditing(i)">
+          <button mat-button fxFlex="30" [disabled]="editMode" (click)="enableEditing(i)">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-button fxFlex="30">
+          <button mat-button fxFlex="30" (click)="saveChild(i)">
             <mat-icon>save</mat-icon>
           </button>
           <button mat-button fxFlex="30" (click)="deleteChild(i)">
@@ -62,8 +62,8 @@
       Aggiungi tuo figlio al pedibus!
     </mat-card-header>
     <mat-card-content fxFlex="80" fxLayout="column" fxLayoutGap="10px">
-      <mat-vertical-stepper class="stepper-layout" [linear]="isLinear" #stepper>
-        <mat-step [stepControl]="selectNameForm">
+      <mat-vertical-stepper class="stepper-layout" linear #stepper>
+        <mat-step [stepControl]="selectNameForm" >
           <form [formGroup]="selectNameForm">
             <ng-template matStepLabel>Inserisci Nome, Cognome e Codice fiscale </ng-template>
             <mat-form-field>
@@ -73,14 +73,14 @@
               <input matInput formControlName="selectedSurname" placeholder="Cognome bambino" required>
             </mat-form-field>
             <mat-form-field>
-              <input matInput formControlName="selectedSsn" placeholder="Codice fiscale" required>
+              <input matInput formControlName="selectedSsn" placeholder="Codice fiscale" pattern="^[a-zA-Z]{6}[0-9]{2}[a-zA-Z][0-9]{2}[a-zA-Z][0-9]{3}[a-zA-Z]$" required>
             </mat-form-field>
             <div>
               <button mat-button matStepperNext>Next</button>
             </div>
           </form>
         </mat-step>
-        <mat-step [stepControl]="selectDefaultLineForm">
+        <mat-step [stepControl]="selectDefaultLineForm" [optional]="isOptional" >
           <form [formGroup]="selectDefaultLineForm">
             <ng-template matStepLabel>Seleziona la linea per il tuo bambino</ng-template>
             <mat-form-field>

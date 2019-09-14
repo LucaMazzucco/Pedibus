@@ -112,5 +112,8 @@ export class DataService {
     return this.http.post<Child>(REST_URL + '/deleteChild/' + email, ch);
   }
 
+  editChild(email: String, ch: Child){
+    return this.http.put<Child>(REST_URL + '/editChild/' + email, ch);
+  }
 
 }

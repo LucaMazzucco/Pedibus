@@ -7,7 +7,7 @@
         "flagGoing":"true",
         "rideDate":"1567603642",
         "confirmed": false,
-        "companions": [],
+        "companions": ["parent@parent.com"],
         "stops": [
           {
             "stopName":"Stop1",
@@ -59,7 +59,7 @@
         "flagGoing":"true",
         "rideDate":"1567603642",
         "confirmed": false,
-        "companions": [],
+        "companions": ["admin@admin.com"],
         "stops": [
           {
             "stopName":"Stop1",

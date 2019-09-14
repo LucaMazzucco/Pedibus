@@ -40,7 +40,10 @@ export class LoginComponent implements OnInit {
       this.infoMessage = 'You are logged!';
       this._snackBar.open(this.infoMessage, '', {duration: 2000});
       this.infoMessage = '';
-      this.router.navigate(['/presenze']);
+      if(this.authService.isParent())
+        this.router.navigate(['/prenotazioni']);
+      else
+        this.router.navigate(['/presenze']);
     }, error => {
       this.infoMessage = 'Password or email are wrong!';
       this._snackBar.open(this.infoMessage, '', {duration: 2000});
