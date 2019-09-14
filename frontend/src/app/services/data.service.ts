@@ -43,10 +43,8 @@ export class DataService {
     return this.http.put(REST_URL + "/putLineAttendance/" + lineName + "/ride/user", {rideDate, isBack, person}).pipe(first()).subscribe(data => console.log(data))
   }
 
-  //TODO: Da implementare Backend
-
-  getReservations(id: string): Observable<Reservation[]>{
-    return this.http.get<Reservation[]>('http://localhost:3004' + '/reservations');
+  getReservations(ssn: string): Observable<Reservation[]>{
+    return this.http.get<Reservation[]>(REST_URL + '/getChildReservations/' + ssn);
   }
 
   getMessages(email: String): Observable<Message[]>{
@@ -115,5 +113,14 @@ export class DataService {
   editChild(email: String, ch: Child){
     return this.http.put<Child>(REST_URL + '/editChild/' + email, ch);
   }
+
+  addChildReservation(ssn: String, r: Reservation){
+    return this.http.post<Reservation>(REST_URL + '/addChildReservation/' + ssn, r);
+  }
+
+  getChildReservation(ssn: String): Observable<Reservation[]>{
+    return this.http.get<Reservation[]>(REST_URL + '/getChildReservations/' + ssn);
+  }
+
 
 }

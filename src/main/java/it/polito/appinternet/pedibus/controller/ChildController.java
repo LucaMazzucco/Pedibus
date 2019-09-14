@@ -1,6 +1,7 @@
 package it.polito.appinternet.pedibus.controller;
 
 import it.polito.appinternet.pedibus.service.ChildService;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,11 +19,11 @@ public class ChildController {
         if(ssn.length()==0){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        JSONObject jsonObject = childService.encapsulateReservations(ssn);
-        if(jsonObject==null){
+        JSONArray jsonArray = childService.encapsulateReservations(ssn);
+        if(jsonArray==null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<String>(jsonObject.toString(),HttpStatus.OK);
+        return new ResponseEntity<String>(jsonArray.toString(),HttpStatus.OK);
     }
 
     @PostMapping("/addChildReservations/{ssn}")

@@ -23,10 +23,13 @@
 .floating-button{
   position: absolute;
   right: 50px;
-  bottom: 30px;
+  bottom: 500px;
 }
 
 ::ng-deep.mat-dialog-container{
   padding: 0 !important;
 }
 
+.stepper-layout{
+  background-color: transparent;
+}

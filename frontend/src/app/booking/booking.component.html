@@ -7,11 +7,11 @@
         </button>
       </div>
       <mat-card-title fxFlex="70">
-            {{ 'Prossime corse di ' + currentChild.name}}
+            {{ 'Prossime corse di ' + currentChild?.name}}
       </mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
-    <mat-card-content class="card-content" [style.overflow]="'auto'" [style.height.px]="'600'">
+    <mat-card-content class="card-content" [style.overflow]="'auto'" [style.height.px]="'500'">
         <mat-card *ngFor="let res of reservations; let i = index" class="mat-card-style mat-elevation-z1">
           <mat-card-header>
             <div mat-card-avatar class="booking-card-header"></div>
@@ -63,13 +63,14 @@
     <span>{{child.name +  ' ' +child.surname}}</span>
   </button>
 </mat-menu>
+
 <ng-template #newReservation>
     <mat-card class="mat-card-light-style" fxLayout="column" fxLayoutGap="20px">
         <mat-card-header fxFlex="10" fxLayout="center center">
             Quando vuoi prenotare la corsa?
         </mat-card-header>
         <mat-card-content fxFlex="80" fxLayout="column" fxLayoutGap="10px">
-            <mat-vertical-stepper [linear]="isLinear" #stepper>
+            <mat-vertical-stepper class="stepper-layout" linear>
                 <mat-step [stepControl]="selectLineForm">
                     <form [formGroup]="selectLineForm">
                         <ng-template matStepLabel>Seleziona la linea</ng-template>
@@ -86,7 +87,7 @@
                 <mat-step [stepControl]="selectRideForm">
                     <form [formGroup]="selectRideForm">
                         <ng-template matStepLabel>Seleziona la data della corsa</ng-template>
-                        <mat-form-field>
+                        <mat-form-field [hidden]="selectLineForm.controls.selectedLine.value == null">
                             <mat-select formControlName="selectedRide" required>
                                 <mat-option *ngFor="let ride of selectLineForm.controls.selectedLine.value.rides" [value]="ride">{{ ride.date*1000 | date: 'shortDate'}}</mat-option>
                             </mat-select>
@@ -100,22 +101,23 @@
                 <mat-step [stepControl]="selectGoingForm">
                     <form [formGroup]="selectGoingForm">
                         <ng-template matStepLabel>Seleziona fermata di andata</ng-template>
-                        <mat-form-field>
+                        <mat-form-field [hidden]="selectRideForm.controls.selectedRide.value == null">
                             <mat-select formControlName="selectedGoing" required>
-                                <mat-option *ngFor="let stop of selectLineForm.controls.selectedRide.value.stops" [value]="stop">{{ stop.stopName }}</mat-option>
+                                <mat-option *ngFor="let stop of selectRideForm.controls.selectedRide.value.stops" [value]="stop">{{ stop.stopName }}</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <div>
                             <button mat-button matStepperPrevious>Back</button>
+                            <button mat-button matStepperNext>Next</button>
                         </div>
                     </form>
                 </mat-step>
                 <mat-step [stepControl]="selectBackForm">
                     <form [formGroup]="selectBackForm">
                         <ng-template matStepLabel>Seleziona fermata di ritorno</ng-template>
-                        <mat-form-field>
+                        <mat-form-field [hidden]="selectRideForm.controls.selectedRide.value == null">
                             <mat-select formControlName="selectedBack" required>
-                                <mat-option *ngFor="let stop of selectLineForm.controls.selectedRide.value.stopsBack" [value]="stop">{{ stop.stopName }}</mat-option>
+                                <mat-option *ngFor="let stopB of selectRideForm.controls.selectedRide.value.stopsBack" [value]="stopB">{{ stopB.stopName }}</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <div>
