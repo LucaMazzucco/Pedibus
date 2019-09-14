@@ -4,6 +4,7 @@ import { tap, map, first } from 'rxjs/operators';
 import * as moment from 'moment';
 import { Observable } from 'rxjs';
 import * as jwt_decode from 'jwt-decode';
+import {Router} from "@angular/router";
 
 const REST_URL = 'http://localhost:8080';
 
@@ -33,7 +34,7 @@ export const TOKEN_NAME = 'jwt_token';
 
 export class AuthService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, public router: Router) { }
 
   login(username: string, password: string ) {
     return this.http.post<UserLogin>(REST_URL + '/login', {username, password});
@@ -63,7 +64,8 @@ export class AuthService {
 
   isLoggedIn(token?: string): boolean {
     if (!token) { token = this.getToken(); }
-    if (!token) { return false; }
+    if (!token) {
+      return false; }
     const date = this.getTokenExpirationDate(token);
     if (date === undefined) { return false; }
     return (date.valueOf() > new Date().valueOf());

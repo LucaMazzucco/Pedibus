@@ -124,5 +124,12 @@ export class DataService {
     return this.http.get<Reservation[]>(REST_URL + '/getChildReservations/' + ssn);
   }
 
+  editChildReservation(ssn: string, r: Reservation){
+    return this.http.put<Reservation>(REST_URL + '/editChildReservation/' + ssn, r);
+  }
+
+  deleteChildReservation(ssn: string, r: Reservation){
+    return this.http.post<Reservation>(REST_URL + '/deleteChildReservation/' + ssn, r);
+  }
 
 }

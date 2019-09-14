@@ -23,13 +23,14 @@ export class AuthguardService implements CanActivate{
           }
         });
     if (!this.auth.isLoggedIn()) {
+        this.auth.logout();
         this.router.navigate(['login']);
         console.log("false")
         return false;
 
     }
     if (!flag) {
-        this.router.navigate(['/']);
+        this.router.navigate(['/prenotazioni']);
         console.log("false")
         return false;
     }

@@ -59,7 +59,7 @@ public class ChildController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @DeleteMapping("/deleteChildReservation/{ssn}")
+    @PostMapping("/deleteChildReservation/{ssn}")
     public ResponseEntity deleteChildReservation(@PathVariable String ssn, @RequestBody String payload){
         if(ssn.length()==0){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);

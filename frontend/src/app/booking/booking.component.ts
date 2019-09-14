@@ -28,6 +28,9 @@ export class BookingComponent implements OnInit {
   children: Child[];
   currentChild: Child;
   infoMessage : string = "";
+  stopOfLine: string[];
+  editMode: boolean;
+
 
   constructor(private dataService: DataService, private _snackBar: MatSnackBar, private titleservice: TitleService, private dialog: MatDialog, private _formBuilder: FormBuilder) { }
 
@@ -35,6 +38,7 @@ export class BookingComponent implements OnInit {
 
 
   ngOnInit() {
+    this.editMode = false;
     this.selectLineForm = this._formBuilder.group({
       selectedLine: ['', Validators.required]
     });
@@ -76,8 +80,7 @@ export class BookingComponent implements OnInit {
       this.reservations = reservations;
       console.log(this.reservations)
       this.initializeArray();
-    },
-            error => this.reservations = [])
+    }, error => this.reservations = [])
   }
 
 
@@ -104,6 +107,16 @@ export class BookingComponent implements OnInit {
     else {
       this.isDisabled[index] = true;
     }
+    this.editMode = true;
+    this.updateStopsOfLine(index)
+
+  }
+  updateStopsOfLine(i): void{
+    console.log(this.reservations[i].lineName);
+    this.dataService.getStopsOfLine(this.reservations[i].lineName).subscribe( s => {
+      this.stopOfLine = s;
+      console.log(this.stopOfLine)
+    })
   }
 
   addReservation(): void{
@@ -130,7 +143,32 @@ export class BookingComponent implements OnInit {
   }
 
   deleteReservation(i): void{
-    this.reservations.splice(i,1)
+    this.dataService.deleteChildReservation(this.currentChild.registrationNumber,this.reservations[i]).subscribe(res => {
+          this.reservations.splice(i,1)
+          this.infoMessage = "Eliminato!";
+          this._snackBar.open(this.infoMessage, '', {duration: 2000});
+          this.infoMessage = ''
+        },
+        error =>{
+          this.infoMessage = "Non è stato possibile elminare la prenotazione!";
+          this._snackBar.open(this.infoMessage, '', {duration: 2000});
+          this.infoMessage = '';
+        })
+  }
+
+  saveReservation(i): void{
+    this.dataService.editChildReservation(this.currentChild.registrationNumber, this.reservations[i]).subscribe(res =>{
+          this.infoMessage = "Modifiche salvate!";
+          this._snackBar.open(this.infoMessage, '', {duration: 2000});
+          this.infoMessage = ''
+          this.isDisabled[i] = true;
+          this.editMode = false;
+        },
+        error =>{
+          this.infoMessage = "Non è stato possibile salvare le modifiche";
+          this._snackBar.open(this.infoMessage, '', {duration: 2000});
+          this.infoMessage = ''
+        })
   }
 
 

@@ -86,7 +86,7 @@
         </mat-sidenav>
 
         <mat-sidenav-content fxLayout="column" fxLayoutGap="10px">
-          <div fxFlex="8" class="second-navbar">
+          <div [hidden]="!isLogged()" fxFlex="8" class="second-navbar">
             <div fxLayoutAlign="center center" >
               <h1 class="app-name">{{subtitle}}</h1>
             </div>

@@ -11,37 +11,37 @@
       </mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
-    <mat-card-content class="card-content" [style.overflow]="'auto'" [style.height.px]="'500'">
-        <mat-card *ngFor="let res of reservations; let i = index" class="mat-card-style mat-elevation-z1">
+    <mat-card-content fxLayoutGap="10px" fxLayout="column" class="card-content" [style.overflow]="'auto'" [style.height.px]="'500'">
+        <mat-card *ngFor="let res of reservations; let i = index" class="mat-card-inner-style mat-elevation-z1">
           <mat-card-header>
             <div mat-card-avatar class="booking-card-header"></div>
-            <mat-card-title>{{res.linename}}</mat-card-title>
+            <mat-card-title>{{res.lineName}}</mat-card-title>
             <mat-card-subtitle>{{res.rideDate*1000 | date: 'shortDate'}}</mat-card-subtitle>
           </mat-card-header>
             <mat-divider></mat-divider>
           <mat-card-content fxLayout="column">
             <mat-form-field>
               <mat-label>Fermata di andata</mat-label>
-              <mat-select [disabled]="isDisabled[i]" [(value)]="res.stopA.stopName">
-                <mat-option *ngFor="let stop of res.stopA" [value]="stopA.stopName">
-                  {{stop.stopName}}
+              <mat-select [disabled]="isDisabled[i]" [(value)]="reservations[i].stopA.stopName">
+                <mat-option *ngFor="let stopA of stopOfLine" [value]="stopA">
+                  {{stopA}}
                 </mat-option>
               </mat-select>
             </mat-form-field>
             <mat-form-field>
               <mat-label>Fermata di ritorno</mat-label>
-              <mat-select [disabled]="isDisabled[i]" [(value)]="res.stopR.stopName">
-                <mat-option *ngFor="let stop of res.stopsR" [value]="stop.stopName">
-                  {{stop.stopName}}
+              <mat-select [disabled]="isDisabled[i]" [(value)]="reservations[i].stopR.stopName">
+                <mat-option *ngFor="let stopR of stopOfLine" [value]="stopR">
+                  {{stopR}}
                 </mat-option>
               </mat-select>
             </mat-form-field>
           </mat-card-content>
           <mat-card-actions fxLayout="row">
-            <button mat-button fxFlex="30" (click)="enableEditing(i)">
+            <button mat-button fxFlex="30" [disabled]="editMode" (click)="enableEditing(i)">
               <mat-icon>edit</mat-icon>
             </button>
-            <button mat-button fxFlex="30">
+            <button mat-button fxFlex="30" (click)="saveReservation(i)">
               <mat-icon>save</mat-icon>
             </button>
             <button mat-button fxFlex="30" (click)="deleteReservation(i)">

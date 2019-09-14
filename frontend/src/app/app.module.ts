@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import {Input, NgModule} from '@angular/core';
+import {ErrorHandler, Input, NgModule} from '@angular/core';
 import { AppComponent } from './app.component';
 import { MatListModule } from '@angular/material/list';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -38,6 +38,8 @@ import { ShiftComponent } from './shift/shift.component';
 import { RegisterAdminComponent } from './register-admin/register-admin.component';
 import { RoleAdministrationComponent } from './role-administration/role-administration.component';
 import { ChildrenComponent } from './children/children.component';
+import {ErrorService} from "./services/error.service";
+import {AuthExpiredInterceptor} from "./services/authexpired-interceptor";
 
 
 //import { AdministrationComponent } from './administration/administration.component';
@@ -155,6 +157,14 @@ const routes: Routes = [
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
+    {
+      provide: ErrorHandler,
+      useClass: ErrorService},
+      {
+          provide: HTTP_INTERCEPTORS,
+          useClass: AuthExpiredInterceptor,
+          multi: true
+      },
   ],
   bootstrap: [AppComponent]
 })
