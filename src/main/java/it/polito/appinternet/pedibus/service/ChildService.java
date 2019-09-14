@@ -117,7 +117,7 @@ public class ChildService {
         return child;
     }
 
-    public JSONObject encapsulateReservations(String ssn){
+    public JSONArray encapsulateReservations(String ssn){
         Child child = findByRegistrationNumber(ssn);
         if(child == null){
             return null;

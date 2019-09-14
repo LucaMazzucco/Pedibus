@@ -184,8 +184,7 @@ public class ReservationService {
     }
 
     @SuppressWarnings("Duplicates")
-    public JSONObject encapsulateChildReservations(List<Reservation> resList,Child child, User parent) {
-        JSONObject resJson = new JSONObject();
+    public JSONArray encapsulateChildReservations(List<Reservation> resList,Child child, User parent) {
         JSONArray resArray = new JSONArray();
         List<Reservation> backRes = resList.stream()
                 .filter(r->!r.isFlagGoing())
@@ -230,8 +229,7 @@ public class ReservationService {
                     tmpJson.put("stopR",stopR);
                     resArray.put(tmpJson);
                 });
-        resJson.put("reservations",resArray);
-        return resJson;
+        return resArray;
     }
 
 //    @SuppressWarnings("Duplicates")

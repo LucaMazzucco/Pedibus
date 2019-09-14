@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {DataService} from "../services/data.service";
 import {Reservation} from "../model/reservation";
 import {TitleService} from "../services/title.service";
-import {MatDialog, MatDialogConfig, MatTableDataSource} from "@angular/material";
+import {MatDialog, MatDialogConfig, MatSnackBar, MatTableDataSource} from "@angular/material";
 import {Line} from "../model/line";
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Child} from "../model/child";
@@ -16,8 +16,6 @@ import {Child} from "../model/child";
 })
 export class BookingComponent implements OnInit {
 
-  constructor(private dataService: DataService, private titleservice: TitleService, private dialog: MatDialog, private _formBuilder: FormBuilder) { }
-
   reservations: Reservation[];
   subscription: any;
   isDisabled: Boolean[];
@@ -29,13 +27,14 @@ export class BookingComponent implements OnInit {
   isLinear: boolean;
   children: Child[];
   currentChild: Child;
+  infoMessage : string = "";
+
+  constructor(private dataService: DataService, private _snackBar: MatSnackBar, private titleservice: TitleService, private dialog: MatDialog, private _formBuilder: FormBuilder) { }
+
+
 
 
   ngOnInit() {
-    this.isLinear = true;
-    this.getChildren();
-    this.titleservice.changeTitle('Le mie prenotazioni')
-    this.isDisabled = []
     this.selectLineForm = this._formBuilder.group({
       selectedLine: ['', Validators.required]
     });
@@ -48,6 +47,15 @@ export class BookingComponent implements OnInit {
     this.selectBackForm = this._formBuilder.group({
       selectedBack: ['', Validators.required]
     });
+    this.dataService.getLines().subscribe(lines => {
+      this.lines=lines;
+      console.log(this.lines)
+    });
+    this.isLinear = true;
+    this.getChildren();
+    this.titleservice.changeTitle('Le mie prenotazioni')
+    this.isDisabled = []
+
   }
 
   getChildren(): void{
@@ -64,10 +72,12 @@ export class BookingComponent implements OnInit {
 
   getReservations(c_id: string) : void{
     console.log('Reservation per bambino' + c_id)
-    this.subscription = this.dataService.getReservations(c_id).subscribe(reservations => {
+    this.subscription = this.dataService.getChildReservation(c_id).subscribe(reservations => {
       this.reservations = reservations;
+      console.log(this.reservations)
       this.initializeArray();
-    })
+    },
+            error => this.reservations = [])
   }
 
 
@@ -79,7 +89,6 @@ export class BookingComponent implements OnInit {
 
   openDialog(templateRef) {
     const dialogConfig = new MatDialogConfig();
-    this.dataService.getLines().subscribe(lines => this.lines=lines);
     let dialogRef = this.dialog.open(templateRef, {
       width: '500px',
     });
@@ -98,8 +107,26 @@ export class BookingComponent implements OnInit {
   }
 
   addReservation(): void{
-    //this.reservations.push(new Reservation(this.selectedLine.lineName, this.selectedRide.date, this.selectedRide.stops, this.selectedRide.stopsBack, this.selectedStopA, this.selectedStopR));
-    this.isDisabled.push(true)
+    let newRes = new Reservation(this.selectLineForm.controls.selectedLine.value.lineName,
+                                  this.selectGoingForm.controls.selectedGoing.value,
+                                  this.selectBackForm.controls.selectedBack.value,
+                                  this.selectRideForm.controls.selectedRide.value.date,
+                                  this.currentChild.registrationNumber,
+                                  localStorage.getItem('current_user'))
+    this.dataService.addChildReservation(this.currentChild.registrationNumber, newRes).subscribe(res => {
+          this.infoMessage = "Aggiunta la prenotazione!";
+          this._snackBar.open(this.infoMessage, '', {duration: 2000});
+          this.infoMessage = ''
+          this.reservations.push(newRes);
+          this.isDisabled.push(true)
+        },
+        error => {
+          this.infoMessage = "Non è stato possibile aggiungere la prenotazione";
+          this._snackBar.open(this.infoMessage, '', {duration: 2000});
+          this.infoMessage = ''
+        }
+    )
+
   }
 
   deleteReservation(i): void{
