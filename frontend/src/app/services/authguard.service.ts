@@ -22,13 +22,19 @@ export class AuthguardService implements CanActivate{
             flag = true;
           }
         });
-    if (!flag || !this.auth.isLoggedIn()) {
-      this.router.navigate(['login']);
-      console.log("false")
-      return false;
+    if (!this.auth.isLoggedIn()) {
+        this.router.navigate(['login']);
+        console.log("false")
+        return false;
 
     }
-    console.log("true")
+    if (!flag) {
+        this.router.navigate(['/']);
+        console.log("false")
+        return false;
+    }
+
+     console.log("true")
     return true;
   }}
 // import { Injectable } from '@angular/core';
