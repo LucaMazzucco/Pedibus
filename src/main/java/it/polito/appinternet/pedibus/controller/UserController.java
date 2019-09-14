@@ -3,6 +3,7 @@ package it.polito.appinternet.pedibus.controller;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import it.polito.appinternet.pedibus.Roles;
 import it.polito.appinternet.pedibus.model.Message;
 import it.polito.appinternet.pedibus.model.User;
 import it.polito.appinternet.pedibus.service.UserService;
@@ -185,11 +186,13 @@ public class UserController {
     public ResponseEntity getUsersRoles(){
         JSONArray returnMap = new JSONArray();
 
-        List<User> users = userService.getUsers().stream().collect(Collectors.toList());
+        List<User> users = userService.getUsers().stream()
+                .filter(u->u.getRoles().contains(Roles.ROLE_CONDUCTOR.getRole()))
+                .collect(Collectors.toList());
         for (User user : users){
             JSONObject jsonOutput = new JSONObject();
-            if(user.getRoles().contains("Accompagnatore")){
-                if(user.getRoles().contains("Amministratore")){
+            if(user.getRoles().contains(Roles.ROLE_CONDUCTOR.getRole())){
+                if(user.getRoles().contains(Roles.ROLE_ADMIN.getRole())){
                     jsonOutput.put("role", "Amministratore");
                     jsonOutput.put("line", user.getAdminLines().get(0));
                 } else {

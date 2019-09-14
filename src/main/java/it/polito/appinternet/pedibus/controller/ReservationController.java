@@ -100,10 +100,10 @@ public class ReservationController {
         if(flagGoing==null || isPresent == null){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-        Long id = reservationService.addReservation(line_name, date,
+        Reservation reservation = reservationService.addReservation(line_name, date,
                 registrationNumber, stopName, flagGoing, isPresent);
-        if(id>=0){
-            return new ResponseEntity<>(id, HttpStatus.OK);
+        if(reservation != null){
+            return new ResponseEntity<>(reservation.getId(), HttpStatus.OK);
         }
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }

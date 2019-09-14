@@ -1,6 +1,5 @@
 package it.polito.appinternet.pedibus.service;
 
-import com.mongodb.util.JSON;
 import it.polito.appinternet.pedibus.model.Child;
 import it.polito.appinternet.pedibus.model.Reservation;
 import it.polito.appinternet.pedibus.model.User;
@@ -147,12 +146,10 @@ public class ChildService {
         }
         try{
             resList.forEach(r-> {
-                r.setId("");
-                long id = reservationService.addReservation(r);
-                if(id<0){
+                r = reservationService.addReservation(r);
+                if(r == null){
                     throw new NullPointerException("error");
                 }
-                r.setId(String.valueOf(id));
             });
         }
         catch(NullPointerException e){
@@ -173,21 +170,22 @@ public class ChildService {
         JSONObject jPayload = new JSONObject(payload);
         Child child = findByRegistrationNumber(ssn);
         if(child==null) return false;
-        List<Reservation> resList = decapsulateChildReservation(child,jPayload);
+        List<Reservation> resList = new LinkedList<>();
+        List<Reservation> decap = decapsulateChildReservation(child, jPayload);
+        if(decap == null) return false;
+        resList.addAll(decap);
         try{
             resList.forEach(r-> {
-                r.setId("");
-                long id = reservationService.addReservation(r);
-                if(id<0){
+                r = reservationService.addReservation(r);
+                if(r == null){
                     throw new NullPointerException("error");
                 }
-                r.setId(String.valueOf(id));
             });
         }
         catch(NullPointerException e){
             e.printStackTrace();
             resList.forEach(r->{
-                if(r.getId().length()>0){
+                if(r.getId() != null){
                     reservationService.deleteReservation(r.getLineName(),r.getReservationDate(),r.getId());
                 }
             });
@@ -201,7 +199,10 @@ public class ChildService {
         Child child = findByRegistrationNumber(ssn);
         if(child == null || payload.length()==0) return false;
         JSONObject jPayload = new JSONObject(payload);
-        List<Reservation> resList = decapsulateChildReservation(child,jPayload);
+        List<Reservation> resList = new LinkedList<>();
+        List<Reservation> decap = decapsulateChildReservation(child, jPayload);
+        if(decap == null) return false;
+        resList.addAll(decap);
         try{
             resList.forEach(r->{
                 Reservation res = reservationService.findByLineNameAndReservationDateAndFlagGoingAndChild(r.getLineName(),r.getReservationDate(),r.isFlagGoing(),child.getId());
@@ -222,7 +223,8 @@ public class ChildService {
     public boolean deleteChildReservation(String ssn, String payload){
         JSONObject jPayload = new JSONObject(payload);
         Child child = findByRegistrationNumber(ssn);
-        List<Reservation> resList = decapsulateChildReservation(child, jPayload);
+        List<Reservation> resList = new LinkedList<>();
+        resList.addAll(decapsulateChildReservation(child, jPayload));
         try{
             resList.forEach(r->{
                 if(reservationService.deleteReservation(r)<0){

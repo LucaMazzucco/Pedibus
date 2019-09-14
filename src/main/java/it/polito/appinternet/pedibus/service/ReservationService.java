@@ -56,19 +56,20 @@ public class ReservationService {
 
     @SuppressWarnings("Duplicates")
     @Transactional
-    public Long addReservation(String line_name, long date,
+    public Reservation addReservation(String line_name, long date,
                                String registrationNumber, String stopName,
                                boolean flagGoing, boolean isPresent){
         // To Test use addReservation.json
         Line l = lineService.findByLineName(line_name);
         Child child = childService.findByRegistrationNumber(registrationNumber);
         if(child==null){
-            return new Long(-2);
+            return null;
         }
         User parent = userService.userFindById(child.getParentId());
         Stop s;
+        List<Reservation> resList = reservationRepo.findAll();
         if(reservationRepo.findByLineNameAndReservationDateAndFlagGoingAndChild(line_name, date, flagGoing, child.getId())!=null){
-            return new Long(-3);
+            return null;
         }
         if(flagGoing){
             s = l.getRides().stream().filter(r->r.isFlagGoing())
@@ -85,7 +86,7 @@ public class ReservationService {
                     .findAny().orElse(null);
         }
         if(s==null || parent==null || l==null){
-            return new Long(-4);
+            return null;
         }
         Reservation r = new Reservation(line_name, stopName, child.getId(), child.getParentId(), date, flagGoing, isPresent);
         r = reservationRepo.insert(r); //insert crea un nuovo id
@@ -93,10 +94,10 @@ public class ReservationService {
         parent.getReservations().add(r.getId());
         userService.userSave(parent);
         lineService.saveLine(l);
-        return Long.getLong(r.getId());
+        return r;
     }
 
-    public Long addReservation(Reservation reservation){
+    public Reservation addReservation(Reservation reservation){
         Child child = childService.findById(reservation.getChild());
         return addReservation(reservation.getLineName(),
                 reservation.getReservationDate(),
