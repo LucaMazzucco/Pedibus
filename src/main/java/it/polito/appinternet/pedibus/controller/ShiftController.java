@@ -169,23 +169,23 @@ public class ShiftController {
      */
 
     @PostMapping("shift/addAvailability")
-    public ResponseEntity addAvailability(@RequestBody String payload) {
+    public ResponseEntity<String> addAvailability(@RequestBody String payload) {
         JSONObject mainJson = new JSONObject(payload);
         Shift newAvailability = shiftService.decapsulateShift(mainJson);
         if(newAvailability.isConfirmed1() || newAvailability.isConfirmed2())
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         newAvailability = shiftService.insertShift(newAvailability);
         if(newAvailability == null)
-            return new ResponseEntity(HttpStatus.I_AM_A_TEAPOT);
+            return new ResponseEntity<>(HttpStatus.I_AM_A_TEAPOT);
         else if (lineService.addNewAvailability(newAvailability) < 0) {
             shiftService.deleteShift(newAvailability);
-            return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         } else {
             Message m = new Message(Instant.now().getEpochSecond(), false, "L'accompagnatore " + newAvailability.getEmail() + " è disponibile per la linea " + newAvailability.getLineName());
             if (lineService.sendMessageLineAdmin(newAvailability.getLineName(), m) < 0) {
-                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("Warning - No admin for the selected line", HttpStatus.OK);
             } else {
-                return new ResponseEntity(HttpStatus.OK);
+                return new ResponseEntity<>(HttpStatus.OK);
             }
         }
     }
