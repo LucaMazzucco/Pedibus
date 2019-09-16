@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import {TitleService} from "../services/title.service";
-import {DataService} from "../services/data.service";
-import {Shift} from "../model/shift";
-import {MatDialog, MatDialogConfig, MatSnackBar, MatTableDataSource} from "@angular/material";
+import {TitleService} from '../services/title.service';
+import {DataService} from '../services/data.service';
+import {Shift} from '../model/shift';
+import {MatDialog, MatDialogConfig, MatSnackBar, MatTableDataSource} from '@angular/material';
 
 @Component({
   selector: 'app-shift',
@@ -13,8 +13,9 @@ export class ShiftComponent implements OnInit {
 
   tableDataSource: MatTableDataSource<Shift> = new MatTableDataSource<Shift>([]);
   displayedColumns: string[] = ['lineName', 'rideDate', 'personName', 'flagGoing', 'delete', 'confirm'];
-  infoMessage: string = '';
+  infoMessage = '';
 
+  // tslint:disable-next-line:variable-name
   constructor(private dataService: DataService, private _snackBar: MatSnackBar, private titleservice: TitleService) { }
 
   ngOnInit() {
@@ -24,20 +25,35 @@ export class ShiftComponent implements OnInit {
     });
   }
 
-  addShift(i: number){
-    //this.tableDataSource.data[i].confirmed = true
-    let response = this.dataService.addShift(this.tableDataSource.data[i])
-    //this.tableDataSource.data.splice(i,1);
-    //this.tableDataSource._updateChangeSubscription()
+  // addShift(i: number) {
+  //   // this.tableDataSource.data[i].confirmed = true
+  //   const response = this.dataService.addShift(this.tableDataSource.data[i]);
+  //   // this.tableDataSource.data.splice(i,1);
+  //   // this.tableDataSource._updateChangeSubscription()
+  //   response.subscribe(data => {
+  //     this.infoMessage = 'Aggiunto un nuovo turno!';
+  //     this._snackBar.open(this.infoMessage, '', {duration: 2000});
+  //     this.infoMessage = '';
+  //   }, error => {
+  //     this.infoMessage = 'Non è stato possibile aggiungere il turno';
+  //     this._snackBar.open(this.infoMessage, '', {duration: 2000});
+  //     this.infoMessage = '';
+  //   });
+  // }
+  confirmShift(i: number) {
+    // this.tableDataSource.data[i].confirmed = true
+    const response = this.dataService.confirmShiftAdmin(this.tableDataSource.data[i]);
+    // this.tableDataSource.data.splice(i,1);
+    // this.tableDataSource._updateChangeSubscription()
     response.subscribe(data => {
-      this.infoMessage = "Aggiunto un nuovo turno!";
-      this._snackBar.open(this.infoMessage, '', {duration: 2000});
-      this.infoMessage = ''
-    }, error =>{
-      this.infoMessage = "Non è stato possibile aggiungere il turno";
+      this.infoMessage = 'Turno confermato!';
       this._snackBar.open(this.infoMessage, '', {duration: 2000});
       this.infoMessage = '';
-    })
+    }, error => {
+      this.infoMessage = 'Non è stato possibile confermare il turno';
+      this._snackBar.open(this.infoMessage, '', {duration: 2000});
+      this.infoMessage = '';
+    });
   }
 
 }

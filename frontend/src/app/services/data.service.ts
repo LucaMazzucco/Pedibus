@@ -8,7 +8,6 @@ import {catchError, first} from 'rxjs/operators';
 import { Passenger } from '../model/passenger';
 import { Reservation } from '../model/reservation';
 import {Message} from '../model/message';
-import {Availability} from '../model/availability';
 import {Shift} from '../model/shift';
 import {Child} from '../model/child';
 
@@ -32,14 +31,17 @@ export class DataService {
   }
 
   putLineAttendance(line: Line) {
+    // tslint:disable-next-line:max-line-length
     return this.http.put<Line>(REST_URL + '/line/putLineAttendance/' + line.lineName, {line}).pipe(first()).subscribe(data => console.log(data));
   }
 
   putRideAttendance(ride: Ride, lineName: string) {
+    // tslint:disable-next-line:max-line-length
     return this.http.put<Ride>(REST_URL + '/line/putLineAttendance/' + lineName + '/ride', {ride}).pipe(first()).subscribe(data => console.log(data));
   }
 
   putPersonAttendance(rideDate: Date, lineName: string, isBack: boolean, person: Passenger) {
+    // tslint:disable-next-line:max-line-length
     return this.http.put(REST_URL + '/line/putLineAttendance/' + lineName + '/ride/user', {rideDate, isBack, person}).pipe(first()).subscribe(data => console.log(data));
   }
 
@@ -55,16 +57,16 @@ export class DataService {
       return this.http.put(REST_URL + '/user/' + email + '/messages', messages).pipe(first()).subscribe(data => console.log(data));
   }
 
-  getAvailabilities(email: string): Observable<Availability[]> {
-    return this.http.get<Availability[]>(REST_URL + 'getAvailabilities/' + email);
+  getAvailabilities(email: string): Observable<Shift[]> {
+    return this.http.get<Shift[]>(REST_URL + '/shift/getAvailabilities/' + email);
   }
 
-  addAvailability(av: Availability) {
-    return this.http.post<Availability>(REST_URL + '/addAvailability', av);
+  addAvailability(av: Shift) {
+    return this.http.post<Shift>(REST_URL + '/shift/addAvailability', av);
   }
 
-  deleteAvailability(av: Availability) {
-    return this.http.post<Availability>(REST_URL + '/deleteAvailability', av);
+  deleteAvailability(av: Shift) {
+    return this.http.post<Shift>(REST_URL + '/shift/deleteAvailability', av);
   }
 
   getNoAdminLines(): Observable<Line[]> {
@@ -72,16 +74,20 @@ export class DataService {
   }
 
   getShifts(email: string): Observable<Shift[]> {
-    return this.http.get<Shift[]>(REST_URL + '/getShifts/' + email);
+    return this.http.get<Shift[]>(REST_URL + '/shift/getShifts/' + email);
   }
 
-  addShift(sh: Shift) {
-    return this.http.post<Shift>(REST_URL + '/addShift', sh);
+  confirmShiftAdmin(sh: Shift) {
+    return this.http.post<Shift>(REST_URL + '/shift/confirm1', sh);
   }
 
-  deleteShift(sh: Shift) {
-    return this.http.post<Shift>(REST_URL + '/deleteShift', sh);
+  confirmShiftConductor(sh: Shift) {
+    return this.http.post<Shift>(REST_URL + 'shift/confirm2', sh);
   }
+
+  // deleteShift(sh: Shift) {
+  //   return this.http.post<Shift>(REST_URL + '/shift/deleteShift', sh);
+  // }
 
   getChildren(email: string): Observable<Child[]> {
     return this.http.get<Child[]>(REST_URL + '/user/getChildren/' + email);
@@ -122,12 +128,12 @@ export class DataService {
     return this.http.get<Reservation[]>(REST_URL + '/children/getChildReservations/' + ssn);
   }
 
-  editChildReservation(ssn: string, r: Reservation){
+  editChildReservation(ssn: string, r: Reservation) {
     return this.http.put<Reservation>(REST_URL + '/children/editChildReservation/' + ssn, r);
   }
 
-  deleteChildReservation(ssn: string, r: Reservation){
-    return this.http.post<Reservation>(REST_URL + '/children/deleteChildReservation/' + ssn, r);
+  deleteChildReservation(ssn: string, r: Reservation) {
+    return this.http.post<Reservation>(REST_URL + '/deleteChildReservation/' + ssn, r);
   }
 
 }

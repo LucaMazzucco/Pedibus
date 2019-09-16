@@ -84,7 +84,7 @@ public class ShiftController {
         JSONArray availabilities = new JSONArray();
         shiftService.findByEmail(email)
                 .stream()
-                .filter(Shift::isConfirmed2)
+                .filter(Shift::isConfirmed1)
                 .map(shift-> shiftService.encapsulateShift(shift))
                 .forEach(availabilities::put);
 //        List<Line> myLines = lineService.getAdministratedLines(email);
