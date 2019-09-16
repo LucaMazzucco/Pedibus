@@ -20,7 +20,7 @@ export class ShiftComponent implements OnInit {
 
   ngOnInit() {
     this.titleservice.changeTitle('Gestione turni accompagnatori');
-    this.dataService.getShifts(localStorage.getItem('current_user')).subscribe(a => {
+    this.dataService.getAvailabilities(localStorage.getItem('current_user')).subscribe(a => {
       this.tableDataSource.data = a;
     });
   }
