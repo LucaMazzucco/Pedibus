@@ -11,6 +11,7 @@ import java.util.Optional;
 public interface ShiftRepository extends MongoRepository<Shift, String> {
     Optional<Shift> findById(String id);
     List<Shift> findByEmail(String email);
+    List<Shift> findByLineName(String lineName);
     Shift findByEmailAndLineNameAndFlagGoingAndConfirmed1IsFalseAndConfirmed2IsFalse(String email, String lineName, boolean flagGoing);
     List<Shift> findByEmailAndLineNameAndFlagGoing(String email, String lineName, boolean flagGoing);
     Shift findByEmailAndLineNameAndRideDateAndFlagGoing(String email, String lineName, long rideDate, boolean flagGoing);

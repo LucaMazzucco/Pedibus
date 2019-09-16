@@ -3,6 +3,7 @@ package it.polito.appinternet.pedibus.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.util.JSON;
 import it.polito.appinternet.pedibus.model.Shift;
+import it.polito.appinternet.pedibus.model.User;
 import it.polito.appinternet.pedibus.repository.ShiftRepository;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +12,16 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ShiftService {
     @Autowired
     ShiftRepository shiftRepository;
+    @Autowired
+    UserService userService;
+    @Autowired
+    LineService lineService;
 
     public Shift findById(String id){
         return shiftRepository.findById(id).get();
@@ -26,6 +32,10 @@ public class ShiftService {
 
     public List<Shift> findByEmail(String email){
         return new LinkedList<>(shiftRepository.findByEmail(email));
+    }
+
+    public List<Shift> findByLineName(String lineName){
+        return new LinkedList<>(shiftRepository.findByLineName(lineName));
     }
 
     @Transactional
@@ -62,6 +72,14 @@ public class ShiftService {
             return false;
         shiftRepository.delete(shift);
         return true;
+    }
+
+    public List<Shift> findAdministratedShifts(String email){
+        User admin = userService.userFindByEmail(email);
+        if(admin == null ) return null;
+        return admin.getAdminLines().stream()
+                .flatMap(l->findByLineName(l).stream())
+                .collect(Collectors.toList());
     }
 
     public Shift decapsulateShift(JSONObject jShift){
