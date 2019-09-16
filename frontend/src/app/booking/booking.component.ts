@@ -65,6 +65,7 @@ export class BookingComponent implements OnInit {
   getChildren(): void{
     this.subscription = this.dataService.getChildren(localStorage.getItem('current_user')).subscribe( children => {
       this.children = children;
+      this.updateStopOfLines(this.children)
       this.currentChild = this.children[0]
       this.getReservations(this.currentChild.registrationNumber)
     })
@@ -72,13 +73,15 @@ export class BookingComponent implements OnInit {
 
   selectChild(c: Child){
     this.currentChild = c;
+    this.dataService.getChildReservation(this.currentChild.registrationNumber).subscribe( r => this.reservations = r)
   }
 
   getReservations(c_id: string) : void{
     console.log('Reservation per bambino' + c_id)
     this.subscription = this.dataService.getChildReservation(c_id).subscribe(reservations => {
       this.reservations = reservations;
-      console.log(this.reservations)
+      this.stopOfLine = []
+        console.log(this.reservations)
       this.initializeArray();
     }, error => this.reservations = [])
   }
@@ -89,6 +92,8 @@ export class BookingComponent implements OnInit {
       this.isDisabled.push(true);
     }
   }
+
+
 
   openDialog(templateRef) {
     const dialogConfig = new MatDialogConfig();
@@ -108,16 +113,27 @@ export class BookingComponent implements OnInit {
       this.isDisabled[index] = true;
     }
     this.editMode = true;
-    this.updateStopsOfLine(index)
 
   }
-  updateStopsOfLine(i): void{
-    console.log(this.reservations[i].lineName);
-    this.dataService.getStopsOfLine(this.reservations[i].lineName).subscribe( s => {
-      this.stopOfLine = s;
-      console.log(this.stopOfLine)
-    })
+
+  updateStopOfLines(children: Child[]){
+    for(let c of children){
+      this.dataService.getStopsOfLine(c.defaultLine).subscribe(
+          r =>{
+            this.stopOfLine = this.stopOfLine.concat(r);
+            console.log(this.stopOfLine)
+          }
+      )
+    }
   }
+
+  // updateStopsOfLine(i): void{
+  //   console.log(this.reservations[i].lineName);
+  //   this.dataService.getStopsOfLine(this.reservations[i].lineName).subscribe( s => {
+  //     this.stopOfLine = s;
+  //     console.log(this.stopOfLine)
+  //   })
+  // }
 
   addReservation(): void{
     let newRes = new Reservation(this.selectLineForm.controls.selectedLine.value.lineName,

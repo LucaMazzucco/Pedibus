@@ -22,7 +22,7 @@
           <mat-card-content fxLayout="column">
             <mat-form-field>
               <mat-label>Fermata di andata</mat-label>
-              <mat-select [disabled]="isDisabled[i]" [(value)]="reservations[i].stopA.stopName">
+                  <mat-select [disabled]="isDisabled[i]" [(value)]="reservations[i].stopA.stopName">
                 <mat-option *ngFor="let stopA of stopOfLine" [value]="stopA">
                   {{stopA}}
                 </mat-option>
