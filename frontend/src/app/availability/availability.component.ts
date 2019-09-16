@@ -3,7 +3,7 @@ import {TitleService} from '../services/title.service';
 import {MatDialog, MatDialogConfig, MatSnackBar, MatTableDataSource} from '@angular/material';
 import {DataService} from '../services/data.service';
 import {Line} from '../model/line';
-import {Availability} from '../model/availability';
+import {Shift} from '../model/shift';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 
 
@@ -21,8 +21,8 @@ export class AvailabilityComponent implements OnInit {
   selectRideForm: FormGroup;
   selectGoingForm: FormGroup;
   isLinear: boolean;
-  displayedColumns: string[] = ['lineName', 'rideDate', 'flagGoing', 'delete'];
-  tableDataSource: MatTableDataSource<Availability> = new MatTableDataSource<Availability>([]);
+  displayedColumns: string[] = ['lineName', 'rideDate', 'flagGoing','waiting' ,'delete'];
+  tableDataSource: MatTableDataSource<Shift> = new MatTableDataSource<Shift>([]);
   infoMessage = '';
 
 
@@ -34,6 +34,7 @@ export class AvailabilityComponent implements OnInit {
     this.titleservice.changeTitle('Renditi disponibile per accompagnare!');
     this.isLinear = true;
     this.dataService.getAvailabilities(localStorage.getItem('current_user')).subscribe(a => {
+        console.log(a)
         this.tableDataSource.data = a;
     });
     this.selectLineForm = this._formBuilder.group({
@@ -66,14 +67,15 @@ export class AvailabilityComponent implements OnInit {
   }
   addAvailability() {
       // tslint:disable-next-line:max-line-length
-    const av: Availability = new Availability(localStorage.getItem('current_user'), this.selectLineForm.controls.selectedLine.value.lineName, this.selectRideForm.controls.selectedRide.value.date, this.selectGoingForm.controls.selectedFlagGoing.value.includes('andata'));
-    this.tableDataSource.data.push(av);
-    this.tableDataSource._updateChangeSubscription();
+    const av: Shift = new Shift(localStorage.getItem('current_user'), this.selectLineForm.controls.selectedLine.value.lineName, this.selectRideForm.controls.selectedRide.value.date, this.selectGoingForm.controls.selectedFlagGoing.value.includes('andata'));
+
     const response =  this.dataService.addAvailability(av);
     response.subscribe(data => {
           this.infoMessage = 'Aggiunta la disponibilità!';
           this._snackBar.open(this.infoMessage, '', {duration: 2000});
           this.infoMessage = '';
+        this.tableDataSource.data.push(av);
+        this.tableDataSource._updateChangeSubscription();
       }, error => {
           this.infoMessage = 'Non è stato possibile aggiungere la disponibilità';
           this._snackBar.open(this.infoMessage, '', {duration: 2000});
@@ -97,4 +99,14 @@ export class AvailabilityComponent implements OnInit {
       });
   }
 
+  confirmedbyAdmin(i:number):boolean{
+      return this.tableDataSource.data[i].confirmed1;
+  }
+  confirmedbyConductor(i:number):boolean{
+      return this.tableDataSource.data[i].confirmed2;
+  }
+  confirmbyConductor(i: number){
+        this.dataService.confirmShiftConductor(this.tableDataSource.data[i])
+
+  }
 }
