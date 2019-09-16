@@ -1,9 +1,9 @@
 package it.polito.appinternet.pedibus.controller;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polito.appinternet.pedibus.model.*;
 import it.polito.appinternet.pedibus.service.LineService;
+import it.polito.appinternet.pedibus.service.ShiftService;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -26,6 +26,8 @@ public class LineController {
 
     @Autowired
     LineService lineService;
+    @Autowired
+    ShiftService shiftService;
 
     @GetMapping("/insertLine")
     public ResponseEntity<String> insertLine(Line l) {
@@ -159,127 +161,6 @@ public class LineController {
 //        mainObj.put("stopListA", stopA);
 //        mainObj.put("stopListR", stopR);
         return lineService.encapsulateLine(line).toString();
-    }
-
-    @GetMapping("/getAvailabilities/{email}")
-    public String getAvailabilities(@PathVariable String email){
-        if(email == null){
-            return "-1";
-        }
-        List<Line> myLines = lineService.getLineOfCompanions(email);
-        JSONArray availabilities = new JSONArray();
-        JSONObject tmp = new JSONObject();
-        myLines.forEach(l -> {
-            List<Ride> myRides = l.getRides().stream().filter(r -> r.getCompanions().contains(email)).collect(Collectors.toList());
-            myRides.forEach(r -> {
-                tmp.put("email", email);
-                tmp.put("lineName", l.getLineName());
-                tmp.put("rideDate", r.getRideDate());
-                tmp.put("confirmed", r.isConfirmed());
-                tmp.put("flagGoing", r.isFlagGoing());
-                availabilities.put(tmp);
-            });
-        });
-
-        return availabilities.toString();
-    }
-
-    @PostMapping("/deleteAvailability")
-    public ResponseEntity deleteAvailability(@RequestBody String payload) {
-        JSONObject mainJson = new JSONObject(payload);
-        Shift avToDelete = lineService.generateShift(mainJson);
-        if (avToDelete == null) {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        } else {
-            if (lineService.deleteAvailability(avToDelete) < 0) {
-                return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
-            } else {
-                Message m = new Message(Instant.now().getEpochSecond(), false, "L'accompagnatore: " + avToDelete.getEmail() + " ha tolto la disponibilità per la linea: " + avToDelete.getLineName());
-                if (lineService.sendMessageLineAdmin(avToDelete.getLineName(), m) < 0) {
-                    return new ResponseEntity(HttpStatus.BAD_REQUEST);
-                } else {
-                    return new ResponseEntity(HttpStatus.OK);
-                }
-            }
-        }
-    }
-
-    @GetMapping("/getShifts/{email}")
-    public String getShifts(@PathVariable String email){
-        if(email == null){
-            return "-1";
-        }
-        List<Line> myLines = lineService.getLineShifts(email);
-        JSONArray availabilities = new JSONArray();
-        JSONObject tmp = new JSONObject();
-        myLines.forEach(l -> {
-            List<Ride> myRides = l.getRides().stream().filter(r -> !r.isConfirmed()).collect(Collectors.toList());
-            myRides.forEach(r -> {
-                r.getCompanions().forEach(c -> {
-                    tmp.put("email", c);
-                    tmp.put("lineName", l.getLineName());
-                    tmp.put("rideDate", r.getRideDate());
-                    tmp.put("confirmed", r.isConfirmed());
-                    tmp.put("flagGoing", r.isFlagGoing());
-                    availabilities.put(tmp);
-                });
-            });
-        });
-
-        return availabilities.toString();
-    }
-
-    @PostMapping("/addShift")
-    public ResponseEntity addShift(@RequestBody String payload){
-        JSONObject mainJson = new JSONObject(payload);
-        Shift newShift = lineService.generateShift(mainJson) ;
-        if(lineService.addNewShift(newShift, true) < 0){
-                return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
-            }
-        else{
-        Message m = new Message(Instant.now().getEpochSecond(), false, "L'amministratore ti ha confermato come accompagnatore per la linea " + newShift.getLineName());
-        if(lineService.sendMessageToUser(newShift.getEmail(), m) < 0){
-                return new ResponseEntity(HttpStatus.BAD_REQUEST);
-            }
-            else{
-                return new ResponseEntity(HttpStatus.OK);
-            }
-        }
-    }
-
-    @PostMapping("/deleteShift")
-    public ResponseEntity removeShift(@RequestBody String payload){
-        JSONObject mainJson = new JSONObject(payload);
-        Shift newShift = lineService.generateShift(mainJson) ;
-        if(lineService.addNewShift(newShift, false) < 0){
-            return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
-        }
-        else{
-            Message m = new Message(Instant.now().getEpochSecond(), false, "L'amministratore ti ha cancellato il turno per la linea: " + newShift.getLineName());
-            if((lineService.sendMessageToUser(newShift.getEmail(), m)) < 0){
-                return new ResponseEntity(HttpStatus.BAD_REQUEST);
-            }
-            else{
-                return new ResponseEntity(HttpStatus.OK);
-            }
-        }
-    }
-
-
-    @PostMapping("/addAvailability")
-    public ResponseEntity addAvailability(@RequestBody String payload) {
-        JSONObject mainJson = new JSONObject(payload);
-        Shift newAvailability = lineService.generateShift(mainJson);
-        if (lineService.addNewAvailability(newAvailability) < 0) {
-            return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
-        } else {
-            Message m = new Message(Instant.now().getEpochSecond(), false, "L'accompagnatore " + newAvailability.getEmail() + " è disponibile per la linea " + newAvailability.getLineName());
-            if (lineService.sendMessageLineAdmin(newAvailability.getLineName(), m) < 0) {
-                return new ResponseEntity(HttpStatus.BAD_REQUEST);
-            } else {
-                return new ResponseEntity(HttpStatus.OK);
-            }
-        }
     }
 
     @PostConstruct

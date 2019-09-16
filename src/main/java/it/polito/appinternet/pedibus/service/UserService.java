@@ -1,6 +1,7 @@
 package it.polito.appinternet.pedibus.service;
 
 import com.mongodb.util.JSON;
+import it.polito.appinternet.pedibus.Roles;
 import it.polito.appinternet.pedibus.model.*;
 import it.polito.appinternet.pedibus.repository.ConfirmationTokenRepository;
 import it.polito.appinternet.pedibus.repository.LineRepository;
@@ -372,20 +373,15 @@ public class UserService {
     public boolean addRoleAndLine(String email, String linename){
         Optional<User> userOptional = userRepo.findByEmail(email);
         Line line = lineService.findByLineName(linename);
-
         if(!userOptional.isPresent() || line == null || !line.getAdmins().isEmpty()){
             return false;
         }
-
         User user = userOptional.get();
-
-        user.getRoles().add("Amministratore");
+        user.getRoles().add(Roles.ROLE_ADMIN.getRole());
         user.getAdminLines().add(linename);
         line.getAdmins().add(user.getEmail());
-
         userRepo.save(user);
-        lineService.insertLine(line);
-
+        lineService.saveLine(line);
         return true;
     }
 

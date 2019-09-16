@@ -26,6 +26,8 @@ public class LineService {
     private ReservationService reservationService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ShiftService shiftService;
 
     public String insertLine(Line l) {
         //TO DO: Controlli sulle stop della line da inserire e persone se presenti
@@ -44,8 +46,8 @@ public class LineService {
         return lineRepo.findByLineName(lineName);
     }
 
-    public void saveLine(Line line){
-        lineRepo.save(line);
+    public Line saveLine(Line line){
+        return lineRepo.save(line);
     }
 
     public Ride getRideByLineAndDate(Line line, long rDate){
@@ -259,13 +261,11 @@ public class LineService {
             //TODO: Sostituire con una query più complessa, non avevo voglia di farlo per colpa delle date
             Line line = findByLineName(availability.getLineName());
             Ride ride = line.getRides().stream()
-                    .filter(r->Utils.myCompareUnixDate(r.getRideDate(),availability.getRideDate())==0)
+                    .filter(r->Utils.myCompareUnixDate(r.getRideDate(),availability.getRideDate()) == 0)
                     .findAny().orElseThrow(NullPointerException::new);
-            List<String> companions = ride.getCompanions();
-            companions.add(availability.getEmail());
-            ride.setCompanions(companions);
-            ride.setConfirmed(false);
-            lineRepo.save(line);
+            ride.getCompanions().add(availability.getEmail());
+            // ride.setConfirmed(false);
+            saveLine(line);
             return 0;
         }
         catch (NullPointerException ne){
@@ -281,20 +281,18 @@ public class LineService {
             Ride ride = line.getRides().stream()
                     .filter(r -> Utils.myCompareUnixDate(r.getRideDate(),shift.getRideDate())==0)
                     .findAny().orElseThrow(NullPointerException::new);
-            List<String> companions = ride.getCompanions();
             String user = shift.getEmail();
             if(ride.getOfficialCompanion().equals(user) && ride.isConfirmed()){
-                ride.setConfirmed(false);
-                ride.setOfficialCompanion("");
                 return -2;
             }
-            if(ride.isConfirmed()){
+            else if(ride.isConfirmed()){
                 return -3;
             }
-            companions.add(shift.getEmail());
             ride.setOfficialCompanion(user);
             ride.setConfirmed(confirmed);
-            lineRepo.save(line);
+            shift.setConfirmed2(true);
+            shiftService.saveShift(shift);
+            saveLine(line);
             return 0;
         }
         catch (NullPointerException ne) {
@@ -303,13 +301,13 @@ public class LineService {
         }
     }
 
+    @Transactional
     public int sendMessageLineAdmin(String lineName, Message m){
         Line line = findByLineName(lineName);
         List<String> admins = line.getAdmins();
         if(admins.isEmpty()){
             return -1;
         }
-
         admins.forEach(a -> {
             User u = userService.userFindByEmail(a);
             u.getMessages().add(m);
@@ -318,6 +316,7 @@ public class LineService {
         return 0;
     }
 
+    @Transactional
     public int sendMessageToUser(String email, Message m){
         User u = userService.userFindByEmail(email);
         if(u == null){
@@ -327,7 +326,6 @@ public class LineService {
         userService.userSave(u);
         return 0;
     }
-
 
     @Transactional
     public int updateUserToUpdatePassengersInfo(String line_name, long dateUnix, String registrationNumber,
@@ -420,14 +418,13 @@ public class LineService {
             Ride ride = line.getRides().stream().filter(r -> {
                 if(Utils.myCompareUnixDate(r.getRideDate(),av.getRideDate())==0
                         && r.getCompanions().contains(av.getEmail())
-                        && r.isFlagGoing() == av.getFlagGoing()){
+                        && r.isFlagGoing() == av.isFlagGoing()){
                     return true;
                 }
                 else{
                     return false;
                 }
             }).findAny().orElseThrow(NullPointerException::new);
-
             ride.getCompanions().remove(av.getEmail());
             lineRepo.save(line);
             return 0;
@@ -438,27 +435,13 @@ public class LineService {
         }
     }
 
-    public Shift generateShift(JSONObject mainJson){
-        if(!mainJson.has("email") || !mainJson.has("lineName") || !mainJson.has("rideDate") || !mainJson.has("flagGoing") || !mainJson.has("confirmed")){
-            return null;
-        }
-        long rideDate = mainJson.getLong("rideDate");
-        Shift shift = new Shift(mainJson.getString("email"),
-                mainJson.getString("lineName"),
-                rideDate,
-                mainJson.getBoolean("flagGoing"),
-                mainJson.getBoolean("confirmed")
-        );
-        return shift;
-    }
-
     public List<Line> findNoAdminLines(){
         return lineRepo.findAll().stream()
                 .filter(l->l.getLineAdmins().isEmpty())
                 .collect(Collectors.toList());
     }
 
-    public List<Line> getLineShifts(String email){
+    public List<Line> getAdministratedLines(String email){
         return lineRepo.findByLineAdmins(email);
     }
 

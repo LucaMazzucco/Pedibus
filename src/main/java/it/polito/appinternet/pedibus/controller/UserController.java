@@ -316,6 +316,7 @@ public class UserController {
         return ResponseEntity.ok(jsonOutput.toString());
     }
 
+    @SuppressWarnings("Duplicates")
     @PostMapping("/addRole")
     public ResponseEntity addRole(@RequestBody String payload){
         JSONObject jsonOutput = new JSONObject();
@@ -325,10 +326,8 @@ public class UserController {
             jsonOutput.put("result", "Wrong Request");
             return ResponseEntity.badRequest().body(jsonOutput.toString());
         }
-
         String email = jsonInput.getString("email");
         String linename = jsonInput.getString("line");
-
         if(!userService.addRoleAndLine(email, linename)){
             return ResponseEntity.badRequest().body("La promozione non è andata a buon fine");
         }
