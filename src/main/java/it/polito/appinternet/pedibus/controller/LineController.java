@@ -1,5 +1,4 @@
 package it.polito.appinternet.pedibus.controller;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.polito.appinternet.pedibus.model.*;
 import it.polito.appinternet.pedibus.service.LineService;
@@ -29,7 +28,7 @@ public class LineController {
     @Autowired
     ShiftService shiftService;
 
-    @GetMapping("/insertLine")
+    @GetMapping("/line/insertLine")
     public ResponseEntity<String> insertLine(Line l) {
         if(l==null){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -37,7 +36,7 @@ public class LineController {
         return new ResponseEntity(lineService.insertLine(l),HttpStatus.OK);
     }
 
-    @GetMapping("/lines")
+    @GetMapping("/line/lines")
     public String findAllLines(){
         List<String> linesNames = lineService.findAllLinesNames();
         JSONArray json = new JSONArray();
@@ -48,7 +47,7 @@ public class LineController {
     }
 
     //Get json of all lines
-    @GetMapping("/getLines")
+    @GetMapping("/line/getLines")
     public String getLinesJson(){
         List<Line> allLines = lineService.findAll();
         JSONArray lines = new JSONArray();
@@ -59,7 +58,7 @@ public class LineController {
     }
 
     //Get json of a single line
-    @GetMapping("/getLines/{line_name}")
+    @GetMapping("/line/getLines/{line_name}")
     public String getLineJson(@PathVariable String line_name){
         Line line = lineService.findByLineName(line_name);
         if(line!=null){
@@ -69,7 +68,7 @@ public class LineController {
     }
 
     //Get json of a single Ride A/R (frontend format)
-    @GetMapping("/getLines/{line_name}/{date}")
+    @GetMapping("/line/getLines/{line_name}/{date}")
     public String getRideJson(@PathVariable String line_name,
                           @PathVariable long date){
         JSONObject returnJson = new JSONObject();
@@ -87,7 +86,7 @@ public class LineController {
         return returnJson.toString();
     }
 
-    @PutMapping("/putLineAttendance/{line_name}")
+    @PutMapping("/line/putLineAttendance/{line_name}")
     public ResponseEntity updateLineToUpdatePassengersInfo(@PathVariable String line_name, @RequestBody String payload) {
         if (line_name == null || payload == null) {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -99,7 +98,7 @@ public class LineController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PutMapping("putLineAttendance/{line_name}/ride")
+    @PutMapping("/line/putLineAttendance/{line_name}/ride")
     public ResponseEntity updateRideToUpdatePassengersInfo(@PathVariable String line_name,
                                                                    @RequestBody String payload){
         if(line_name==null || payload == null){
@@ -111,7 +110,7 @@ public class LineController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PutMapping("putLineAttendance/{line_name}/ride/user")
+    @PutMapping("/line/putLineAttendance/{line_name}/ride/user")
     public ResponseEntity<String> updateUserToUpdatePassengersInfo(@PathVariable String line_name,
                                                                    @RequestBody String payload) {
         if (line_name == null || payload == null) {
@@ -146,7 +145,7 @@ public class LineController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/lines/{line_name}")
+    @GetMapping("/line/lines/{line_name}")
     public String findLineByName(@PathVariable String line_name){
         Line line = lineService.findByLineName(line_name);
 //        JSONArray stopA = new JSONArray();
@@ -163,6 +162,7 @@ public class LineController {
         return lineService.encapsulateLine(line).toString();
     }
 
+
     @PostConstruct
     public void init() {
         ObjectMapper mapper = new ObjectMapper();
@@ -176,7 +176,7 @@ public class LineController {
         }
     }
 
-    @GetMapping("/getNoAdminLines")
+    @GetMapping("/line/getNoAdminLines")
     public String getNoAdminLines(){
         List<Line> allLines = lineService.findNoAdminLines();
         JSONArray lines = new JSONArray();
@@ -186,7 +186,7 @@ public class LineController {
         return lines.toString();
     }
 
-    @GetMapping("/getStopNames/{lineName}")
+    @GetMapping("/line/getStopNames/{lineName}")
     public ResponseEntity<String> getStopNamesByLineName(@PathVariable String lineName){
         if(lineName.length()==0) return new ResponseEntity(HttpStatus.BAD_REQUEST);
         JSONArray stopNames = lineService.getStopNamesByLineName(lineName);

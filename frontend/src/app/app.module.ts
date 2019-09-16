@@ -159,12 +159,13 @@ const routes: Routes = [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     {
       provide: ErrorHandler,
-      useClass: ErrorService},
-      {
-          provide: HTTP_INTERCEPTORS,
-          useClass: AuthExpiredInterceptor,
-          multi: true
-      },
+      useClass: ErrorService
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthExpiredInterceptor,
+      multi: true
+    },
   ],
   bootstrap: [AppComponent]
 })

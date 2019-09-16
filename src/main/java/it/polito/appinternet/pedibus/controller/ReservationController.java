@@ -53,7 +53,7 @@ public class ReservationController {
 //        reservationRepo.insert(reservation);
 //        return "Reservation inserted correctly";
 //    }
-    @GetMapping("reservations/{line_name}/{date}/{reservation_id}")
+    @GetMapping("/reservations/{line_name}/{date}/{reservation_id}")
     public ResponseEntity<String> findByDateAndLineAndId(@PathVariable String line_name, @PathVariable long date, @PathVariable String reservation_id){
         try {
             ObjectMapper objectMapper = new ObjectMapper();

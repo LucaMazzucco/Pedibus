@@ -116,7 +116,7 @@ public class UserController {
         return ok(jsonOutput.toString());
     }
 
-    @GetMapping("/{userEmail}/messages")
+    @GetMapping("/user/{userEmail}/messages")
     public ResponseEntity getUserMessages(@PathVariable String userEmail){
         if(userEmail==null || userEmail.length()==0){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -131,7 +131,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("/{userEmail}/messages")
+    @PutMapping("/user/{userEmail}/messages")
     public ResponseEntity putMessages(@PathVariable String userEmail, @RequestBody String payload){
         ObjectMapper mapper = new ObjectMapper();
         List<Message> newMsg = null;
@@ -149,7 +149,7 @@ public class UserController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @GetMapping("/unread/{userEmail}")
+    @GetMapping("/user/unread/{userEmail}")
     public ResponseEntity getUnreadMessagesCount(@PathVariable String userEmail){
         if(userEmail.length()==0){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -161,7 +161,7 @@ public class UserController {
         return ok(count);
     }
 
-    @GetMapping("/confirm/{randomUUID}")
+    @GetMapping("/user/confirm/{randomUUID}")
     public ResponseEntity confirmUserAccount(@PathVariable String randomUUID)
     {
         if(randomUUID.length()==0){
@@ -175,14 +175,14 @@ public class UserController {
         }
     }
 
-    @GetMapping("/users")
+    @GetMapping("/user/users")
     public String getSystemUser(){
         List<String> usernames;
         usernames = userService.userGetNames();
         return new JSONArray(usernames).toString();
     }
 
-    @GetMapping("/getUsersRoles")
+    @GetMapping("/user/getUsersRoles")
     public ResponseEntity getUsersRoles(){
         JSONArray returnMap = new JSONArray();
 
@@ -206,13 +206,13 @@ public class UserController {
         return ok(returnMap.toString());
     }
 
-    @GetMapping("/getUsersByRole/{role}")
+    @GetMapping("/user/getUsersByRole/{role}")
     public ResponseEntity<String> getUsersByRole(@PathVariable String role){
         if(role.length()==0) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(userService.usersGetByRole(role).toString(),HttpStatus.OK);
     }
 
-    @PutMapping("/users/{user_id}")
+    @PutMapping("/user/users/{user_id}")
     public void enableUserAdmin(@PathVariable String user_id, @RequestBody String payload, ServletRequest req){
         JSONObject jsonInput = new JSONObject(payload);
         if(!jsonInput.has("lineName") || !jsonInput.has("enable"))
@@ -223,12 +223,12 @@ public class UserController {
         userService.userEnableAdmin(user_id,req,line_name,enableAdmin);
     }
 
-    @GetMapping("/checkEmail/{email}")
+    @GetMapping("/user/checkEmail/{email}")
     public ResponseEntity<Boolean> checkEmailPresence(@PathVariable String email){
         return new ResponseEntity<>(userService.isUserPresent(email),HttpStatus.OK);
     }
 
-    @PostMapping("/registerAdmin")
+    @PostMapping("/user/registerAdmin")
     public ResponseEntity registerAdmin(@RequestBody String payload){
         JSONObject jsonInput = new JSONObject(payload);
         JSONObject jsonOutput = new JSONObject();
@@ -257,12 +257,12 @@ public class UserController {
         return ok(jsonOutput.toString());
     }
 
-    @GetMapping("checkToken/{email}/{token}")
+    @GetMapping("/user/checkToken/{email}/{token}")
     public ResponseEntity<Boolean> checkUserToken(@PathVariable String email, @PathVariable String token){
         return new ResponseEntity<>(userService.isTokenRight(email, token), HttpStatus.OK);
     }
 
-    @GetMapping("/getChildren/{email}")
+    @GetMapping("/user/getChildren/{email}")
     public ResponseEntity<String> getChildren(@PathVariable String email){
         if(email.length()==0){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -274,26 +274,26 @@ public class UserController {
         return new ResponseEntity<String>(jArray.toString(),HttpStatus.OK);
     }
 
-    @PostMapping("/addChild/{email}")
+    @PostMapping("/user/addChild/{email}")
     public ResponseEntity addChild(@PathVariable String email, @RequestBody String payload){
         if(payload.length()==0) return new ResponseEntity(HttpStatus.BAD_REQUEST);
         if(userService.userAddChild(email,payload)) return new ResponseEntity(HttpStatus.OK);
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
-    @PutMapping("/editChild/{email}")
+    @PutMapping("/user/editChild/{email}")
     public ResponseEntity editChild(@PathVariable String email, @RequestBody String payload){
         if(payload.length()==0) return new ResponseEntity(HttpStatus.BAD_REQUEST);
         if(userService.userEditChild(email, payload)) return new ResponseEntity(HttpStatus.OK);
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
-    @PostMapping("/deleteChild/{email}")
+    @PostMapping("/user/deleteChild/{email}")
     public ResponseEntity deleteChild(@PathVariable String email, @RequestBody String payload){
         if(payload.length()==0) return new ResponseEntity(HttpStatus.BAD_REQUEST);
         if(userService.userDeleteChild(email, payload)) return new ResponseEntity(HttpStatus.OK);
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/deleteRole")
+    @PostMapping("/user/deleteRole")
     public ResponseEntity deleteRole(@RequestBody String payload){
         JSONObject jsonOutput = new JSONObject();
         JSONObject jsonInput = new JSONObject(payload);
@@ -317,7 +317,7 @@ public class UserController {
     }
 
     @SuppressWarnings("Duplicates")
-    @PostMapping("/addRole")
+    @PostMapping("/user/addRole")
     public ResponseEntity addRole(@RequestBody String payload){
         JSONObject jsonOutput = new JSONObject();
         JSONObject jsonInput = new JSONObject(payload);

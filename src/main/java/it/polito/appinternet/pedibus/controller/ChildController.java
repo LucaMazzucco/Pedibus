@@ -9,12 +9,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 public class ChildController {
+
     @Autowired
     ChildService childService;
 
-    @GetMapping("/getChildReservations/{ssn}")
+    @GetMapping("/children/getChildReservations/{ssn}")
     public ResponseEntity<String> getChildren(@PathVariable String ssn){
         if(ssn.length()==0){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -26,7 +27,7 @@ public class ChildController {
         return new ResponseEntity<String>(jsonArray.toString(),HttpStatus.OK);
     }
 
-    @PostMapping("/addChildReservations/{ssn}")
+    @PostMapping("/children/addChildReservations/{ssn}")
     public ResponseEntity addChildReservations(@PathVariable String ssn, @RequestBody String payload){
         if(ssn.length()==0){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -37,7 +38,7 @@ public class ChildController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/addChildReservation/{ssn}")
+    @PostMapping("/children/addChildReservation/{ssn}")
     public ResponseEntity addChildReservation(@PathVariable String ssn, @RequestBody String payload){
         if(ssn.length()==0){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -48,7 +49,7 @@ public class ChildController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @PutMapping("/editChildReservation/{ssn}")
+    @PutMapping("/children/editChildReservation/{ssn}")
     public ResponseEntity editChildReservation(@PathVariable String ssn, @RequestBody String payload){
         if(ssn.length()==0){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -59,7 +60,7 @@ public class ChildController {
         return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
-    @PostMapping("/deleteChildReservation/{ssn}")
+    @PostMapping("/children/deleteChildReservation/{ssn}")
     public ResponseEntity deleteChildReservation(@PathVariable String ssn, @RequestBody String payload){
         if(ssn.length()==0){
             return new ResponseEntity(HttpStatus.BAD_REQUEST);

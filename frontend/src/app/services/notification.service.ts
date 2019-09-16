@@ -21,6 +21,6 @@ export class NotificationService {
     })
   }
   getUnreadMessages(email: String){
-    return this.http.get<string>(REST_URL + '/unread/' + email);
+    return this.http.get<string>(REST_URL + '/user/unread/' + email);
   }
 }

@@ -28,37 +28,35 @@ export class DataService {
   constructor(private http: HttpClient) { }
 
   getLines(): Observable<Line[]> {
-    return this.http.get<Line[]>(REST_URL + '/getLines');
+    return this.http.get<Line[]>(REST_URL + '/line/getLines');
   }
 
   putLineAttendance(line: Line) {
-    return this.http.put<Line>(REST_URL + '/putLineAttendance/' + line.lineName, {line}).pipe(first()).subscribe(data => console.log(data));
+    return this.http.put<Line>(REST_URL + '/line/putLineAttendance/' + line.lineName, {line}).pipe(first()).subscribe(data => console.log(data));
   }
 
   putRideAttendance(ride: Ride, lineName: string) {
-    // tslint:disable-next-line:max-line-length
-    return this.http.put<Ride>(REST_URL + '/putLineAttendance/' + lineName + '/ride', {ride}).pipe(first()).subscribe(data => console.log(data));
+    return this.http.put<Ride>(REST_URL + '/line/putLineAttendance/' + lineName + '/ride', {ride}).pipe(first()).subscribe(data => console.log(data));
   }
 
   putPersonAttendance(rideDate: Date, lineName: string, isBack: boolean, person: Passenger) {
-    // tslint:disable-next-line:max-line-length
-    return this.http.put(REST_URL + '/putLineAttendance/' + lineName + '/ride/user', {rideDate, isBack, person}).pipe(first()).subscribe(data => console.log(data));
+    return this.http.put(REST_URL + '/line/putLineAttendance/' + lineName + '/ride/user', {rideDate, isBack, person}).pipe(first()).subscribe(data => console.log(data));
   }
 
   getReservations(ssn: string): Observable<Reservation[]> {
-    return this.http.get<Reservation[]>(REST_URL + '/getChildReservations/' + ssn);
+    return this.http.get<Reservation[]>(REST_URL + '/children/getChildReservations/' + ssn);
   }
 
   getMessages(email: string): Observable<Message[]> {
-    return this.http.get<Message[]>(REST_URL +  '/' + email + '/messages');
+    return this.http.get<Message[]>(REST_URL +  '/user/' + email + '/messages');
   }
 
   putMessages(messages: Message[], email: string) {
-      return this.http.put(REST_URL + '/' + email + '/messages', messages).pipe(first()).subscribe(data => console.log(data));
+      return this.http.put(REST_URL + '/user/' + email + '/messages', messages).pipe(first()).subscribe(data => console.log(data));
   }
 
   getAvailabilities(email: string): Observable<Availability[]> {
-    return this.http.get<Availability[]>(REST_URL + '/getAvailabilities/' + email);
+    return this.http.get<Availability[]>(REST_URL + 'getAvailabilities/' + email);
   }
 
   addAvailability(av: Availability) {
@@ -70,7 +68,7 @@ export class DataService {
   }
 
   getNoAdminLines(): Observable<Line[]> {
-    return this.http.get<Line[]>(REST_URL + '/getNoAdminLines');
+    return this.http.get<Line[]>(REST_URL + '/line/getNoAdminLines');
   }
 
   getShifts(email: string): Observable<Shift[]> {
@@ -86,50 +84,50 @@ export class DataService {
   }
 
   getChildren(email: string): Observable<Child[]> {
-    return this.http.get<Child[]>(REST_URL + '/getChildren/' + email);
+    return this.http.get<Child[]>(REST_URL + '/user/getChildren/' + email);
   }
 
   addChild(email: string, ch: Child) {
-    return this.http.post<Child>(REST_URL + '/addChild/' + email, ch);
+    return this.http.post<Child>(REST_URL + '/user/addChild/' + email, ch);
   }
 
   getStopsOfLine(lineName: string) {
-    return this.http.get<string[]>(REST_URL + '/getStopNames/' + lineName);
+    return this.http.get<string[]>(REST_URL + '/line/getStopNames/' + lineName);
   }
   getRoles(): Observable<User[]> {
-    return this.http.get<User[]>(REST_URL + '/getUsersRoles');
+    return this.http.get<User[]>(REST_URL + '/user/getUsersRoles');
   }
 
   addRole(email: string, line: string) {
-    return this.http.post<User>(REST_URL + '/addRole', {email, line});
+    return this.http.post<User>(REST_URL + '/user/addRole', {email, line});
   }
 
   deleteRole(email: string, line: string) {
-    return this.http.post<User>(REST_URL + '/deleteRole', {email, line});
+    return this.http.post<User>(REST_URL + '/user/deleteRole', {email, line});
   }
 
   deleteChildren(email: string, ch: Child) {
-    return this.http.post<Child>(REST_URL + '/deleteChild/' + email, ch);
+    return this.http.post<Child>(REST_URL + '/user/deleteChild/' + email, ch);
   }
 
   editChild(email: string, ch: Child) {
-    return this.http.put<Child>(REST_URL + '/editChild/' + email, ch);
+    return this.http.put<Child>(REST_URL + '/user/editChild/' + email, ch);
   }
 
   addChildReservation(ssn: string, r: Reservation) {
-    return this.http.post<Reservation>(REST_URL + '/addChildReservation/' + ssn, r);
+    return this.http.post<Reservation>(REST_URL + '/children/addChildReservation/' + ssn, r);
   }
 
   getChildReservation(ssn: string): Observable<Reservation[]> {
-    return this.http.get<Reservation[]>(REST_URL + '/getChildReservations/' + ssn);
+    return this.http.get<Reservation[]>(REST_URL + '/children/getChildReservations/' + ssn);
   }
 
   editChildReservation(ssn: string, r: Reservation){
-    return this.http.put<Reservation>(REST_URL + '/editChildReservation/' + ssn, r);
+    return this.http.put<Reservation>(REST_URL + '/children/editChildReservation/' + ssn, r);
   }
 
   deleteChildReservation(ssn: string, r: Reservation){
-    return this.http.post<Reservation>(REST_URL + '/deleteChildReservation/' + ssn, r);
+    return this.http.post<Reservation>(REST_URL + '/children/deleteChildReservation/' + ssn, r);
   }
 
 }
