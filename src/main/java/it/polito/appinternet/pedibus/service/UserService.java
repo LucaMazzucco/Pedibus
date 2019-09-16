@@ -380,7 +380,7 @@ public class UserService {
         user.getRoles().add(Roles.ROLE_ADMIN.getRole());
         user.getAdminLines().add(linename);
         line.getAdmins().add(user.getEmail());
-        userRepo.save(user);
+        userSave(user);
         lineService.saveLine(line);
         return true;
     }
@@ -389,17 +389,14 @@ public class UserService {
     public boolean removeRoleAndLine(String email, String linename){
         Optional<User> userOptional = userRepo.findByEmail(email);
         Line line = lineService.findByLineName(linename);
-
         if(!userOptional.isPresent() || line == null || !(line.getAdmins().contains(email))){
             return false;
         }
-
         User user = userOptional.get();
-        if(!user.getRoles().contains("Amministratore")){
+        if(!user.getRoles().contains(Roles.ROLE_ADMIN.getRole())){
             return false;
         }
-
-        user.getRoles().remove("Amministratore");
+        user.getRoles().remove(Roles.ROLE_ADMIN.getRole());
         user.getAdminLines().remove(linename);
         line.getAdmins().remove(user.getEmail());
 

@@ -77,14 +77,23 @@ public class ShiftController {
     }
 
     @GetMapping("shift/getShifts/{email}")
-    public String getShifts(@PathVariable String email){
-        if(email == null){
+    public ResponseEntity<String> getAdministratedShifts(@PathVariable String email){
+        if(email==null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        String jsonObject = shiftService.findAdministratedShifts(email).stream()
+                .map(shiftService::encapsulateShift).toString();
+        if(jsonObject==null) return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(jsonObject,HttpStatus.OK);
+    }
+
+    @GetMapping("shift/getShiftsByLineName/{lineName}")
+    public String getShiftsByLineName(@PathVariable String lineName){
+        if(lineName == null){
             return "-1";
         }
         JSONArray availabilities = new JSONArray();
-        shiftService.findByEmail(email)
+        shiftService.findByLineName(lineName)
                 .stream()
-                .filter(Shift::isConfirmed1)
+                // .filter(Shift::isConfirmed1)
                 .map(shift-> shiftService.encapsulateShift(shift))
                 .forEach(availabilities::put);
 //        List<Line> myLines = lineService.getAdministratedLines(email);
@@ -183,7 +192,7 @@ public class ShiftController {
         } else {
             Message m = new Message(Instant.now().getEpochSecond(), false, "L'accompagnatore " + newAvailability.getEmail() + " è disponibile per la linea " + newAvailability.getLineName());
             if (lineService.sendMessageLineAdmin(newAvailability.getLineName(), m) < 0) {
-                return new ResponseEntity<>("Warning - No admin for the selected line", HttpStatus.OK);
+                return new ResponseEntity<>("{ \"Warning\": \"no Line Admin for the selected line\"}", HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.OK);
             }
