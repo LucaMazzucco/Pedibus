@@ -56,4 +56,22 @@ export class ShiftComponent implements OnInit {
     });
   }
 
+  deleteShift(i: number) {
+    console.log(this.tableDataSource.data[i]);
+    const response =  this.dataService.deleteShift(this.tableDataSource.data[i]);
+    this.tableDataSource.data.splice(i, 1);
+    this.tableDataSource._updateChangeSubscription();
+    response.subscribe(data => {
+      this.infoMessage = 'Rimosso il turno!';
+      this._snackBar.open(this.infoMessage, '', {duration: 2000});
+      this.infoMessage = '';
+    }, error => {
+      this.infoMessage = 'Non è stato possibile rimuovere il turno';
+      this._snackBar.open(this.infoMessage, '', {duration: 2000});
+      this.infoMessage = '';
+
+    });
+  }
+
+
 }

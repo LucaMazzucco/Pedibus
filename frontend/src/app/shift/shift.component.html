@@ -24,7 +24,7 @@
          <ng-container matColumnDef="delete">
             <th mat-header-cell *matHeaderCellDef>Elimina</th>
             <td mat-cell *matCellDef="let av ; let i = index;" [class.not-confirmed-shift-color]="!av.confirmed1" [class.confirmed-shift-color]="av.confirmed1">
-              <button mat-icon-button (click)="deleteAvailability(i)">
+              <button mat-icon-button (click)="deleteShift(i)">
                 <mat-icon>delete</mat-icon>
               </button>
             </td>

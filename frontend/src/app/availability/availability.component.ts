@@ -106,13 +106,21 @@ export class AvailabilityComponent implements OnInit {
       return this.tableDataSource.data[i].confirmed2;
   }
   confirmbyConductor(i: number){
-      if(this.confirmedbyAdmin(i)) {
-          this.dataService.confirmShiftConductor(this.tableDataSource.data[i])
-          this.infoMessage = 'Disponibilità confermata';
-          this._snackBar.open(this.infoMessage, '', {duration: 2000});
-          this.infoMessage = ''
+      if(this.confirmedbyAdmin(i) && !this.confirmedbyConductor(i)) {
+          let response = this.dataService.confirmShiftConductor(this.tableDataSource.data[i]);
+          console.log(typeof this.tableDataSource.data[i])
+          response.subscribe(data => {
+              this.infoMessage = 'Disponibilità confermata';
+              this._snackBar.open(this.infoMessage, '', {duration: 2000});
+              this.infoMessage = '';
+          }, error => {
+              console.log(error)
+              this.infoMessage = 'Non è stato possibile confermare la disponibilità';
+              this._snackBar.open(this.infoMessage, '', {duration: 2000});
+              this.infoMessage = '';
+          })
       }
-      else {
+      else if(!this.confirmedbyAdmin(i)){
           this.infoMessage = 'Attendere la conferma da parte dell\'amministratore';
           this._snackBar.open(this.infoMessage, '', {duration: 2000});
           this.infoMessage = ''

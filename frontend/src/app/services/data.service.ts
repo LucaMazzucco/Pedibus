@@ -82,12 +82,13 @@ export class DataService {
   }
 
   confirmShiftConductor(sh: Shift) {
-    return this.http.post<Shift>(REST_URL + 'shift/confirm2', sh);
+    console.log(sh)
+    return this.http.post<Shift>(REST_URL + '/shift/confirm2', sh);
   }
 
-  // deleteShift(sh: Shift) {
-  //   return this.http.post<Shift>(REST_URL + '/shift/deleteShift', sh);
-  // }
+  deleteShift(sh: Shift) {
+    return this.http.post<Shift>(REST_URL + '/shift/deleteShift', sh);
+  }
 
   getChildren(email: string): Observable<Child[]> {
     return this.http.get<Child[]>(REST_URL + '/user/getChildren/' + email);
