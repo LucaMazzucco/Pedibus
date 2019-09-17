@@ -79,10 +79,12 @@ public class ShiftController {
     @GetMapping("shift/getShifts/{email}")
     public ResponseEntity<String> getAdministratedShifts(@PathVariable String email){
         if(email==null) return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        String jsonObject = shiftService.findAdministratedShifts(email).stream()
-                .map(shiftService::encapsulateShift).toString();
-        if(jsonObject==null) return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        return new ResponseEntity<>(jsonObject,HttpStatus.OK);
+        JSONArray jsonArray = new JSONArray();
+        shiftService.findAdministratedShifts(email).stream()
+                .map(shiftService::encapsulateShift)
+                .forEach(jsonArray::put);
+        if(jsonArray.length()==0) return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(jsonArray.toString(),HttpStatus.OK);
     }
 
     @GetMapping("shift/getShiftsByLineName/{lineName}")
@@ -149,7 +151,7 @@ public class ShiftController {
         else{
             Message m = new Message(Instant.now().getEpochSecond(), false, "L'accompagnatore: " + newShift.getEmail() + " ha confermato l'assegnazione per la linea: " + newShift.getLineName());
             if (lineService.sendMessageLineAdmin(newShift.getLineName(), m) < 0) {
-                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>("{ \"Warning\": \"no Line Admin for the selected line\"}", HttpStatus.OK);
             } else {
                 return new ResponseEntity(HttpStatus.OK);
             }
@@ -171,7 +173,7 @@ public class ShiftController {
             shiftService.deleteShift(toDelete);
             Message m = new Message(Instant.now().getEpochSecond(), false, "L'amministratore ha cancellato il tuo turno per la linea: " + toDelete.getLineName());
             if((lineService.sendMessageToUser(toDelete.getEmail(), m)) < 0){
-                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+                return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
             else{
                 return new ResponseEntity(HttpStatus.OK);

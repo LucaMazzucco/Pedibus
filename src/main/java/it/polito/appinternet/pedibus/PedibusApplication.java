@@ -4,8 +4,6 @@ import it.ozimov.springboot.mail.configuration.EnableEmailTools;
 import it.polito.appinternet.pedibus.model.Message;
 import it.polito.appinternet.pedibus.model.User;
 import it.polito.appinternet.pedibus.model.Child;
-import it.polito.appinternet.pedibus.repository.UserRepository;
-import it.polito.appinternet.pedibus.repository.ChildRepository;
 
 import it.polito.appinternet.pedibus.service.ChildService;
 import it.polito.appinternet.pedibus.service.UserService;
@@ -20,8 +18,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.annotation.PostConstruct;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -74,8 +70,9 @@ public class PedibusApplication {
         List<String> rolesp = new LinkedList<>();
         List<String> rolesc = new LinkedList<>();
 
-        roles.add("ROLE_ADMIN");
-        roles.add("ROLE_USER");
+        roles.add(Roles.ROLE_ADMIN.getRole());
+        roles.add(Roles.ROLE_USER.getRole());
+        //roles.add(Roles.ROLE_CONDUCTOR.getRole());
         rolesp.add("ROLE_USER");
         rolesc.add("ROLE_CONDUCTOR");
         u.setRoles(roles);
