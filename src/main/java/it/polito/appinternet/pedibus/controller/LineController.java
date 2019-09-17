@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import java.io.*;
-import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -68,13 +66,14 @@ public class LineController {
     }
 
     //Get json of a single Ride A/R (frontend format)
-    @GetMapping("/line/getLines/{line_name}/{date}")
+    @GetMapping("/line/getLines/{line_name}/{date}/{flagGoing}")
     public String getRideJson(@PathVariable String line_name,
-                          @PathVariable long date){
+                          @PathVariable long date,
+                              @PathVariable boolean flagGoing){
         JSONObject returnJson = new JSONObject();
         try{
             Line line = lineService.findByLineName(line_name);
-            Ride ride = lineService.getRideByLineAndDate(line,date);
+            Ride ride = lineService.getRideByLineAndDateAndFlagGoing(line,date,flagGoing);
             if(ride==null){
                 return "";
             }
