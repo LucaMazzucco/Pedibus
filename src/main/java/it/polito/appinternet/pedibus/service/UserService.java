@@ -77,7 +77,6 @@ public class UserService {
     public User userFindById(String id){ return userRepo.findById(id).get();}
 
     public ResponseEntity userLogin(String username,String password){
-        List<User> users = userRepo.findAll();
         Optional<User> userOptional = userRepo.findByEmail(username);
         if(!userOptional.isPresent()){
             return new ResponseEntity("Invalid username/password supplied",HttpStatus.NOT_FOUND);
@@ -99,6 +98,21 @@ public class UserService {
         return new ResponseEntity<>(res.toString(),HttpStatus.OK);
     }
 
+    public ResponseEntity generateNewToken(String email){
+        Optional<User> userOptional = userRepo.findByEmail(email);
+        if(!userOptional.isPresent()){
+            return new ResponseEntity("Invalid email supplied",HttpStatus.NOT_FOUND);
+        }
+        else{
+            if(!userOptional.get().isEnabled()){
+                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+            }
+            else{
+                String token = jwtTokenProvider.createToken(email, userOptional.get().getRoles());
+                return new ResponseEntity<>(token, HttpStatus.OK);
+            }
+        }
+    }
     public boolean isUserPresent(String email){
         Optional<User> existingUser = userRepo.findByEmail(email);
         return existingUser.isPresent();

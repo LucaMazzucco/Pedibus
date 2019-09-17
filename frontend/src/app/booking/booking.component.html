@@ -23,7 +23,7 @@
             <mat-form-field>
               <mat-label>Fermata di andata</mat-label>
                   <mat-select [disabled]="isDisabled[i]" [(value)]="reservations[i].stopA.stopName">
-                <mat-option *ngFor="let stopA of stopOfLine" [value]="stopA">
+                <mat-option *ngFor="let stopA of reservations[i].availableStops" [value]="stopA">
                   {{stopA}}
                 </mat-option>
               </mat-select>
@@ -31,7 +31,7 @@
             <mat-form-field>
               <mat-label>Fermata di ritorno</mat-label>
               <mat-select [disabled]="isDisabled[i]" [(value)]="reservations[i].stopR.stopName">
-                <mat-option *ngFor="let stopR of stopOfLine" [value]="stopR">
+                <mat-option *ngFor="let stopR of reservations[i].availableStops" [value]="stopR">
                   {{stopR}}
                 </mat-option>
               </mat-select>

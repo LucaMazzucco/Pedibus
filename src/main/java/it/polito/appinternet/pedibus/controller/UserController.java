@@ -72,6 +72,11 @@ public class UserController {
         return userService.userRecoverPassword(email);
     }
 
+    @GetMapping("/user/refresh/{email}")
+    public ResponseEntity refreshToken(@PathVariable String email){
+            return userService.generateNewToken(email);
+    }
+
     @PostMapping("/register/{token}")
     public ResponseEntity<String> registerUser(@RequestBody String payload, @PathVariable String token)
     {

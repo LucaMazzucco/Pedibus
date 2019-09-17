@@ -40,6 +40,12 @@ export class AuthService {
     return this.http.post<UserLogin>(REST_URL + '/login', {username, password});
   }
 
+  refresh(email: string){
+    return this.http.get<string>(REST_URL + '/user/refresh/' + email);
+  }
+
+
+
   setSession(authResult) {
     if (this.getToken() != null) {
       this.logout();
@@ -83,12 +89,18 @@ export class AuthService {
     return this.getRoles().includes("ROLE_CONDUCTOR");
   }
 
+  isTokenExpired(token?: string): boolean {
+    if(!token) token = this.getToken();
+    if(!token) return true;
 
+    const date = this.getTokenExpirationDate(token);
+    if(date === undefined) return false;
+    return !(date.valueOf() -  new Date().valueOf() > 30000);
+  }
 
   getTokenExpirationDate(token: string): Date {
     const decoded = jwt_decode(token);
     if (decoded.exp === undefined) { return null; }
-
     const date = new Date(0);
     date.setUTCSeconds(decoded.exp);
     return date;
