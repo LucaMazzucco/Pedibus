@@ -1,6 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {TitleService} from '../services/title.service';
-import {MatDialog, MatDialogConfig, MatSnackBar, MatTableDataSource} from '@angular/material';
+import {MatDialog, MatDialogConfig, MatSnackBar, MatTable, MatTableDataSource} from '@angular/material';
 import {DataService} from '../services/data.service';
 import {Line} from '../model/line';
 import {Shift} from '../model/shift';
@@ -24,7 +24,7 @@ export class AvailabilityComponent implements OnInit {
   displayedColumns: string[] = ['lineName', 'rideDate', 'flagGoing','waiting' ,'delete'];
   tableDataSource: MatTableDataSource<Shift> = new MatTableDataSource<Shift>([]);
   infoMessage = '';
-
+  @ViewChild(MatTable) table: MatTable<any>;
 
     // tslint:disable-next-line:max-line-length variable-name
   constructor(private dataService: DataService,  private _snackBar: MatSnackBar, private titleservice: TitleService, private dialog: MatDialog, private _formBuilder: FormBuilder) {
@@ -107,12 +107,17 @@ export class AvailabilityComponent implements OnInit {
   }
   confirmbyConductor(i: number){
       if(this.confirmedbyAdmin(i) && !this.confirmedbyConductor(i)) {
+
           let response = this.dataService.confirmShiftConductor(this.tableDataSource.data[i]);
           console.log(typeof this.tableDataSource.data[i])
+
           response.subscribe(data => {
               this.infoMessage = 'Disponibilità confermata';
               this._snackBar.open(this.infoMessage, '', {duration: 2000});
               this.infoMessage = '';
+              this.tableDataSource.data[i].confirmed2 = true;
+              this.tableDataSource._updateChangeSubscription();
+              this.table.renderRows();
           }, error => {
               console.log(error)
               this.infoMessage = 'Non è stato possibile confermare la disponibilità';
