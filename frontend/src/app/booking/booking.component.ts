@@ -139,25 +139,25 @@ export class BookingComponent implements OnInit {
   // }
 
   addReservation(): void {
-    console.log('Fermate di default ')
-    let avStops: string[] = [];
+    console.log('Fermate predefinite ');
+    const avStops: string[] = [];
     this.selectRideForm.controls.selectedRide.value.stopsBack.forEach(
         s => avStops.push(s.stopName)
-    )
-    for(let s of this.selectRideForm.controls.selectedRide.value.stopsBack){
+    );
+    for (const s of this.selectRideForm.controls.selectedRide.value.stopsBack) {
 
     }
-    console.log()
+    console.log();
     const newRes = new Reservation(this.selectLineForm.controls.selectedLine.value.lineName,
                                   this.selectGoingForm.controls.selectedGoing.value,
                                   this.selectBackForm.controls.selectedBack.value,
                                   this.selectRideForm.controls.selectedRide.value.date,
                                   this.currentChild.registrationNumber,
                                   localStorage.getItem('current_user'),
-                                  avStops
+                                  [], []
         );
     this.dataService.addChildReservation(this.currentChild.registrationNumber, newRes).subscribe(res => {
-          this.infoMessage = 'Aggiunta la prenotazione!';
+          this.infoMessage = 'Prenotazione aggiunta!';
           this._snackBar.open(this.infoMessage, '', {duration: 2000});
           this.infoMessage = '';
           this.reservations.push(newRes);

@@ -203,7 +203,7 @@ public class ReservationService {
                     JSONArray availableStops = new JSONArray();
                     lineService.getStopsByLineNameAndRideDateAndFlagGoing(res.getLineName(), res.getReservationDate(), res.isFlagGoing())
                             .stream().map(Stop::getStopName).forEach(availableStops::put);
-                    tmpJson.put("availableStops", availableStops);
+                    tmpJson.put("availableStopsA", availableStops);
                     Reservation resB = backRes.stream()
                             .filter(r->Utils.myCompareUnixDate(r.getReservationDate(),res.getReservationDate())==0)
                             .findAny().orElse(null);
@@ -214,6 +214,10 @@ public class ReservationService {
                         stopR.put("time",stop.getTime());
                         tmpJson.put("stopR",stopR);
                         backRes.remove(resB);
+                        availableStops = new JSONArray();
+                        lineService.getStopsByLineNameAndRideDateAndFlagGoing(resB.getLineName(), resB.getReservationDate(), resB.isFlagGoing())
+                                .stream().map(Stop::getStopName).forEach(availableStops::put);
+                        tmpJson.put("availableStopsR", availableStops);
                     }
                     resArray.put(tmpJson);
                 });
@@ -231,7 +235,7 @@ public class ReservationService {
                     JSONArray availableStops = new JSONArray();
                     lineService.getStopsByLineNameAndRideDateAndFlagGoing(res.getLineName(), res.getReservationDate(), res.isFlagGoing())
                             .stream().map(Stop::getStopName).forEach(availableStops::put);
-                    tmpJson.put("availableStops", availableStops);
+                    tmpJson.put("availableStopsR", availableStops);
                     resArray.put(tmpJson);
                 });
         return resArray;
