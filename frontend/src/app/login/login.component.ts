@@ -37,7 +37,7 @@ export class LoginComponent implements OnInit {
     let response = this.authService.login(this.f.email.value, this.f.password.value);
     response.subscribe(data => {
       this.authService.setSession(data);
-      this.infoMessage = 'You are logged!';
+      this.infoMessage = 'Sei loggato!';
       this._snackBar.open(this.infoMessage, '', {duration: 2000});
       this.infoMessage = '';
       if(this.authService.isParent())
