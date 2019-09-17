@@ -1,6 +1,5 @@
 package it.polito.appinternet.pedibus.service;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import it.polito.appinternet.pedibus.Utils;
 import it.polito.appinternet.pedibus.model.*;
 import it.polito.appinternet.pedibus.repository.ReservationRepository;
@@ -9,7 +8,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -185,16 +183,16 @@ public class ReservationService {
     }
 
     @SuppressWarnings("Duplicates")
-    public JSONArray encapsulateChildReservations(List<Reservation> resList,Child child, User parent) {
+    public JSONArray encapsulateChildReservations(List<Reservation> resList, Child child, User parent) {
         JSONArray resArray = new JSONArray();
         List<Reservation> backRes = resList.stream()
                 .filter(r->!r.isFlagGoing())
                 .collect(Collectors.toList());
         resList.stream()
-                .filter(res->res.isFlagGoing())
+                .filter(Reservation::isFlagGoing)
                 .forEach(res->{
                     JSONObject tmpJson = new JSONObject();
-                    Stop stop = lineService.getStopByLineNameAndRideDateAndStopName(res.getLineName(),res.getReservationDate(),res.getStopName());
+                    Stop stop = lineService.getStopByLineNameAndRideDateAndFlagGoingAndStopName(res.getLineName(),res.getReservationDate(),res.isFlagGoing(),res.getStopName());
                     tmpJson.put("lineName",res.getLineName());
                     tmpJson.put("child",child.getRegistrationNumber());
                     tmpJson.put("parent",parent.getEmail());
@@ -203,12 +201,16 @@ public class ReservationService {
                     stopA.put("stopName",res.getStopName());
                     stopA.put("time",stop.getTime());
                     tmpJson.put("stopA",stopA);
+                    JSONArray availableStops = new JSONArray();
+                    lineService.getStopsByLineNameAndRideDateAndFlagGoing(res.getLineName(), res.getReservationDate(), res.isFlagGoing())
+                            .stream().map(Stop::getStopName).forEach(availableStops::put);
+                    tmpJson.put("availableStops", availableStops);
                     Reservation resB = backRes.stream()
                             .filter(r->Utils.myCompareUnixDate(r.getReservationDate(),res.getReservationDate())==0)
-                            .findAny().get();
+                            .findAny().orElse(null);
                     if(resB!=null){
                         JSONObject stopR = new JSONObject();
-                        stop = lineService.getStopByLineNameAndRideDateAndStopName(res.getLineName(),res.getReservationDate(),resB.getStopName());
+                        stop = lineService.getStopByLineNameAndRideDateAndFlagGoingAndStopName(res.getLineName(),res.getReservationDate(),res.isFlagGoing(),resB.getStopName());
                         stopR.put("stopName",resB.getStopName());
                         stopR.put("time",stop.getTime());
                         tmpJson.put("stopR",stopR);
@@ -216,10 +218,9 @@ public class ReservationService {
                     }
                     resArray.put(tmpJson);
                 });
-        backRes.stream()
-                .forEach(res->{
+        backRes.forEach(res->{
                     JSONObject tmpJson = new JSONObject();
-                    Stop stop = lineService.getStopByLineNameAndRideDateAndStopName(res.getLineName(),res.getReservationDate(),res.getStopName());
+                    Stop stop = lineService.getStopByLineNameAndRideDateAndFlagGoingAndStopName(res.getLineName(),res.getReservationDate(),res.isFlagGoing(),res.getStopName());
                     JSONObject stopR = new JSONObject();
                     tmpJson.put("lineName",res.getLineName());
                     tmpJson.put("child",child.getRegistrationNumber());
@@ -228,6 +229,10 @@ public class ReservationService {
                     stopR.put("stopName",res.getStopName());
                     stopR.put("time",stop.getTime());
                     tmpJson.put("stopR",stopR);
+                    JSONArray availableStops = new JSONArray();
+                    lineService.getStopsByLineNameAndRideDateAndFlagGoing(res.getLineName(), res.getReservationDate(), res.isFlagGoing())
+                            .stream().map(Stop::getStopName).forEach(availableStops::put);
+                    tmpJson.put("availableStops", availableStops);
                     resArray.put(tmpJson);
                 });
         return resArray;

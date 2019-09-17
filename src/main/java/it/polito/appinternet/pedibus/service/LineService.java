@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.Null;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,25 +51,32 @@ public class LineService {
         return lineRepo.save(line);
     }
 
-    public Ride getRideByLineAndDate(Line line, long rDate){
+    public Ride getRideByLineAndDateAndFlagGoing(Line line, long rDate, boolean flagGoing){
         if(line==null){
             return null;
         }
-        Ride ride = line.getRides().stream()
-                .filter(r->Utils.myCompareUnixDate(r.getRideDate(),rDate)==0)
+        return line.getRides().stream()
+                .filter(r->Utils.myCompareUnixDate(r.getRideDate(),rDate)==0 && r.isFlagGoing()==flagGoing)
                 .findAny().orElse(null);
-        return ride;
     }
 
-    public Stop getStopByLineNameAndRideDateAndStopName(String lineName,long rDate,String stopName){
+    public Stop getStopByLineNameAndRideDateAndFlagGoingAndStopName(String lineName, long rDate, boolean flagGoing, String stopName){
         Line line = findByLineName(lineName);
         if(line==null) return null;
-        Ride ride = getRideByLineAndDate(line,rDate);
+        Ride ride = getRideByLineAndDateAndFlagGoing(line, rDate, flagGoing);
         if(ride==null) return null;
         Stop stop = ride.getStops().stream()
                 .filter(s->s.getStopName().equals(stopName))
                 .findAny().get();
         return stop;
+    }
+
+    public List<Stop> getStopsByLineNameAndRideDateAndFlagGoing(String lineName, long rDate, boolean flagGoing){
+        Line line = findByLineName(lineName);
+        if(line==null) return null;
+        Ride ride = getRideByLineAndDateAndFlagGoing(line, rDate, flagGoing);
+        if(ride==null) return null;
+        return ride.getStops();
     }
 
     public JSONObject encapsulateLine(Line line) {
@@ -260,9 +268,9 @@ public class LineService {
         try{
             //TODO: Sostituire con una query più complessa, non avevo voglia di farlo per colpa delle date
             Line line = findByLineName(availability.getLineName());
-            Ride ride = line.getRides().stream()
-                    .filter(r->Utils.myCompareUnixDate(r.getRideDate(),availability.getRideDate()) == 0)
-                    .findAny().orElseThrow(NullPointerException::new);
+            Ride ride = getRideByLineAndDateAndFlagGoing(line,availability.getRideDate(),availability.isFlagGoing());
+            if(ride == null)
+                throw new NullPointerException("not found ride");
             ride.getCompanions().add(availability.getEmail());
             // ride.setConfirmed(false);
             saveLine(line);
@@ -278,11 +286,11 @@ public class LineService {
     public int addNewShift(Shift shift, boolean confirmed){
         try {
             Line line = findByLineName(shift.getLineName());
-            Ride ride = line.getRides().stream()
-                    .filter(r -> Utils.myCompareUnixDate(r.getRideDate(),shift.getRideDate())==0)
-                    .findAny().orElseThrow(NullPointerException::new);
+            Ride ride = getRideByLineAndDateAndFlagGoing(line,shift.getRideDate(),shift.isFlagGoing());
+            if(ride == null)
+                throw new NullPointerException("not found ride");
             String user = shift.getEmail();
-            if(ride.getOfficialCompanion().equals(user) && ride.isConfirmed()){
+            if(ride.getOfficialCompanion()!=null && ride.getOfficialCompanion().equals(user) && ride.isConfirmed()){
                 return -2;
             }
             else if(ride.isConfirmed()){
@@ -455,6 +463,24 @@ public class LineService {
                 .distinct()
                 .forEach(jsonArray::put);
         return jsonArray;
+    }
+
+    @Transactional
+    public boolean deleteShift(Shift toDel){
+        try{
+            Line line = findByLineName(toDel.getLineName());
+            Ride ride = line.getRides().stream().filter(r -> Utils.myCompareUnixDate(r.getRideDate(),toDel.getRideDate())==0
+                    && r.getOfficialCompanion().contains(toDel.getEmail())
+                    && r.isFlagGoing() == toDel.isFlagGoing()
+            ).findAny().orElseThrow(NullPointerException::new);
+            ride.setOfficialCompanion(null);
+            ride.getCompanions().remove(toDel.getEmail());
+            lineRepo.save(line);
+            return true;
+        } catch (NullPointerException e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

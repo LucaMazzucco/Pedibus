@@ -94,7 +94,7 @@ public class ShiftController {
         shiftService.findByLineName(lineName)
                 .stream()
                 // .filter(Shift::isConfirmed1)
-                .map(shift-> shiftService.encapsulateShift(shift))
+                .map(shiftService::encapsulateShift)
                 .forEach(availabilities::put);
 //        List<Line> myLines = lineService.getAdministratedLines(email);
 //        JSONObject tmp = new JSONObject();
@@ -140,7 +140,7 @@ public class ShiftController {
     public ResponseEntity confirmShift2(@RequestBody String payload){
         JSONObject mainJson = new JSONObject(payload);
         Shift newShift = shiftService.decapsulateShift(mainJson) ;
-        if(newShift == null || !newShift.isConfirmed1() || !newShift.isConfirmed2()){
+        if(newShift == null || !newShift.isConfirmed1() || newShift.isConfirmed2()){
             return new ResponseEntity(HttpStatus.CONFLICT);
         }
         else if(lineService.addNewShift(newShift, true) < 0){
@@ -156,17 +156,21 @@ public class ShiftController {
         }
     }
 
-    /*
     @PostMapping("shift/deleteShift")
     public ResponseEntity removeShift(@RequestBody String payload){
         JSONObject mainJson = new JSONObject(payload);
-        Shift newShift = shiftService.decapsulateShift(mainJson) ;
-        if(lineService.addNewShift(newShift, false) < 0){
+        Shift toDelete = shiftService.decapsulateShift(mainJson) ;
+        if(toDelete == null || toDelete.getId() == null)
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        else if(!(toDelete.isConfirmed1() && toDelete.isConfirmed2()))
+            return new ResponseEntity(HttpStatus.CONFLICT);
+        else if(!lineService.deleteShift(toDelete)){
             return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
         }
         else{
-            Message m = new Message(Instant.now().getEpochSecond(), false, "L'amministratore ha cancellato il tuo turno per la linea: " + newShift.getLineName());
-            if((lineService.sendMessageToUser(newShift.getEmail(), m)) < 0){
+            shiftService.deleteShift(toDelete);
+            Message m = new Message(Instant.now().getEpochSecond(), false, "L'amministratore ha cancellato il tuo turno per la linea: " + toDelete.getLineName());
+            if((lineService.sendMessageToUser(toDelete.getEmail(), m)) < 0){
                 return new ResponseEntity(HttpStatus.BAD_REQUEST);
             }
             else{
@@ -174,8 +178,6 @@ public class ShiftController {
             }
         }
     }
-
-     */
 
     @PostMapping("shift/addAvailability")
     public ResponseEntity<String> addAvailability(@RequestBody String payload) {

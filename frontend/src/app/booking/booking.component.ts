@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import {DataService} from "../services/data.service";
-import {Reservation} from "../model/reservation";
-import {TitleService} from "../services/title.service";
-import {MatDialog, MatDialogConfig, MatSnackBar, MatTableDataSource} from "@angular/material";
-import {Line} from "../model/line";
+import {DataService} from '../services/data.service';
+import {Reservation} from '../model/reservation';
+import {TitleService} from '../services/title.service';
+import {MatDialog, MatDialogConfig, MatSnackBar, MatTableDataSource} from '@angular/material';
+import {Line} from '../model/line';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {Child} from "../model/child";
+import {Child} from '../model/child';
 
 
 
@@ -18,7 +18,7 @@ export class BookingComponent implements OnInit {
 
   reservations: Reservation[];
   subscription: any;
-  isDisabled: Boolean[];
+  isDisabled: boolean[];
   lines: Line[];
   selectLineForm: FormGroup;
   selectRideForm: FormGroup;
@@ -27,11 +27,13 @@ export class BookingComponent implements OnInit {
   isLinear: boolean;
   children: Child[];
   currentChild: Child;
-  infoMessage : string = "";
+  infoMessage = '';
   stopOfLine: string[];
   editMode: boolean;
 
 
+  // tslint:disable-next-line:variable-name
+  // tslint:disable-next-line:max-line-length variable-name
   constructor(private dataService: DataService, private _snackBar: MatSnackBar, private titleservice: TitleService, private dialog: MatDialog, private _formBuilder: FormBuilder) { }
 
 
@@ -52,43 +54,45 @@ export class BookingComponent implements OnInit {
       selectedBack: ['', Validators.required]
     });
     this.dataService.getLines().subscribe(lines => {
-      this.lines=lines;
-      console.log(this.lines)
+      this.lines = lines;
+      console.log(this.lines);
     });
     this.isLinear = true;
     this.getChildren();
-    this.titleservice.changeTitle('Le mie prenotazioni')
-    this.isDisabled = []
+    this.titleservice.changeTitle('Le mie prenotazioni');
+    this.isDisabled = [];
 
   }
 
-  getChildren(): void{
+  getChildren(): void {
     this.subscription = this.dataService.getChildren(localStorage.getItem('current_user')).subscribe( children => {
       this.children = children;
-      this.updateStopOfLines(this.children)
-      this.currentChild = this.children[0]
-      this.getReservations(this.currentChild.registrationNumber)
-    })
+      this.updateStopOfLines(this.children);
+      this.currentChild = this.children[0];
+      this.getReservations(this.currentChild.registrationNumber);
+    });
   }
 
-  selectChild(c: Child){
+  selectChild(c: Child) {
     this.currentChild = c;
-    this.dataService.getChildReservation(this.currentChild.registrationNumber).subscribe( r => this.reservations = r)
+    this.dataService.getChildReservation(this.currentChild.registrationNumber).subscribe( r => this.reservations = r);
   }
 
-  getReservations(c_id: string) : void{
-    console.log('Reservation per bambino' + c_id)
+  // tslint:disable-next-line:variable-name
+  getReservations(c_id: string): void {
+    console.log('Reservation per bambino' + c_id);
     this.subscription = this.dataService.getChildReservation(c_id).subscribe(reservations => {
       this.reservations = reservations;
-      this.stopOfLine = []
-        console.log(this.reservations)
+      this.stopOfLine = [];
+      console.log(this.reservations);
       this.initializeArray();
-    }, error => this.reservations = [])
+    }, error => this.reservations = []);
   }
 
 
-  initializeArray(){
-    for(let i = 0; i < this.reservations.length; i++){
+  initializeArray() {
+    // tslint:disable-next-line:prefer-for-of
+    for (let i = 0; i < this.reservations.length; i++) {
       this.isDisabled.push(true);
     }
   }
@@ -97,7 +101,7 @@ export class BookingComponent implements OnInit {
 
   openDialog(templateRef) {
     const dialogConfig = new MatDialogConfig();
-    let dialogRef = this.dialog.open(templateRef, {
+    const dialogRef = this.dialog.open(templateRef, {
       width: '500px',
     });
 
@@ -105,25 +109,24 @@ export class BookingComponent implements OnInit {
     });
   }
 
-  enableEditing(index): void{
-    if(this.isDisabled[index]){
+  enableEditing(index): void {
+    if (this.isDisabled[index]) {
       this.isDisabled[index] = false;
-    }
-    else {
+    } else {
       this.isDisabled[index] = true;
     }
     this.editMode = true;
 
   }
 
-  updateStopOfLines(children: Child[]){
-    for(let c of children){
+  updateStopOfLines(children: Child[]) {
+    for (const c of children) {
       this.dataService.getStopsOfLine(c.defaultLine).subscribe(
-          r =>{
+          r => {
             this.stopOfLine = this.stopOfLine.concat(r);
-            console.log(this.stopOfLine)
+            console.log(this.stopOfLine);
           }
-      )
+      );
     }
   }
 
@@ -135,56 +138,58 @@ export class BookingComponent implements OnInit {
   //   })
   // }
 
-  addReservation(): void{
-    let newRes = new Reservation(this.selectLineForm.controls.selectedLine.value.lineName,
+  addReservation(): void {
+    const newRes = new Reservation(this.selectLineForm.controls.selectedLine.value.lineName,
                                   this.selectGoingForm.controls.selectedGoing.value,
                                   this.selectBackForm.controls.selectedBack.value,
                                   this.selectRideForm.controls.selectedRide.value.date,
                                   this.currentChild.registrationNumber,
-                                  localStorage.getItem('current_user'))
+                                  localStorage.getItem('current_user'),
+                                  []
+        );
     this.dataService.addChildReservation(this.currentChild.registrationNumber, newRes).subscribe(res => {
-          this.infoMessage = "Aggiunta la prenotazione!";
-          this._snackBar.open(this.infoMessage, '', {duration: 2000});
-          this.infoMessage = ''
-          this.reservations.push(newRes);
-          this.isDisabled.push(true)
-        },
-        error => {
-          this.infoMessage = "Non è stato possibile aggiungere la prenotazione";
-          this._snackBar.open(this.infoMessage, '', {duration: 2000});
-          this.infoMessage = ''
-        }
-    )
-
-  }
-
-  deleteReservation(i): void{
-    this.dataService.deleteChildReservation(this.currentChild.registrationNumber,this.reservations[i]).subscribe(res => {
-          this.reservations.splice(i,1)
-          this.infoMessage = "Eliminato!";
-          this._snackBar.open(this.infoMessage, '', {duration: 2000});
-          this.infoMessage = ''
-        },
-        error =>{
-          this.infoMessage = "Non è stato possibile elminare la prenotazione!";
+          this.infoMessage = 'Aggiunta la prenotazione!';
           this._snackBar.open(this.infoMessage, '', {duration: 2000});
           this.infoMessage = '';
-        })
+          this.reservations.push(newRes);
+          this.isDisabled.push(true);
+        },
+        error => {
+          this.infoMessage = 'Non è stato possibile aggiungere la prenotazione';
+          this._snackBar.open(this.infoMessage, '', {duration: 2000});
+          this.infoMessage = '';
+        }
+    );
+
   }
 
-  saveReservation(i): void{
-    this.dataService.editChildReservation(this.currentChild.registrationNumber, this.reservations[i]).subscribe(res =>{
-          this.infoMessage = "Modifiche salvate!";
+  deleteReservation(i): void {
+    this.dataService.deleteChildReservation(this.currentChild.registrationNumber, this.reservations[i]).subscribe(res => {
+          this.reservations.splice(i, 1);
+          this.infoMessage = 'Eliminato!';
           this._snackBar.open(this.infoMessage, '', {duration: 2000});
-          this.infoMessage = ''
+          this.infoMessage = '';
+        },
+        error => {
+          this.infoMessage = 'Non è stato possibile elminare la prenotazione!';
+          this._snackBar.open(this.infoMessage, '', {duration: 2000});
+          this.infoMessage = '';
+        });
+  }
+
+  saveReservation(i): void {
+    this.dataService.editChildReservation(this.currentChild.registrationNumber, this.reservations[i]).subscribe(res => {
+          this.infoMessage = 'Modifiche salvate!';
+          this._snackBar.open(this.infoMessage, '', {duration: 2000});
+          this.infoMessage = '';
           this.isDisabled[i] = true;
           this.editMode = false;
         },
-        error =>{
-          this.infoMessage = "Non è stato possibile salvare le modifiche";
+        error => {
+          this.infoMessage = 'Non è stato possibile salvare le modifiche';
           this._snackBar.open(this.infoMessage, '', {duration: 2000});
-          this.infoMessage = ''
-        })
+          this.infoMessage = '';
+        });
   }
 
 
