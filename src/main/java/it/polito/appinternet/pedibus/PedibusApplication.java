@@ -58,9 +58,9 @@ public class PedibusApplication {
         User u = new User("admin@admin.com", passwordEncoder.encode("admin"), true);
         User p = new User("parent@parent.com", passwordEncoder.encode("parent"), true);
         User c = new User("conductor@conductor.com", passwordEncoder.encode("conductor"), true);
-        Child c1 = new Child("Ginevra", "Rossi", "RSSGNV04R20E290Z", "");
-        Child c2 = new Child("Francesco", "Neri", "NRIFRN05R20E291Z", "");
-        Child c3 = new Child("Michele", "Verdi", "VRDMCH07R20E290Z", "");
+        Child c1 = new Child("Ginevra", "Rossi", "RSSGNV04R20E290Z", "","Linea Azzurra", "Stop1");
+        Child c2 = new Child("Francesco", "Neri", "NRIFRN05R20E291Z", "", "Linea Viola", "Stop2");
+        Child c3 = new Child("Michele", "Verdi", "VRDMCH07R20E290Z", "", "Linea Azzurra", "Stop3");
         c1 = childService.insertChild(c1); //before insert child has no ID
         c2 = childService.insertChild(c2);
         c3 = childService.insertChild(c3);

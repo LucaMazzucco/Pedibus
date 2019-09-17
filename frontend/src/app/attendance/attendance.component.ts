@@ -159,10 +159,6 @@ export class AttendanceComponent implements OnInit, OnDestroy {
 
   openDialog(templateRef) {
     const dialogConfig = new MatDialogConfig();
-    // dialogConfig.data = {
-    //   id: 1,
-    //   title: 'Angular For Beginners'
-    // };
     if(this.isBackTab){
       this.tableDatasource = new MatTableDataSource(this.dataSource.notReservedBack);
     }

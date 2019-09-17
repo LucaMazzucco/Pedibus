@@ -37,6 +37,8 @@ export class ChildrenComponent implements OnInit {
     this.dataService.getChildren(localStorage.getItem('current_user')).pipe(filter(result => !!result))
         .subscribe(result => {
           this.children = result
+          this.stopOfLine = []
+          this.updateStopOfLines(this.children)
           this.initializeArray();
         },
         error => {
@@ -64,6 +66,17 @@ export class ChildrenComponent implements OnInit {
     }
   }
 
+  updateStopOfLines(children: Child[]){
+    for(let c of children){
+      this.dataService.getStopsOfLine(c.defaultLine).subscribe(
+          r =>{
+            this.stopOfLine = this.stopOfLine.concat(r);
+            console.log(this.stopOfLine)
+          }
+      )
+    }
+  }
+
   openDialog(templateRef) {
     const dialogConfig = new MatDialogConfig();
     let dialogRef = this.dialog.open(templateRef, {
@@ -73,7 +86,6 @@ export class ChildrenComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
     });
   }
-
   enableEditing(index): void{
     if(this.isDisabled[index]){
       this.isDisabled[index] = false;
@@ -82,7 +94,6 @@ export class ChildrenComponent implements OnInit {
       this.isDisabled[index] = true;
     }
     this.editMode = true;
-    this.updateStopsOfLine(index)
   }
 
 
@@ -142,11 +153,12 @@ export class ChildrenComponent implements OnInit {
         } );
   }
 
-  updateStopsOfLine(i): void{
-    console.log(this.children[i].defaultLine)
-      this.dataService.getStopsOfLine(this.children[i].defaultLine).subscribe( s => {
-        this.stopOfLine = s;
-        console.log(this.stopOfLine)
-      })
-  }
+  // updateStopsOfLine(i): void{
+  //   console.log(this.children[i].defaultLine)
+  //     this.dataService.getStopsOfLine(this.children[i].defaultLine).subscribe( s => {
+  //       this.stopOfLine = s;
+  //       console.log(this.stopOfLine)
+  //     })
+  // }
+
 }

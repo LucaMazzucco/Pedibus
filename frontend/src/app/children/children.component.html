@@ -20,15 +20,15 @@
           </mat-form-field>
           <mat-form-field fxFlex="30">
             <mat-label>Linea del Pedibus</mat-label>
-            <mat-select [disabled]="isDisabled[i]" [(value)]="child.defaultLine">
-              <mat-option *ngFor="let line of lines" [value]="line.lineName">
-                {{line.lineName}}
-              </mat-option>
+            <mat-select [disabled]="isDisabled[i]" [value]="children[i].defaultLine">
+                <mat-option *ngFor="let line of lines" [value]="line.lineName">
+                    {{line.lineName}}
+                </mat-option>
             </mat-select>
           </mat-form-field>
           <mat-form-field fxFlex="30">
             <mat-label>Fermata più vicina a casa</mat-label>
-            <mat-select [disabled]="isDisabled[i]" [(value)]="child.defaultStop" (selectionChange)="updateStopsOfLine(i)">
+            <mat-select [disabled]="isDisabled[i]" [(value)]="children[i].defaultStop" (selectionChange)="updateStopsOfLine(i)">
               <mat-option *ngFor="let stop of stopOfLine" [value]="stop">
                 {{stop}}
               </mat-option>
