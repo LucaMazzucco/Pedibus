@@ -253,14 +253,15 @@ public class UserService {
     public int userEnableAdmin(String email, ServletRequest req,
                                String line_name,
                                Boolean enableAdmin){
-        Optional<User> opt_user = userRepo.findById(email);
-        if(!opt_user.isPresent()){
-            return -1;
-        }
-        User user = opt_user.get();
-        String token = jwtTokenProvider.resolveToken((HttpServletRequest) req);
-        String username = jwtTokenProvider.getUsername(token);
-        if(username == null)
+////        Optional<User> opt_user = userRepo.findById(email);
+////        if(!opt_user.isPresent()){
+////            return -1;
+////        }
+//        String username = jwtTokenProvider.getUsername(token);
+////        // User user = opt_user.get();
+////        String token = jwtTokenProvider.resolveToken((HttpServletRequest) req);
+        User user = userFindByEmail(email);
+        if(user == null)
             return -2;
 
         Line line = lineService.findByLineName(line_name);
@@ -272,24 +273,25 @@ public class UserService {
             if(line.getAdmins().contains(user.getEmail())) {
                 return -4;
             }
-            if(user.getRoles().contains("ROLE_USER")){
-                user.getRoles().remove("ROLE_USER");
-                user.getRoles().add("ROLE_ADMIN");
-            }
+//            if(user.getRoles().contains("ROLE_USER")){
+//                user.getRoles().remove("ROLE_USER");
+//                user.getRoles().add("ROLE_ADMIN");
+//            }
+            user.getRoles().add(Roles.ROLE_ADMIN.getRole());
             user.getAdminLines().add(line_name);
             line.getAdmins().add(user.getEmail());
-            userRepo.save(user);
+            userSave(user);
             lineService.saveLine(line);
 
         }
         else if(user.getAdminLines().contains(line_name) && line.getAdmins().contains(user.getEmail())){
             user.getAdminLines().remove(line_name);
             line.getAdmins().remove(user.getEmail());
-            if(user.getAdminLines().isEmpty() && user.getRoles().contains("ROLE_ADMIN")){
-                user.getRoles().remove("ROLE_ADMIN");
-                user.getRoles().add("ROLE_USER");
+            if(user.getAdminLines().isEmpty()){
+                user.getRoles().remove(Roles.ROLE_ADMIN.getRole());
+                // user.getRoles().add("ROLE_USER");
             }
-            userRepo.save(user);
+            userSave(user);
             lineService.saveLine(line);
         }
         return 0;
