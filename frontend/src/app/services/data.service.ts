@@ -82,7 +82,7 @@ export class DataService {
   }
 
   confirmShiftConductor(sh: Shift) {
-    console.log(sh)
+    console.log(sh);
     return this.http.post<Shift>(REST_URL + '/shift/confirm2', sh);
   }
 
@@ -134,7 +134,7 @@ export class DataService {
   }
 
   deleteChildReservation(ssn: string, r: Reservation) {
-    return this.http.post<Reservation>(REST_URL + '/deleteChildReservation/' + ssn, r);
+    return this.http.post<Reservation>(REST_URL + '/children/deleteChildReservation/' + ssn, r);
   }
 
 }

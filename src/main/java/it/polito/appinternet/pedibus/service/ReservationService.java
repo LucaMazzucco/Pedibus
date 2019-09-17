@@ -65,7 +65,6 @@ public class ReservationService {
         }
         User parent = userService.userFindById(child.getParentId());
         Stop s;
-        List<Reservation> resList = reservationRepo.findAll();
         if(reservationRepo.findByLineNameAndReservationDateAndFlagGoingAndChild(line_name, date, flagGoing, child.getId())!=null){
             return null;
         }

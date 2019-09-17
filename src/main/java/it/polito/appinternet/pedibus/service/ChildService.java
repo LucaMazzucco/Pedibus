@@ -205,10 +205,7 @@ public class ChildService {
         resList.addAll(decap);
         try{
             resList.forEach(r->{
-                Reservation res = reservationService.findByLineNameAndReservationDateAndFlagGoingAndChild(r.getLineName(),r.getReservationDate(),r.isFlagGoing(),child.getId());
-                if(res==null) throw new NullPointerException("Error, reservation not found.");
-                String id = res.getId();
-                if(reservationService.updateReservation(r.getLineName(),r.getReservationDate(),id,r)<0){
+                if(reservationService.updateReservation(r.getLineName(),r.getReservationDate(),r.getId(),r)<0){
                     throw new NullPointerException("Error");
                 }
             });
@@ -264,6 +261,12 @@ public class ChildService {
                     true,
                     false
                     );
+            Reservation oldRes = reservationService.findByLineNameAndReservationDateAndFlagGoingAndChild(r.getLineName(),
+                    r.getReservationDate(),
+                    r.isFlagGoing(),
+                    r.getChild());
+            if(oldRes!=null)
+                r.setId(oldRes.getId());
             resList.add(r);
         }
         if(reservation.has("stopR")){
@@ -278,6 +281,12 @@ public class ChildService {
                     false,
                     false
             );
+            Reservation oldRes = reservationService.findByLineNameAndReservationDateAndFlagGoingAndChild(r.getLineName(),
+                    r.getReservationDate(),
+                    r.isFlagGoing(),
+                    r.getChild());
+            if(oldRes!=null)
+                r.setId(oldRes.getId());
             resList.add(r);
         }
         return resList;
