@@ -209,7 +209,7 @@ public class ReservationService {
                             .findAny().orElse(null);
                     if(resB!=null){
                         JSONObject stopR = new JSONObject();
-                        stop = lineService.getStopByLineNameAndRideDateAndFlagGoingAndStopName(res.getLineName(),res.getReservationDate(),res.isFlagGoing(),resB.getStopName());
+                        stop = lineService.getStopByLineNameAndRideDateAndFlagGoingAndStopName(res.getLineName(),res.getReservationDate(),resB.isFlagGoing(),resB.getStopName());
                         stopR.put("stopName",resB.getStopName());
                         stopR.put("time",stop.getTime());
                         tmpJson.put("stopR",stopR);

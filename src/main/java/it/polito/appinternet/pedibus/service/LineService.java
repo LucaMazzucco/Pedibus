@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.Null;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,7 +50,7 @@ public class LineService {
         return lineRepo.save(line);
     }
 
-    public Ride getRideByLineAndDateAndFlagGoing(Line line, long rDate, boolean flagGoing){
+    public Ride getRideByLineAndRideDateAndFlagGoing(Line line, long rDate, boolean flagGoing){
         if(line==null){
             return null;
         }
@@ -63,18 +62,17 @@ public class LineService {
     public Stop getStopByLineNameAndRideDateAndFlagGoingAndStopName(String lineName, long rDate, boolean flagGoing, String stopName){
         Line line = findByLineName(lineName);
         if(line==null) return null;
-        Ride ride = getRideByLineAndDateAndFlagGoing(line, rDate, flagGoing);
+        Ride ride = getRideByLineAndRideDateAndFlagGoing(line, rDate, flagGoing);
         if(ride==null) return null;
-        Stop stop = ride.getStops().stream()
+        return ride.getStops().stream()
                 .filter(s->s.getStopName().equals(stopName))
                 .findAny().orElse(null);
-        return stop;
     }
 
     public List<Stop> getStopsByLineNameAndRideDateAndFlagGoing(String lineName, long rDate, boolean flagGoing){
         Line line = findByLineName(lineName);
         if(line==null) return null;
-        Ride ride = getRideByLineAndDateAndFlagGoing(line, rDate, flagGoing);
+        Ride ride = getRideByLineAndRideDateAndFlagGoing(line, rDate, flagGoing);
         if(ride==null) return null;
         return ride.getStops();
     }
@@ -268,7 +266,7 @@ public class LineService {
         try{
             //TODO: Sostituire con una query più complessa, non avevo voglia di farlo per colpa delle date
             Line line = findByLineName(availability.getLineName());
-            Ride ride = getRideByLineAndDateAndFlagGoing(line,availability.getRideDate(),availability.isFlagGoing());
+            Ride ride = getRideByLineAndRideDateAndFlagGoing(line,availability.getRideDate(),availability.isFlagGoing());
             if(ride == null)
                 throw new NullPointerException("not found ride");
             ride.getCompanions().add(availability.getEmail());
@@ -286,7 +284,7 @@ public class LineService {
     public int addNewShift(Shift shift, boolean confirmed){
         try {
             Line line = findByLineName(shift.getLineName());
-            Ride ride = getRideByLineAndDateAndFlagGoing(line,shift.getRideDate(),shift.isFlagGoing());
+            Ride ride = getRideByLineAndRideDateAndFlagGoing(line,shift.getRideDate(),shift.isFlagGoing());
             if(ride == null)
                 throw new NullPointerException("not found ride");
             String user = shift.getEmail();

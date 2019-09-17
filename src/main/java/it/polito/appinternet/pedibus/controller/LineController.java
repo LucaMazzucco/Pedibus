@@ -73,7 +73,7 @@ public class LineController {
         JSONObject returnJson = new JSONObject();
         try{
             Line line = lineService.findByLineName(line_name);
-            Ride ride = lineService.getRideByLineAndDateAndFlagGoing(line,date,flagGoing);
+            Ride ride = lineService.getRideByLineAndRideDateAndFlagGoing(line,date,flagGoing);
             if(ride==null){
                 return "";
             }

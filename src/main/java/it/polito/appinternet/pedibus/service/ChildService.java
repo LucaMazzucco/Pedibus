@@ -122,6 +122,7 @@ public class ChildService {
             return null;
         }
         User parent = userService.userFindById(child.getParentId());
+        if(parent==null) return null;
         List<Reservation> resList = parent.getReservations().stream()
                 .map(res->reservationService.findById(res))
                 .filter(res->res.getChild().equals(child.getId()))
