@@ -25,6 +25,7 @@ export class MessagesComponent implements OnInit {
   readMessage(mess: Message): void{
       mess.read = true;
       this.dataservice.putMessages(this.messages, localStorage.getItem('current_user'));
+
   }
 
   deleteMessage(mess: Message): void{

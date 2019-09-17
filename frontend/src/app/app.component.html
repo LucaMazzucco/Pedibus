@@ -3,9 +3,14 @@
         <mat-toolbar-row class="mat-elevation-z6">
           <button mat-icon-button (click)="snav.toggle()" fxFlex="5" fxLayoutAlign="start start"><mat-icon>menu</mat-icon></button>
           <h1 class="app-name" fxLayoutAlign="center center" fxFlex="90">Pedibus</h1>
-          <button mat-icon-button routerLink="/messaggi" routerLinkActive="active" fxLayoutAlign="end" *ngIf="isLogged()">
+          <div fxLayoutAlign="end">
+          <button mat-icon-button routerLink="/messaggi" routerLinkActive="active"  *ngIf="isLogged()">
             <mat-icon [matBadge]="unreadMessages" matBadgeColor="warn" fxLayoutAlign="center center">notification_important</mat-icon>
           </button>
+<!--          <button mat-icon-button routerLink="/messaggi" routerLinkActive="active"  *ngIf="isLogged()">-->
+<!--            <mat-icon  matBadgeColor="warn" fxLayoutAlign="center center">color_lens</mat-icon>-->
+<!--          </button>-->
+          </div>
         </mat-toolbar-row>
       </mat-toolbar>
       <mat-sidenav-container class="fixed-sidenav-container">
@@ -89,7 +94,7 @@
 
         <mat-sidenav-content fxLayout="column" fxLayoutGap="10px">
           <div [hidden]="!isLogged()" fxFlex="8" class="second-navbar">
-            <div fxFill="90" fxLayoutAlign="center center" >
+            <div fxFill="90" fxLayoutAlign="left" >
               <h1 class="app-subtitle">{{subtitle}}</h1>
             </div>
           </div>
