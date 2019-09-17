@@ -200,6 +200,9 @@ $custom-theme: map_merge($custom-theme, (background: $background));
     .second-navbar{
         background-color: mat-color($primary, 400);
     }
+    .sidebar-style{
+        background-color: mat-color($primary, 50);
+    }
 }
 
 @include angular-material-theme($custom-theme)

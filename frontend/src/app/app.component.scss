@@ -16,12 +16,17 @@
     z-index: 2;
   }
 
-  h1.app-name {
+  h1.app-subtitle {
     margin-left: 25px;
     font-family: 'Blinker', sans-serif;
     font-size: x-large;
   }
 
+  h1.app-name {
+    margin-left: 25px;
+    font-family: 'Pacifico', cursive;
+    font-size: x-large;
+  }
   .fixed-sidenav-container {
     /* When the sidenav is not fixed, stretch the sidenav container to fill the available space. This
        causes `<mat-sidenav-content>` to act as our scrolling element for desktop layouts. */

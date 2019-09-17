@@ -67,7 +67,7 @@ public class LineService {
         if(ride==null) return null;
         Stop stop = ride.getStops().stream()
                 .filter(s->s.getStopName().equals(stopName))
-                .findAny().get();
+                .findAny().orElse(null);
         return stop;
     }
 

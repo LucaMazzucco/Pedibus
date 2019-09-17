@@ -17,8 +17,8 @@
         <ng-container matColumnDef="waiting">
           <th mat-header-cell *matHeaderCellDef> In attesa di conferma </th>
           <td mat-cell *matCellDef="let av; let i = index;" [class.not-confirmed-shift-color]="!av.confirmed2" [class.confirmed-shift-color]="av.confirmed2">
-            <button mat-icon-button (click)=confirmbyConductor(i)>
-              <mat-icon>{{ av.confirmed1 == true ? 'check' : 'timer' }}</mat-icon>
+            <button mat-mini-fab color="white" (click)=confirmbyConductor(i)>
+              <mat-icon>{{ av.confirmed1 == true ? 'check_circle_outline' : 'timer' }}</mat-icon>
             </button>
           </td>
         </ng-container>

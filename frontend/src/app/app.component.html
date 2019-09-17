@@ -9,7 +9,7 @@
         </mat-toolbar-row>
       </mat-toolbar>
       <mat-sidenav-container class="fixed-sidenav-container">
-        <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
+        <mat-sidenav class="sidebar-style" #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches" fixedTopGap="56">
           <mat-nav-list>
             <a mat-list-item routerLink="/registerAdmin" routerLinkActive="active" [hidden]="!isLogged() || !isAdmin()">
               <div fxFlex="10">
@@ -17,10 +17,20 @@
               </div>
               <div fxFlex="10">
               </div>
-              <div>
+              <div fxFlex="80">
                 Aggiungi Utente
               </div>
               </a>
+            <a mat-list-item routerLink="/bambini" routerLinkActive="active" [hidden]="!isLogged()|| !(isParent()||isAdmin())">
+              <div fxFlex="10">
+                <mat-icon>child_care</mat-icon>
+              </div>
+              <div fxFlex="10"></div>
+              <div fxFlex="80">
+                Aggiungi Bambino
+              </div>
+            </a>
+            <mat-divider [hidden]="!isLogged()|| !(isParent()||isAdmin())"></mat-divider>
             <a mat-list-item routerLink="/login" routerLinkActive="active" [hidden]="isLogged()">Login</a>
             <a mat-list-item routerLink="/presenze" routerLinkActive="active" [hidden]="!isLogged() || !(isConductor()||isAdmin())">
               <div fxFlex="10">
@@ -29,7 +39,7 @@
               <div fxFlex="10"></div>
               <div fxFlex="80">Presenze</div>
               </a>
-            <a mat-list-item routerLink="/prenotazioni" routerLinkActive="active" [hidden]="!isLogged()">
+            <a mat-list-item routerLink="/prenotazioni" routerLinkActive="active" [hidden]="!isLogged()  || !(isParent()||isAdmin())">
               <div fxFlex="10">
                 <mat-icon>pan_tool</mat-icon>
               </div>
@@ -64,15 +74,7 @@
                 Promuovi accompagnatori
               </div>
               </a>
-            <a mat-list-item routerLink="/bambini" routerLinkActive="active" [hidden]="!isLogged()|| !(isParent()||isAdmin())">
-              <div fxFlex="10">
-                <mat-icon>child_care</mat-icon>
-              </div>
-              <div fxFlex="10"></div>
-              <div fxFlex="80">
-                Aggiungi Bambino
-              </div>
-              </a>
+            <mat-divider></mat-divider>
             <a mat-list-item (click)="logout(); snav.toggle()" [hidden]="!isLogged()">
               <div fxFlex="10">
                 <mat-icon>exit_to_app</mat-icon>
@@ -87,8 +89,8 @@
 
         <mat-sidenav-content fxLayout="column" fxLayoutGap="10px">
           <div [hidden]="!isLogged()" fxFlex="8" class="second-navbar">
-            <div fxLayoutAlign="center center" >
-              <h1 class="app-name">{{subtitle}}</h1>
+            <div fxFill="90" fxLayoutAlign="center center" >
+              <h1 class="app-subtitle">{{subtitle}}</h1>
             </div>
           </div>
           <router-outlet (activate)="updateNotifications()"> </router-outlet>

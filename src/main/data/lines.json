@@ -33,17 +33,17 @@
         "companions": [],
         "stops": [
           {
-            "stopName":"Stop1",
+            "stopName":"Stop4",
             "time": "1567603642",
             "reservations": []
           },
           {
-            "stopName":"Stop2",
+            "stopName":"Stop5",
             "time": "1567603742",
             "reservations": []
           },
           {
-            "stopName":"Stop3",
+            "stopName":"Piazza Vittorio",
             "time": "1567603842",
             "reservations": []
           }

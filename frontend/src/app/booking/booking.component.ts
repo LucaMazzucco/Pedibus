@@ -140,10 +140,16 @@ export class BookingComponent implements OnInit {
 
   addReservation(): void {
     console.log('Fermate predefinite ');
-    const avStops: string[] = [];
-    this.selectRideForm.controls.selectedRide.value.stopsBack.forEach(
-        s => avStops.push(s.stopName)
+    const avStopsA: string[] = [];
+    const avStopsR: string[] = [];
+
+    this.selectRideForm.controls.selectedRide.value.stops.forEach(
+        s => avStopsA.push(s.stopName)
     );
+    this.selectRideForm.controls.selectedRide.value.stopsBack.forEach(
+        s => avStopsR.push(s.stopName)
+    );
+
     for (const s of this.selectRideForm.controls.selectedRide.value.stopsBack) {
 
     }
@@ -160,6 +166,8 @@ export class BookingComponent implements OnInit {
           this.infoMessage = 'Prenotazione aggiunta!';
           this._snackBar.open(this.infoMessage, '', {duration: 2000});
           this.infoMessage = '';
+          newRes.availableStopsA = avStopsA;
+          newRes.availableStopsR = avStopsR;
           this.reservations.push(newRes);
           this.isDisabled.push(true);
         },
