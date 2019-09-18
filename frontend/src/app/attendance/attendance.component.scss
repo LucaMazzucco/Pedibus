@@ -10,9 +10,13 @@
 ::ng-deep.mat-paginator-range-label {
     display: none !important;
 }
-agm-map {
-    height: 300px;
-    width: 700px;
+
+.map-style {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
 }
 
 .map-card{

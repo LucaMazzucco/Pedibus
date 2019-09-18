@@ -9,10 +9,10 @@ import {MatDialog, MatDialogRef} from '@angular/material/dialog';
 import {SelectionModel} from "@angular/cdk/collections";
 import {TitleService} from "../services/title.service";
 import {NotificationService} from "../services/notification.service";
-import {Marker} from "../model/marker";
-
+import { tileLayer, latLng, marker} from 'leaflet';
 
 declare var ol: any;
+
 @Component({
   selector: 'app-card',
   templateUrl: './attendance.component.html',
@@ -27,7 +27,6 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   currentPage: number;
   currentLine: Line;
   dataSource: any;
-  markers: Marker[];
   subscription: any;
   isBackTab: boolean;
   // stopsOfLineA: Stop[];
@@ -38,71 +37,30 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   displayedColumns: string[] = ['seleziona', 'nome', 'cognome'];
   selection = new SelectionModel<Passenger>(true, []);
   map: any;
+    options = {
+        layers: [
+            tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+        ],
+        zoom: 5,
+        center: latLng(this.latitude, this.longitude)
+    };
 
   ngOnInit() {
-
-    this.initMap();
     this.titleservice.changeTitle('Registro presenze');
     this.getLines();
   }
 
-  initMap(){
-      this.map = new ol.Map({
-          target: 'map',
-          layers: [
-              new ol.layer.Tile({
-                  source: new ol.source.OSM()
-              })
-          ],
-          view: new ol.View({
-              center: ol.proj.fromLonLat([45.06370, 7.65940]),
-              zoom: 8
-          })
-      });
-      this.setCenter();
-      var container = document.getElementById('popup');
-      var content = document.getElementById('popup-content');
-      var closer = document.getElementById('popup-closer');
 
-      var overlay = new ol.Overlay({
-          element: container,
-          autoPan: true,
-          autoPanAnimation: {
-              duration: 250
-          }
-      });
-      this.map.addOverlay(overlay);
+    onMapReady(map) {
+        this.map = map;
+    }
 
-      closer.onclick = function() {
-          overlay.setPosition(undefined);
-          closer.blur();
-          return false;
-      };
-
-      this.map.on('singleclick', function (event) {
-          console.log('Click')
-          if (this.map.hasFeatureAtPixel(event.pixel) === true) {
-              var coordinate = event.coordinate;
-              content.innerHTML = '<b>Hello world!</b><br />I am a popup.';
-              overlay.setPosition(coordinate);
-          } else {
-              overlay.setPosition(undefined);
-              closer.blur();
-          }
-      });
-  }
-
-  setCenter() {
-    var view = this.map.getView();
-    view.setCenter(ol.proj.fromLonLat([this.longitude, this.latitude]));
-    view.setZoom(15);
-  }
     updateLines(lines : Line[]){
     this.lines = lines;
     this.currentLine = this.lines[0];
     this.currentLine.rides.forEach(s =>{
       s.stops.forEach(s => {
-          this.add_marker(s.lat, s.lng);
+          //this.add_marker(s.lat, s.lng);
       })
     })
     this.currentPage = this.binarySearch(this.currentLine.rides,new Date(),0,this.currentLine.rides.length-1,0);
@@ -112,26 +70,27 @@ export class AttendanceComponent implements OnInit, OnDestroy {
     this.totalSize = this.currentLine.rides.length;
   }
 
-  add_marker(lat, lng) {
-      //this.markers.push(new Marker(lat, lng))
-      var vectorLayer = new ol.layer.Vector({
-      source: new ol.source.Vector({
-        features: [new ol.Feature({
-          geometry: new ol.geom.Point(ol.proj.transform([parseFloat(lng), parseFloat(lat)], 'EPSG:4326', 'EPSG:3857')),
-        })]
-      }),
-      style: new ol.style.Style({
-        image: new ol.style.Icon({
-          anchor: [0.5, 0.5],
-          anchorXUnits: "fraction",
-          anchorYUnits: "fraction",
-          src: "https://i.ibb.co/g6gk5Dm/678111-map-marker-512.png"
-        })
-      })
-    });
+  // add_marker(lat, lng) {
+  //     //this.markers.push(new Marker(lat, lng))
+  //     var vectorLayer = new ol.layer.Vector({
+  //     source: new ol.source.Vector({
+  //       features: [new ol.Feature({
+  //         geometry: new ol.geom.Point(ol.proj.transform([parseFloat(lng), parseFloat(lat)], 'EPSG:4326', 'EPSG:3857')),
+  //       })]
+  //     }),
+  //     style: new ol.style.Style({
+  //       image: new ol.style.Icon({
+  //         anchor: [0.5, 0.5],
+  //         anchorXUnits: "fraction",
+  //         anchorYUnits: "fraction",
+  //         src: "https://i.ibb.co/g6gk5Dm/678111-map-marker-512.png"
+  //       })
+  //     })
+  //   });
+  //
+  //     this.map.addLayer(vectorLayer);
+  // }
 
-      this.map.addLayer(vectorLayer);
-  }
   ngOnDestroy(){
     this.subscription.unsubscribe();
   }
