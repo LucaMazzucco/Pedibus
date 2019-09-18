@@ -10,24 +10,24 @@
         "companions": ["parent@parent.com"],
         "stops": [
           {
-            "stopName":"Stop1",
+            "stopName":"Corso Peschiera, 251",
             "time": "1567603642",
-            "Lat": "45.073849",
-            "Long": "7.6674002",
+            "Lat": "45.06946532152088",
+            "Long": "7.637106451453917",
             "reservations": []
           },
           {
-            "stopName":"Stop2",
+            "stopName":"Piazza Sabotino",
             "time": "1567603742",
-            "Lat": "45.073849",
-            "Long": "7.6674002",
+            "Lat": "45.064845559814415",
+            "Long": "7.648890951786086",
             "reservations": []
           },
           {
-            "stopName":"Stop3",
+            "stopName":"Corso Duca degli Abruzzi",
             "time": "1567603842",
-            "Lat": "45.073849",
-            "Long": "7.6674002",
+            "Lat": "45.060137460207386",
+            "Long": "7.661190044702494",
             "reservations": []
           }
         ]
@@ -39,24 +39,24 @@
         "companions": [],
         "stops": [
           {
-            "stopName":"Stop4",
+            "stopName":"Corso Duca degli Abruzzi",
             "time": "1567603642",
-            "Lat": "45.073849",
-            "Long": "7.6674002",
+            "Lat": "45.060137460207386",
+            "Long": "7.661190044702494",
             "reservations": []
           },
           {
-            "stopName":"Stop5",
+            "stopName":"Piazza Sabotino",
             "time": "1567603742",
-            "Lat": "45.073849",
-            "Long": "7.6674002",
+            "Lat": "45.064845559814415",
+            "Long": "7.648890951786086",
             "reservations": []
           },
           {
-            "stopName":"Piazza Vittorio",
+            "stopName":"Corso Peschiera, 251",
             "time": "1567603842",
-            "Lat": "45.073849",
-            "Long": "7.6674002",
+            "Lat": "45.06946532152088",
+            "Long": "7.637106451453917",
             "reservations": []
           }
         ]
@@ -74,24 +74,24 @@
         "companions": ["admin@admin.com"],
         "stops": [
           {
-            "stopName":"Stop1",
+            "stopName":"Fermata Metro Nizza",
             "time": "1567603642",
-            "Lat": "45.073849",
-            "Long": "7.6674002",
+            "Lat": "45.052039420990894",
+            "Long": "7.674843836592487",
             "reservations": []
           },
           {
-            "stopName":"Stop2",
+            "stopName":"Corso L. Einaudi, 1",
             "time": "1567603742",
-            "Lat": "45.073849",
-            "Long": "7.6674002",
+            "Lat": "45.057193712634785",
+            "Long": "7.668878598038759",
             "reservations": []
           },
           {
-            "stopName":"Stop3",
+            "stopName":"Corso Duca degli Abruzzi",
             "time": "1567603842",
-            "Lat": "45.073849",
-            "Long": "7.6674002",
+            "Lat": "45.060137460207386",
+            "Long": "7.661190044702494",
             "reservations": []
           }
         ]
@@ -103,24 +103,24 @@
         "companions": [],
         "stops": [
           {
-            "stopName":"Stop1",
+            "stopName":"Corso Duca degli Abruzzi",
             "time": "1567603642",
-            "Lat": "45.073849",
-            "Long": "7.6674002",
+            "Lat": "45.060137460207386",
+            "Long": "7.661190044702494",
             "reservations": []
           },
           {
-            "stopName":"Stop2",
+            "stopName":"Corso L. Einaudi, 1",
             "time": "1567603742",
-            "Lat": "45.073849",
-            "Long": "7.6674002",
+            "Lat": "45.057193712634785",
+            "Long": "7.668878598038759",
             "reservations": []
           },
           {
-            "stopName":"Stop3",
+            "stopName":"Fermata Metro Nizza",
             "time": "1567603842",
-            "Lat": "45.073849",
-            "Long": "7.6674002",
+            "Lat": "45.052039420990894",
+            "Long": "7.674843836592487",
             "reservations": []
           }
         ]
