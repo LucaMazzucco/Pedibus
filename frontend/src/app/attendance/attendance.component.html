@@ -128,10 +128,10 @@
     </mat-card>
   </div>
   <div fxFlex="70" fxFlex.xs="0">
-    <agm-map [latitude]="lat" [longitude]="lng">
-      <agm-marker [latitude]="lat" [longitude]="lng">
+    <agm-map [latitude]="lat" [longitude]="lng" >
+      <agm-marker *ngFor="let s of (isBackTab ? stopsOfLineA : stopsOfLineR); let i = index" [latitude]="s.lat" [longitude]="s.lng">
         <agm-info-window>
-          <strong>InfoWindow content</strong>
+          <strong>{{ s.stopName }}</strong>
         </agm-info-window>
       </agm-marker>
     </agm-map>
