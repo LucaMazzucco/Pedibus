@@ -11,6 +11,7 @@
   },
   "private": true,
   "dependencies": {
+    "@agm/core": "^1.0.0",
     "@angular/animations": "^7.2.15",
     "@angular/cdk": "^7.3.7",
     "@angular/common": "~7.2.0",
@@ -23,7 +24,6 @@
     "@angular/platform-browser-dynamic": "~7.2.0",
     "@angular/router": "~7.2.0",
     "core-js": "^2.5.4",
-    "json-server": "^0.15.0",
     "jwt-decode": "^2.2.0",
     "moment": "^2.24.0",
     "rxjs": "~6.3.3",

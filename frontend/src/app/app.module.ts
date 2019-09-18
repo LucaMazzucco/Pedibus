@@ -40,6 +40,8 @@ import { RoleAdministrationComponent } from './role-administration/role-administ
 import { ChildrenComponent } from './children/children.component';
 import {ErrorService} from "./services/error.service";
 import {AuthExpiredInterceptor} from "./services/authexpired-interceptor";
+import { AgmCoreModule } from '@agm/core';
+
 
 
 //import { AdministrationComponent } from './administration/administration.component';
@@ -118,6 +120,9 @@ const routes: Routes = [
       ChildrenComponent
   ],
   imports: [
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyAynZFDKmuzqVu0sf9gx9QZtJ1aWRAsti0'
+    }),
     BrowserModule,
     MatTableModule,
     HttpClientModule,

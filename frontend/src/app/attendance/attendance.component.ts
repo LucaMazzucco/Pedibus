@@ -20,7 +20,6 @@ import {NotificationService} from "../services/notification.service";
 export class AttendanceComponent implements OnInit, OnDestroy {
 
   constructor(private dataService: DataService,private dialog: MatDialog, private titleservice: TitleService) { }
-
   lines: Line[];
   stopIndex: number;
   totalSize: number;
@@ -29,11 +28,17 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   dataSource: any;
   subscription: any;
   isBackTab: boolean;
+  stopsOfLineA: Stop[];
+  stopsOfLineR: Stop[];
   tableDatasource: any;
+  lat: number;
+  lng: number;
   displayedColumns: string[] = ['seleziona', 'nome', 'cognome'];
   selection = new SelectionModel<Passenger>(true, []);
 
   ngOnInit() {
+    this.lat = 45.0734673;
+    this.lng = 7.6055672,12;
     this.titleservice.changeTitle('Registro presenze');
     this.getLines();
   }
@@ -41,6 +46,10 @@ export class AttendanceComponent implements OnInit, OnDestroy {
   updateLines(lines : Line[]){
     this.lines = lines;
     this.currentLine = this.lines[0];
+    this.currentLine.rides.forEach(s =>{
+      this.stopsOfLineA.concat(s.stops)
+      this.stopsOfLineR.concat(s.stopsBack)
+    })
     this.currentPage = this.binarySearch(this.currentLine.rides,new Date(),0,this.currentLine.rides.length-1,0);
     this.dataSource = this.currentLine.rides[this.currentPage];
     this.dataSource.stops.sort((a, b) => a.time as any - (b.time as any));
