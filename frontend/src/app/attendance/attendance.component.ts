@@ -20,7 +20,6 @@ import {NotificationService} from "../services/notification.service";
 export class AttendanceComponent implements OnInit, OnDestroy {
 
   constructor(private dataService: DataService,private dialog: MatDialog, private titleservice: TitleService) { }
-
   lines: Line[];
   stopIndex: number;
   totalSize: number;
