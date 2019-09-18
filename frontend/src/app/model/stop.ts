@@ -1,5 +1,4 @@
 import { Passenger } from './passenger';
-import {GeoJSON} from "geojson";
 import {log} from "util";
 
 export class Stop {

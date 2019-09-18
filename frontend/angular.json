@@ -23,7 +23,8 @@
               "src/assets"
             ],
             "styles": [
-              "src/custom-theme.scss"
+              "src/custom-theme.scss",
+              "node_modules/leaflet/dist/leaflet.css"
             ],
             "scripts": [],
             "es5BrowserSupport": true

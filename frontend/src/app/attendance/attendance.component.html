@@ -1,5 +1,5 @@
 <div fxLayout.xs="column" fxLayoutGap="20px">
-  <div fxLayout="row" fxLayoutAlign="center start" fxFlex="70">
+  <div fxLayout="row" fxLayoutAlign="center start" fxFlex="50">
   <mat-card  fxFlex.xs="100" class="mat-elevation-z6 mat-card-style">
       <mat-card-header fxLayout="row">
         <div fxFlex="10" mat-card-avatar>
@@ -11,7 +11,7 @@
           <mat-card-title>{{currentLine?.lineName}}</mat-card-title>
           <mat-card-subtitle>{{dataSource?.date*1000 | date: 'shortDate'}}</mat-card-subtitle>
         </div>
-        <mat-paginator fxFlex="20" #paginator [pageSize]="1" [length]="totalSize" [hidePageSize]="true" [pageIndex]="currentPage" (page)="pageEvent = handlePage($event)"></mat-paginator>
+        <mat-paginator fxFlex="20" #paginator [pageSize]="1" [length]="totalSize" [hidePageSize]="true" [pageIndex]="currentPage" (page)="handlePage($event)"></mat-paginator>
       </mat-card-header>
       <mat-card-content>
         <mat-tab-group (selectedTabChange)="tabChanged($event)">
@@ -127,15 +127,24 @@
       </mat-card-content>
     </mat-card>
   </div>
-  <div fxFlex="70" fxFlex.xs="0">
-    <agm-map [latitude]="lat" [longitude]="lng" >
-      <agm-marker *ngFor="let s of (isBackTab ? stopsOfLineA : stopsOfLineR); let i = index" [latitude]="s.lat" [longitude]="s.lng">
-        <agm-info-window>
-          <strong>{{ s.stopName }}</strong>
-        </agm-info-window>
-      </agm-marker>
-    </agm-map>
-  </div>
+  <mat-card fxFlex="50" fxLayoutAlign="end center" fxFlex.xs="0" class="map-card mat-card-style">
+    <!--<agm-map [latitude]="lat" [longitude]="lng" >-->
+      <!--<agm-marker *ngFor="let s of stopsOfLineA; let i = index" [latitude]="s.lat" [longitude]="s.lng">-->
+        <!--<agm-info-window>-->
+          <!--<strong>{{ s.stopName }}</strong>-->
+        <!--</agm-info-window>-->
+      <!--</agm-marker>-->
+    <!--</agm-map>-->
+    <mat-card-content>
+      <div id="map" class="map"></div>
+      <div id="popup" class="ol-popup">
+        <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+        <div id="popup-content"></div>
+      </div>
+    </mat-card-content>
+
+
+  </mat-card>
 </div>
 
 <mat-menu #menu="matMenu" yPosition="above" xPosition="before">

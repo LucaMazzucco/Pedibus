@@ -150,9 +150,6 @@ export class BookingComponent implements OnInit {
         s => avStopsR.push(s.stopName)
     );
 
-    for (const s of this.selectRideForm.controls.selectedRide.value.stopsBack) {
-
-    }
     console.log();
     const newRes = new Reservation(this.selectLineForm.controls.selectedLine.value.lineName,
                                   this.selectGoingForm.controls.selectedGoing.value,

@@ -6,7 +6,6 @@ import {TitleService} from "./services/title.service";
 import {Observable} from "rxjs";
 import {DataService} from "./services/data.service";
 import {NotificationService} from "./services/notification.service";
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
