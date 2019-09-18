@@ -64,7 +64,7 @@ public class LineService {
         if(line==null) return null;
         Ride ride = getRideByLineAndRideDateAndFlagGoing(line, rDate, flagGoing);
         if(ride==null) return null;
-        return ride.getStops().stream()
+            return ride.getStops().stream()
                 .filter(s->s.getStopName().equals(stopName))
                 .findAny().orElse(null);
     }
@@ -153,8 +153,9 @@ public class LineService {
                     .map(r->childService.encapsulateChildOnRide(childService.findById(r.getChild()),r.isPresent()))
                     .forEach(children::put);
             stopJson.put("children",children);
-            if(s.getGeoJsonPoint() != null){
-                stopJson.put("coordinates",s.getGeoJsonPoint().getCoordinates().toString());
+            if(s.getLocation() != null){
+                stopJson.put("lat",s.getLocation().getCoordinates().get(0));
+                stopJson.put("lng",s.getLocation().getCoordinates().get(1));
             }
             stopsJson.put(stopJson);
         });
