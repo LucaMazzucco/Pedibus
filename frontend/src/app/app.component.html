@@ -42,8 +42,10 @@
                 <mat-icon>check_circle</mat-icon>
               </div>
               <div fxFlex="10"></div>
-              <div fxFlex="80">Presenze</div>
-              </a>
+              <div fxFlex="80">
+                Presenze
+              </div>
+            </a>
             <a mat-list-item routerLink="/prenotazioni" routerLinkActive="active" [hidden]="!isLogged()  || !(isParent()||isAdmin())">
               <div fxFlex="10">
                 <mat-icon>pan_tool</mat-icon>
@@ -58,7 +60,7 @@
               <div fxFlex="10">
               </div>
               <div fxFlex="80">
-                Disponibilità
+                Inserisci disponibilità
               </div>
               </a>
             <a mat-list-item routerLink="/turni" routerLinkActive="active" [hidden]="!isLogged() || !(isAdmin())">
