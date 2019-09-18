@@ -12,16 +12,22 @@
           {
             "stopName":"Stop1",
             "time": "1567603642",
+            "Lat": "45.073849",
+            "Long": "7.6674002",
             "reservations": []
           },
           {
             "stopName":"Stop2",
             "time": "1567603742",
+            "Lat": "45.073849",
+            "Long": "7.6674002",
             "reservations": []
           },
           {
             "stopName":"Stop3",
             "time": "1567603842",
+            "Lat": "45.073849",
+            "Long": "7.6674002",
             "reservations": []
           }
         ]
@@ -35,16 +41,22 @@
           {
             "stopName":"Stop4",
             "time": "1567603642",
+            "Lat": "45.073849",
+            "Long": "7.6674002",
             "reservations": []
           },
           {
             "stopName":"Stop5",
             "time": "1567603742",
+            "Lat": "45.073849",
+            "Long": "7.6674002",
             "reservations": []
           },
           {
             "stopName":"Piazza Vittorio",
             "time": "1567603842",
+            "Lat": "45.073849",
+            "Long": "7.6674002",
             "reservations": []
           }
         ]
@@ -64,16 +76,22 @@
           {
             "stopName":"Stop1",
             "time": "1567603642",
+            "Lat": "45.073849",
+            "Long": "7.6674002",
             "reservations": []
           },
           {
             "stopName":"Stop2",
             "time": "1567603742",
+            "Lat": "45.073849",
+            "Long": "7.6674002",
             "reservations": []
           },
           {
             "stopName":"Stop3",
             "time": "1567603842",
+            "Lat": "45.073849",
+            "Long": "7.6674002",
             "reservations": []
           }
         ]
@@ -87,16 +105,22 @@
           {
             "stopName":"Stop1",
             "time": "1567603642",
+            "Lat": "45.073849",
+            "Long": "7.6674002",
             "reservations": []
           },
           {
             "stopName":"Stop2",
             "time": "1567603742",
+            "Lat": "45.073849",
+            "Long": "7.6674002",
             "reservations": []
           },
           {
             "stopName":"Stop3",
             "time": "1567603842",
+            "Lat": "45.073849",
+            "Long": "7.6674002",
             "reservations": []
           }
         ]
