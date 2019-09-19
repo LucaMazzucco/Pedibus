@@ -67,22 +67,22 @@ export class ChildrenComponent implements OnInit, OnDestroy {
   }
 
 
-  updateStopOfLine(child: Child){
-      this.dataService.getStopsAOfLine(child.defaultLine).subscribe(
-          s => child.availableStops = s
+  updateStopOfLine(i){
+      this.dataService.getStopsAOfLine(this.children[i].defaultLine).subscribe(
+          s => this.children[i].availableStops = s
       )
   }
 
-  updateStopOfLines(children: Child[]){
-    for(let c of children){
-      this.dataService.getStopsOfLine(c.defaultLine).subscribe(
-          r =>{
-            this.stopOfLine = this.stopOfLine.concat(r);
-            console.log(this.stopOfLine)
-          }
-      )
-    }
-  }
+  // updateStopOfLines(children: Child[]){
+  //   for(let c of children){
+  //     this.dataService.getStopsOfLine(c.defaultLine).subscribe(
+  //         r =>{
+  //           this.stopOfLine = this.stopOfLine.concat(r);
+  //           console.log(this.stopOfLine)
+  //         }
+  //     )
+  //   }
+  // }
 
   openDialog(templateRef) {
     const dialogConfig = new MatDialogConfig();
@@ -109,7 +109,8 @@ export class ChildrenComponent implements OnInit, OnDestroy {
                         this.selectNameForm.controls.selectedSurname.value,
                         this.selectNameForm.controls.selectedSsn.value,
                         this.selectDefaultLineForm.controls.selectedDefaultLine.value.lineName,
-                        this.selectDefaultStopForm.controls.selectedDefaultStop.value);
+                        this.selectDefaultStopForm.controls.selectedDefaultStop.value,
+                        this.stopOfLine);
     let response =  this.dataService.addChild(localStorage.getItem('current_user'), ch);
     response.subscribe(data => {
       this.isDisabled.push(true);
