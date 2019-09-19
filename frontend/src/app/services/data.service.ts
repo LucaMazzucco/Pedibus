@@ -52,7 +52,7 @@ export class DataService {
   }
 
   putMessages(messages: Message[], email: string) {
-      return this.http.put(REST_URL + '/user/' + email + '/messages', messages).pipe(first()).subscribe(data => console.log(data));
+      return this.http.put(REST_URL + '/user/' + email + '/messages', messages);
   }
 
   getAvailabilities(email: string): Observable<Shift[]> {
