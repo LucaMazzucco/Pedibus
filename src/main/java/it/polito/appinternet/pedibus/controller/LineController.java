@@ -185,10 +185,18 @@ public class LineController {
         return lines.toString();
     }
 
-    @GetMapping("/line/getStopNames/{lineName}")
-    public ResponseEntity<String> getStopNamesByLineName(@PathVariable String lineName){
+    @GetMapping("/line/getStopsNames/{lineName}")
+    public ResponseEntity<String> getStopsNamesByLineName(@PathVariable String lineName){
         if(lineName.length()==0) return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        JSONArray stopNames = lineService.getStopNamesByLineName(lineName);
+        JSONArray stopNames = lineService.getStopsNamesByLineName(lineName);
+        if(stopNames== null) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(stopNames.toString(),HttpStatus.OK);
+    }
+
+    @GetMapping("line/getStopsNames/{lineName}/{flagGoing}")
+    public ResponseEntity<String> getStopsNamesByLineNameAndFlagGoing(@PathVariable String lineName, @PathVariable boolean flagGoing){
+        if(lineName.length()==0) return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        JSONArray stopNames = lineService.getStopsNamesByLineNameAndFlagGoing(lineName, flagGoing);
         if(stopNames== null) return new ResponseEntity(HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(stopNames.toString(),HttpStatus.OK);
     }

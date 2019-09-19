@@ -452,11 +452,24 @@ public class LineService {
         return lineRepo.findByLineAdmins(email);
     }
 
-    public JSONArray getStopNamesByLineName(String lineName){
+    public JSONArray getStopsNamesByLineName(String lineName){
         Line line = findByLineName(lineName);
         JSONArray jsonArray = new JSONArray();
         if(line==null) return null;
         line.getRides().stream()
+                .flatMap(r->r.getStops().stream())
+                .map(Stop::getStopName)
+                .distinct()
+                .forEach(jsonArray::put);
+        return jsonArray;
+    }
+
+    public JSONArray getStopsNamesByLineNameAndFlagGoing(String lineName, boolean flagGoing){
+        JSONArray jsonArray = new JSONArray();
+        Line line = findByLineName(lineName);
+        if(line==null) return null;
+        line.getRides().stream()
+                .filter(r->r.isFlagGoing() == flagGoing)
                 .flatMap(r->r.getStops().stream())
                 .map(Stop::getStopName)
                 .distinct()

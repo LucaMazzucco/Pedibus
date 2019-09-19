@@ -16,7 +16,7 @@ public class ChildController {
     ChildService childService;
 
     @GetMapping("/children/getChildReservations/{ssn}")
-    public ResponseEntity<String> getChildren(@PathVariable String ssn){
+    public ResponseEntity<String> getChildrenReservation(@PathVariable String ssn){
         if(ssn.length()==0){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
