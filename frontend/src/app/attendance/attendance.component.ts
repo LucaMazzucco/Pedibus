@@ -57,36 +57,6 @@ export class AttendanceComponent implements OnInit, OnDestroy {
       })
     });
     this.setCenter();
-    var container = document.getElementById('popup');
-    var content = document.getElementById('popup-content');
-    var closer = document.getElementById('popup-closer');
-
-    var overlay = new ol.Overlay({
-      element: container,
-      autoPan: true,
-      autoPanAnimation: {
-        duration: 250
-      }
-    });
-    this.map.addOverlay(overlay);
-
-    closer.onclick = function() {
-      overlay.setPosition(undefined);
-      closer.blur();
-      return false;
-    };
-
-    this.map.on('singleclick', function (event) {
-      console.log('Click')
-      if (this.map.hasFeatureAtPixel(event.pixel) === true) {
-        var coordinate = event.coordinate;
-        content.innerHTML = '<b>Hello world!</b><br />I am a popup.';
-        overlay.setPosition(coordinate);
-      } else {
-        overlay.setPosition(undefined);
-        closer.blur();
-      }
-    });
   }
 
   setCenter() {
