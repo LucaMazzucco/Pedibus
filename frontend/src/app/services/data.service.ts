@@ -31,12 +31,10 @@ export class DataService {
   }
 
   putLineAttendance(line: Line) {
-    // tslint:disable-next-line:max-line-length
     return this.http.put<Line>(REST_URL + '/line/putLineAttendance/' + line.lineName, {line}).pipe(first()).subscribe(data => console.log(data));
   }
 
   putRideAttendance(ride: Ride, lineName: string) {
-    // tslint:disable-next-line:max-line-length
     return this.http.put<Ride>(REST_URL + '/line/putLineAttendance/' + lineName + '/ride', {ride}).pipe(first()).subscribe(data => console.log(data));
   }
 
@@ -99,7 +97,11 @@ export class DataService {
   }
 
   getStopsOfLine(lineName: string) {
-    return this.http.get<string[]>(REST_URL + '/line/getStopNames/' + lineName);
+    return this.http.get<string[]>(REST_URL + '/line/getStopsNames/' + lineName);
+  }
+
+  getStopsAOfLine(lineName: string) {
+    return this.http.get<string[]>(REST_URL + '/line/getStopsNames/' + lineName + "/" + true);
   }
   getRoles(): Observable<User[]> {
     return this.http.get<User[]>(REST_URL + '/user/getUsersRoles');

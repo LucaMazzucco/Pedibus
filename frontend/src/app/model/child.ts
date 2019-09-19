@@ -5,6 +5,7 @@ export class Child {
     registrationNumber: string;
     defaultLine: string;
     defaultStop: string;
+    availableStops: string[];
 
 
 

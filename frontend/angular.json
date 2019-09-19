@@ -86,6 +86,11 @@
             "scripts": [],
             "assets": [
               "src/favicon.ico",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/leaflet/dist/images",
+                "output": "assets/"
+              },
               "src/assets"
             ]
           }

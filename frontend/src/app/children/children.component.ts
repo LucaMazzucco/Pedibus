@@ -1,18 +1,20 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {DataService} from "../services/data.service";
 import {TitleService} from "../services/title.service";
 import {MatDialog, MatDialogConfig, MatSnackBar} from "@angular/material";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {Line} from "../model/line";
 import {Child} from "../model/child";
-import {filter} from "rxjs/operators";
+import {filter, takeUntil} from "rxjs/operators";
+import {Subject} from "rxjs";
+
 
 @Component({
   selector: 'app-children',
   templateUrl: './children.component.html',
   styleUrls: ['./children.component.scss']
 })
-export class ChildrenComponent implements OnInit {
+export class ChildrenComponent implements OnInit, OnDestroy {
 
   children: Child[];
   isDisabled: Boolean[];
@@ -21,8 +23,8 @@ export class ChildrenComponent implements OnInit {
   selectNameForm: FormGroup;
   selectDefaultLineForm: FormGroup;
   selectDefaultStopForm: FormGroup;
-  isLinear: boolean;
   editMode: boolean;
+  private unsubscribe: Subject<void> = new Subject();
   infoMessage: string = '';
 
 
@@ -33,12 +35,10 @@ export class ChildrenComponent implements OnInit {
     this.titleservice.changeTitle('I tuoi bambini');
     this.isDisabled = []
     this.editMode = false;
-    this.dataService.getLines().subscribe(lines => this.lines=lines);
+    this.dataService.getLines().pipe(takeUntil(this.unsubscribe)).subscribe(lines => this.lines=lines);
     this.dataService.getChildren(localStorage.getItem('current_user')).pipe(filter(result => !!result))
         .subscribe(result => {
           this.children = result
-          this.stopOfLine = []
-          this.updateStopOfLines(this.children)
           this.initializeArray();
         },
         error => {
@@ -64,6 +64,13 @@ export class ChildrenComponent implements OnInit {
     for(let i = 0; i < this.children.length; i++){
       this.isDisabled.push(true);
     }
+  }
+
+
+  updateStopOfLine(child: Child){
+      this.dataService.getStopsAOfLine(child.defaultLine).subscribe(
+          s => child.availableStops = s
+      )
   }
 
   updateStopOfLines(children: Child[]){
@@ -153,7 +160,12 @@ export class ChildrenComponent implements OnInit {
         } );
   }
 
-  // updateStopsOfLine(i): void{
+  ngOnDestroy(): void {
+      this.unsubscribe.next();
+      this.unsubscribe.complete();
+  }
+
+    // updateStopsOfLine(i): void{
   //   console.log(this.children[i].defaultLine)
   //     this.dataService.getStopsOfLine(this.children[i].defaultLine).subscribe( s => {
   //       this.stopOfLine = s;
