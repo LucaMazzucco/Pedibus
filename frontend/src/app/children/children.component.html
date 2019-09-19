@@ -28,8 +28,8 @@
           </mat-form-field>
           <mat-form-field fxFlex="30">
             <mat-label>Fermata più vicina a casa</mat-label>
-            <mat-select [disabled]="isDisabled[i]" [(value)]="children[i].defaultStop" (selectionChange)="updateStopOfLines(child)">
-              <mat-option *ngFor="let stop of stopOfLine" [value]="stop">
+            <mat-select [disabled]="isDisabled[i]" [(value)]="children[i].defaultStop" (selectionChange)="updateStopOfLine(i)">
+              <mat-option *ngFor="let stop of children[i].availableStops" [value]="stop">
                 {{stop}}
               </mat-option>
             </mat-select>
