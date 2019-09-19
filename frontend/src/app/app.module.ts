@@ -87,7 +87,7 @@ const routes: Routes = [
     component: MessagesComponent,
     canActivate: [AuthGuard],
     data: {
-      expectedRole: 'ROLE_ADMIN ROLE_CONDUCTOR'
+      expectedRole: 'ROLE_ADMIN ROLE_CONDUCTOR ROLE_USER'
     }},
   { path: 'bambini',
     component: ChildrenComponent,
@@ -122,10 +122,9 @@ const routes: Routes = [
       ChildrenComponent
   ],
   imports: [
-    // AgmCoreModule.forRoot({
-    //   apiKey: 'AIzaSyAynZFDKmuzqVu0sf9gx9QZtJ1aWRAsti0'
-    // }),
-    LeafletModule.forRoot(),
+    AgmCoreModule.forRoot({
+      apiKey: 'AIzaSyAynZFDKmuzqVu0sf9gx9QZtJ1aWRAsti0'
+    }),
     BrowserModule,
     MatTableModule,
     HttpClientModule,
