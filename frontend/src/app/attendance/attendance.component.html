@@ -1,4 +1,4 @@
-<div fxLayout.xs="column" fxLayout.md="column" fxLayoutGap="20px">
+<div fxLayout.xs="column" fxLayout.md="column" fxLayout="row" fxLayoutGap="20px">
   <div fxLayout="row" fxLayoutAlign="center start" fxFlex="50">
   <mat-card  fxFlex.xs="100" class="mat-elevation-z6 mat-card-style">
       <mat-card-header fxLayout="row">
@@ -127,6 +127,7 @@
       </mat-card-content>
     </mat-card>
   </div>
+
   <mat-card fxFlex="50" fxLayoutAlign="center center" fxFlex.xs="0" class="map-card mat-card-style">
     <!--<agm-map [latitude]="lat" [longitude]="lng" >-->
       <!--<agm-marker *ngFor="let s of stopsOfLineA; let i = index" [latitude]="s.lat" [longitude]="s.lng">-->
@@ -137,10 +138,6 @@
     <!--</agm-map>-->
     <mat-card-content>
       <div id="map" class="map"></div>
-      <div id="popup" class="ol-popup">
-        <a href="#" id="popup-closer" class="ol-popup-closer"></a>
-        <div id="popup-content"></div>
-      </div>
     </mat-card-content>
 
 
