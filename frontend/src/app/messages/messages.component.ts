@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Message} from "../model/message";
 import {DataService} from "../services/data.service";
 import {TitleService} from "../services/title.service";
+import {NotificationService} from "../services/notification.service";
 
 @Component({
   selector: 'app-messages',
@@ -10,7 +11,7 @@ import {TitleService} from "../services/title.service";
 })
 export class MessagesComponent implements OnInit {
 
-  constructor(private dataservice: DataService,  private titleservice: TitleService) { }
+  constructor(private dataservice: DataService,  private titleservice: TitleService, private notificationService: NotificationService) { }
   messages: Message[];
   displayedColumns: string[] = ['data', 'messaggio', 'read', 'delete'];
 
@@ -24,7 +25,12 @@ export class MessagesComponent implements OnInit {
 
   readMessage(mess: Message): void{
       mess.read = true;
-      this.dataservice.putMessages(this.messages, localStorage.getItem('current_user'));
+      this.dataservice.putMessages(this.messages, localStorage.getItem('current_user')).subscribe(
+          d =>{
+                  console.log(d)
+                  this.notificationService.updateMessageCount(localStorage.getItem('current_user'))
+          }
+      )
 
   }
 

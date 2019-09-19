@@ -1,4 +1,4 @@
-<div fxLayout.xs="column" fxLayoutGap="20px">
+<div fxLayout.xs="column" fxLayout.md="column" fxLayoutGap="20px">
   <div fxLayout="row" fxLayoutAlign="center start" fxFlex="50">
   <mat-card  fxFlex.xs="100" class="mat-elevation-z6 mat-card-style">
       <mat-card-header fxLayout="row">
@@ -9,7 +9,7 @@
         </div>
         <div fxFlex="70">
           <mat-card-title>{{currentLine?.lineName}}</mat-card-title>
-          <mat-card-subtitle>{{dataSource?.date*1000 | date: 'shortDate'}}</mat-card-subtitle>
+          <mat-card-subtitle>{{dataSource?.date*1000 | date: 'dd/MM/yy'}}</mat-card-subtitle>
         </div>
         <mat-paginator fxFlex="20" #paginator [pageSize]="1" [length]="totalSize" [hidePageSize]="true" [pageIndex]="currentPage" (page)="handlePage($event)"></mat-paginator>
       </mat-card-header>
