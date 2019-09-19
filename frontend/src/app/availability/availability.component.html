@@ -6,7 +6,7 @@
         </ng-container>
         <ng-container matColumnDef="rideDate">
           <th mat-header-cell *matHeaderCellDef> Data </th>
-          <td mat-cell *matCellDef="let av" [class.not-confirmed-shift-color]="!av.confirmed2" [class.confirmed-shift-color]="av.confirmed2">{{ av.rideDate*1000 | date: 'shortDate' }}</td>
+          <td mat-cell *matCellDef="let av" [class.not-confirmed-shift-color]="!av.confirmed2" [class.confirmed-shift-color]="av.confirmed2">{{ av.rideDate*1000 | date: 'dd/MM/yy' }}</td>
         </ng-container>
         <ng-container matColumnDef="flagGoing">
           <th mat-header-cell *matHeaderCellDef> Andata/Ritorno </th>
@@ -67,7 +67,7 @@
             <ng-template matStepLabel>Seleziona la data della corsa</ng-template>
             <mat-form-field>
               <mat-select formControlName="selectedRide" required>
-                <mat-option *ngFor="let ride of selectLineForm.controls.selectedLine.value.rides" [value]="ride">{{ ride.date*1000 | date: 'shortDate'}}</mat-option>
+                <mat-option *ngFor="let ride of selectLineForm.controls.selectedLine.value.rides" [value]="ride">{{ ride.date*1000 | date: 'dd/MM/yy'}}</mat-option>
               </mat-select>
             </mat-form-field>
             <div>

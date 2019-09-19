@@ -16,7 +16,7 @@
           <mat-card-header>
             <div mat-card-avatar class="booking-card-header"></div>
             <mat-card-title>{{res.lineName}}</mat-card-title>
-            <mat-card-subtitle>{{res.rideDate*1000 | date: 'shortDate'}}</mat-card-subtitle>
+            <mat-card-subtitle>{{res.rideDate*1000 | date: 'dd/MM/yy'}}</mat-card-subtitle>
           </mat-card-header>
             <mat-divider></mat-divider>
           <mat-card-content fxLayout="column">
@@ -89,7 +89,7 @@
                         <ng-template matStepLabel>Seleziona la data della corsa</ng-template>
                         <mat-form-field [hidden]="selectLineForm.controls.selectedLine.value == null">
                             <mat-select formControlName="selectedRide" required>
-                                <mat-option *ngFor="let ride of selectLineForm.controls.selectedLine.value.rides" [value]="ride">{{ ride.date*1000 | date: 'shortDate'}}</mat-option>
+                                <mat-option *ngFor="let ride of selectLineForm.controls.selectedLine.value.rides" [value]="ride">{{ ride.date*1000 | date: 'dd/MM/yy'}}</mat-option>
                             </mat-select>
                         </mat-form-field>
                         <div>
